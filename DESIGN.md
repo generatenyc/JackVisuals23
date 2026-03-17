@@ -2,6 +2,7 @@
 > Last updated: March 2026
 > Status: LOCKED — Mobile v1.0 + Desktop v1.0
 > Stack: React + Next.js · Tailwind CSS · Vimeo · Sanity CMS · Formspree
+> Mockup files: jack-visuals-scroll.html (mobile) and jack-visuals-desktop.html (desktop) are the ground truth for all layout decisions. When in doubt, read the HTML file directly.
 
 ---
 
