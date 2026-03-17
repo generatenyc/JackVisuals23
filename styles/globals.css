@@ -88,6 +88,130 @@ section {
 }
 
 /* ============================================
+   NAVIGATION — Fixed overlay
+   DESIGN.md Section 4
+   ============================================ */
+
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--nav-height-mobile);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: var(--color-nav-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--color-nav-border);
+  opacity: 1;
+  transition: opacity 0.4s ease;
+  pointer-events: auto;
+}
+
+.nav-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Logo — icon + text */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-logo-icon {
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-logo-icon svg {
+  width: 14px;
+}
+
+.nav-logo-text {
+  font-family: "Bebas Neue", cursive;
+  font-size: 17px;
+  letter-spacing: 3px;
+  color: #fff;
+}
+
+.nav-logo-text span {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+/* Inquire button */
+.nav-inquire {
+  padding: 8px 16px;
+  border: 1px solid rgba(41, 151, 255, 0.4);
+  color: var(--color-accent-blue);
+  background: transparent;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 0;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.nav-inquire:hover {
+  background: rgba(41, 151, 255, 0.1);
+}
+
+/* Desktop overrides */
+@media (min-width: 768px) {
+  .nav-bar {
+    height: var(--nav-height-desktop);
+    padding: 0 40px;
+  }
+
+  .nav-logo {
+    gap: 10px;
+  }
+
+  .nav-logo-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 7px;
+  }
+
+  .nav-logo-icon svg {
+    width: 16px;
+  }
+
+  .nav-logo-text {
+    font-size: 20px;
+  }
+
+  .nav-logo-text span {
+    font-size: 16px;
+    opacity: 0.65;
+  }
+
+  .nav-inquire {
+    padding: 8px 18px;
+    font-size: 12px;
+  }
+}
+
+/* ============================================
    HEADLINE FONT UTILITY
    ============================================ */
 
