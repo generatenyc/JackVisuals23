@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jack Visuals — Desktop Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #000;
+  --white: #f5f5f7;
+  --blue: #2997ff;
+  --dim: rgba(245,245,247,0.5);
+  --faint: rgba(245,245,247,0.28);
+  --divider: rgba(255,255,255,0.07);
+  --pad: 80px; /* desktop horizontal padding */
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ══════════════════════════════════════
+   DESKTOP ZONE SYSTEM
+   Section height = 100vh
+   Each section fills the viewport
+   Same zone logic as mobile, scaled up
+══════════════════════════════════════ */
+
+/* ══════════════════════════════════════
+   SCOPED ZONE SYSTEM
+   Every zone is scoped to its section ID.
+   #sec-work .zone-X  ≠  #sec-about .zone-X
+   Editing one section can never affect another.
+══════════════════════════════════════ */
+
+/* ── ZONE-TOP: scoped per section ── */
+#sec-work   .zone-top,
+#sec-about  .zone-top,
+#sec-inquire .zone-top {
+  height: 72px;
+  flex-shrink: 0;
+}
+
+/* ── ZONE-DIVIDER: scoped per section ── */
+#sec-work    .zone-divider,
+#sec-about   .zone-divider,
+#sec-inquire .zone-divider {
+  height: 1px;
+  flex-shrink: 0;
+  background: var(--divider);
+}
+
+/* ── ZONE-HEADER: scoped per section ── */
+#sec-work   .zone-header,
+#sec-about  .zone-header {
+  height: 100px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--pad);
+}
+
+/* ════════════════════════
+   #sec-work ZONES ONLY
+   top(72) + header(100) + cards(fill) = 100vh
+════════════════════════ */
+/* No extra zone classes needed — cards use flex:1 */
+
+/* ════════════════════════
+   #sec-about ZONES ONLY
+   top(72) + header(100) + main(280) + divider(1) + bottom(fill) = 100vh
+════════════════════════ */
+#sec-about .zone-main {
+  height: 280px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+#sec-about .zone-bottom {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ════════════════════════
+   #sec-inquire ZONES ONLY
+   top(100) + eyebrow(40) + main(fill) + bottom(240) = 100vh
+   Headline moved into zone-main left column
+════════════════════════ */
+#sec-inquire .zone-top {
+  height: 100px;
+  flex-shrink: 0;
+}
+#sec-inquire .zone-eyebrow {
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--pad);
+}
+#sec-inquire .zone-main {
+  flex: 1;
+  overflow: hidden;
+}
+#sec-inquire .zone-bottom {
+  height: 240px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--pad);
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: opacity 0.4s ease;
+}
+.nav.hidden { opacity: 0; pointer-events: none; }
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.logo-icon {
+  width: 34px; height: 34px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { width: 16px; }
+.logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: var(--white);
+}
+.logo-text span {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  letter-spacing: 1px;
+  opacity: 0.65;
+}
+.nav-links {
+  display: flex;
+  gap: 36px;
+  align-items: center;
+}
+.nav-links a {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  letter-spacing: 0.2px;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-inquire {
+  padding: 8px 18px;
+  border: 1px solid rgba(41,151,255,0.4);
+  color: var(--blue);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.nav-inquire:hover { background: rgba(41,151,255,0.1); }
+
+/* ══════════════════════════════════════
+   SECTION 1 — HERO
+══════════════════════════════════════ */
+#sec-home {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 var(--pad) 100px;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+.hero-video-sim {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 0;
+}
+
+/* Subtle gradient — just enough to give depth */
+.hero-video-sim::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.15) 100%),
+    radial-gradient(ellipse 50% 40% at 30% 40%, rgba(255,255,255,0.015) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  position: relative;
+  z-index: 5;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 20px;
+}
+.hero-headline {
+  position: relative;
+  z-index: 5;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(80px, 10vw, 140px);
+  line-height: 0.88;
+  letter-spacing: 1px;
+  color: var(--white);
+  max-width: 800px;
+}
+
+/* ══════════════════════════════════════
+   SHARED SECTION STYLES
+══════════════════════════════════════ */
+.section {
+  background: var(--black);
+  border-top: 1px solid var(--divider);
+  min-height: 100vh;
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 5vw, 72px);
+  letter-spacing: 0.5px;
+  line-height: 1;
+  color: var(--white);
+}
+.view-all {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--blue);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(41,151,255,0.3);
+  padding-bottom: 2px;
+  transition: border-color 0.2s;
+}
+.view-all:hover { border-color: var(--blue); }
+.view-all::after { content: '→'; font-size: 18px; }
+
+/* ══════════════════════════════════════
+   SECTION 2 — FEATURED WORK
+══════════════════════════════════════ */
+.work-cards-zone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Desktop: 3-column grid */
+.desktop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  flex: 1;
+}
+
+.reel-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: #0a0a0a;
+}
+.reel-bg {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+.reel-card:hover .reel-bg { transform: scale(1.04); }
+.bg-1 { background: linear-gradient(160deg, #1a2a14, #050808); }
+.bg-2 { background: linear-gradient(160deg, #0f1a28, #030810); }
+.bg-3 { background: linear-gradient(160deg, #1a1020, #050208); }
+
+/* Tag — always visible top left */
+.reel-tag {
+  position: absolute;
+  top: 20px; left: 20px;
+  z-index: 10;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: opacity 0.3s;
+}
+.reel-card[data-playing="true"] .reel-tag { opacity: 0; }
+
+/* Hover layer — gradient + info + play */
+.reel-hover {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 32px 28px;
+  background: linear-gradient(to top,
+    rgba(0,0,0,0.92) 0%,
+    rgba(0,0,0,0.5) 40%,
+    transparent 70%);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+.reel-card:hover .reel-hover {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.reel-card[data-playing="true"] .reel-hover { opacity: 0; pointer-events: none; }
+
+.reel-cat {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+.reel-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.5px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.reel-spec {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.4);
+}
+
+/* Play button */
+.reel-play {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%) scale(0.85);
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s, border-color 0.2s;
+  pointer-events: none;
+}
+.reel-card:hover .reel-play {
+  transform: translate(-50%,-50%) scale(1);
+  pointer-events: auto;
+}
+.reel-play:hover { border-color: rgba(255,255,255,0.9); }
+.reel-play svg { fill: white; width: 20px; margin-left: 3px; }
+
+/* Playing state */
+.reel-playing {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.reel-card[data-playing="true"] .reel-playing { opacity: 1; pointer-events: auto; }
+.reel-pause {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.reel-pause svg { fill: white; width: 14px; }
+
+/* ══════════════════════════════════════
+   SECTION 3 — ABOUT
+══════════════════════════════════════ */
+.about-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  letter-spacing: 0.5px;
+  color: var(--white);
+  margin: 0;
+}
+.about-photo {
+  border-radius: 12px;
+  background: #111;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+.photo-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #111, #0a0a0a);
+}
+.photo-placeholder {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.photo-placeholder svg { opacity: 0.1; }
+.photo-placeholder span {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.12);
+}
+.about-body {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.55);
+}
+.info-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 8px;
+}
+.info-sentence {
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════
+   SECTION 4 — INQUIRE
+══════════════════════════════════════ */
+.inquire-eyebrow {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: var(--blue);
+  text-transform: uppercase;
+}
+.inquire-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  color: var(--white);
+  line-height: 1;
+}
+.inquire-headline em { color: var(--blue); font-style: normal; }
+.inquire-sub {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.6;
+}
+.form-row {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  transition: border-color 0.2s;
+}
+.form-row:focus-within { border-color: rgba(255,255,255,0.35); }
+.form-field {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--white);
+  padding: 16px 0;
+}
+.form-field::placeholder { color: rgba(255,255,255,0.2); }
+textarea.form-field { resize: none; height: 80px; }
+.form-submit {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--blue);
+  border: none;
+  padding: 18px 48px;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 24px;
+}
+.form-submit:hover { opacity: 0.85; }
+.footer-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.6);
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+.footer-links a {
+  font-size: 12px;
+  color: rgba(255,255,255,0.28);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: rgba(255,255,255,0.6); }
+.footer-copy {
+  font-size: 11px;
+  color: rgba(255,255,255,0.14);
+}
+
+/* Desktop scroll snap */
+html {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+/* ── FLOATING DRONE ── */
+.hero-drone {
+  position: absolute;
+  z-index: 4;
+  width: 64px;
+  height: 64px;
+  pointer-events: none;
+  transition: top 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+              left 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.6s ease;
+  opacity: 0.55;
+}
+/* Subtle hover bob animation */
+.hero-drone svg {
+  animation: droneBob 2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 12px rgba(41,151,255,0.3));
+}
+@keyframes droneBob {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-6px) rotate(1deg); }
+}
+/* Drone LED pulse */
+.drone-led {
+  animation: ledPulse 1.5s ease-in-out infinite;
+}
+@keyframes ledPulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+/* Prop spin */
+.prop-spin {
+  animation: propSpin 0.2s linear infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes propSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     NAV
+══════════════════════════════════════ -->
+<nav class="nav" id="mainNav">
+  <a href="#sec-home" class="nav-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 14 14" fill="none">
+        <rect x="1" y="3" width="10" height="7" rx="1" stroke="white" stroke-width="1"/>
+        <polygon points="11,5.5 13,4.5 13,8.5 11,7.5" fill="white"/>
+        <circle cx="4.5" cy="6.5" r="1.5" stroke="white" stroke-width="0.8"/>
+      </svg>
+    </div>
+    <div class="logo-text">JACK <span>VISUALS</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="#sec-inquire" class="nav-inquire">Inquire</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     SECTION 1 — HERO
+══════════════════════════════════════ -->
+<section id="sec-home">
+  <div class="hero-video-sim"></div>
+
+  <!-- Floating mini drone — real PNG with CSS spinning props -->
+  <div class="hero-drone" id="heroDrone" style="width:140px;height:140px;">
+    <div style="position:relative;width:100%;height:100%;">
+
+      <!-- Real drone image -->
+      <img
+        src="drone_together.png"
+        alt="drone"
+        style="width:100%;height:100%;object-fit:contain;display:block;"
+      />
+
+      <!-- Spinning prop overlays — all synced, no delay -->
+      <style>
+        .prop-overlay {
+          position: absolute;
+          width: 30%; height: 30%;
+          border-radius: 50%;
+          background: conic-gradient(
+            rgba(200,200,200,0.55) 0deg,
+            rgba(200,200,200,0.1) 90deg,
+            rgba(200,200,200,0.55) 180deg,
+            rgba(200,200,200,0.1) 270deg,
+            rgba(200,200,200,0.55) 360deg
+          );
+          animation: propSpin 0.18s linear infinite;
+          animation-delay: 0s !important;
+          transform-origin: center;
+        }
+        .prop-overlay.rev { animation-direction: reverse; }
+      </style>
+      <div class="prop-overlay" style="top:13%;left:4%;"></div>
+      <div class="prop-overlay rev" style="top:13%;right:4%;"></div>
+      <div class="prop-overlay rev" style="bottom:13%;left:4%;"></div>
+      <div class="prop-overlay" style="bottom:13%;right:4%;"></div>
+
+    </div>
+  </div>
+
+  <div class="hero-eyebrow">Cinematic Video Production</div>
+  <h1 class="hero-headline">Where every<br>video tells<br>a story</h1>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 2 — FEATURED WORK
+══════════════════════════════════════ -->
+<section class="section" id="sec-work">
+
+  <!-- Zone A: nav clearance -->
+  <div class="zone-top"></div>
+
+  <!-- Zone B: header -->
+  <div class="zone-header">
+    <div class="section-title">Featured Work</div>
+    <a href="https://vimeo.com/jackvisuals" target="_blank" class="view-all">All Projects</a>
+  </div>
+
+  <!-- Cards zone: fills remaining height -->
+  <div class="work-cards-zone">
+    <div class="desktop-grid">
+
+      <!-- Card 1 -->
+      <div class="reel-card" data-playing="false">
+        <div class="reel-bg bg-1"></div>
+        <div class="reel-tag">LIVE EVENT</div>
+        <div class="reel-hover">
+          <div class="reel-cat">Live Event · Documentary</div>
+          <div class="reel-title">Trinidad Carnival 2024</div>
+          <div class="reel-spec">4K · Natural Light</div>
+        </div>
+        <button class="reel-play" onclick="playCard(this)">
+          <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+        </button>
+        <div class="reel-playing">
+          <button class="reel-pause" onclick="pauseCard(this)">
+            <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="reel-card" data-playing="false">
+        <div class="reel-bg bg-2"></div>
+        <div class="reel-tag">BRAND</div>
+        <div class="reel-hover">
+          <div class="reel-cat">Commercial · Studio</div>
+          <div class="reel-title">Grey Goose Campaign</div>
+          <div class="reel-spec">4K · Controlled Lighting</div>
+        </div>
+        <button class="reel-play" onclick="playCard(this)">
+          <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+        </button>
+        <div class="reel-playing">
+          <button class="reel-pause" onclick="pauseCard(this)">
+            <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="reel-card" data-playing="false">
+        <div class="reel-bg bg-3"></div>
+        <div class="reel-tag">AERIAL</div>
+        <div class="reel-hover">
+          <div class="reel-cat">Drone · Aerial</div>
+          <div class="reel-title">Coastal Estates</div>
+          <div class="reel-spec">4K · Aerial</div>
+        </div>
+        <button class="reel-play" onclick="playCard(this)">
+          <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+        </button>
+        <div class="reel-playing">
+          <button class="reel-pause" onclick="pauseCard(this)">
+            <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 3 — ABOUT
+══════════════════════════════════════ -->
+<section class="section" id="sec-about">
+
+  <!-- Zone A: nav clearance -->
+  <div class="zone-top"></div>
+
+  <!-- Zone B: header -->
+  <div class="zone-header">
+    <h2 class="about-headline">Jack Visuals</h2>
+  </div>
+
+  <!-- Zone C: photo + bio — two column, same as mobile -->
+  <div class="zone-main" style="
+    padding: 0 80px 20px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 32px;
+    align-items: stretch;
+  ">
+    <div class="about-photo" style="height:100%;">
+      <div class="photo-bg"></div>
+      <div class="photo-placeholder">
+        <svg width="48" height="48" viewBox="0 0 60 60" fill="none">
+          <circle cx="30" cy="22" r="10" stroke="white" stroke-width="1.5"/>
+          <path d="M10 52 Q10 36 30 36 Q50 36 50 52" stroke="white" stroke-width="1.5" fill="none"/>
+        </svg>
+        <span>Jack's Photo</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:stretch;height:100%;">
+      <p class="about-body" style="margin:0;align-self:center;">With Caribbean roots and a global perspective, Jack brings cultural awareness, rhythm and movement into every production — creating films that feel alive and immediate.</p>
+    </div>
+  </div>
+
+  <!-- Zone D: divider -->
+  <div class="zone-divider"></div>
+
+  <!-- Zone E: info blocks — stacked vertically, same as mobile, full width -->
+  <div class="zone-bottom" style="
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 0 80px;
+  ">
+    <div class="info-block">
+      <div class="info-label">What We Offer</div>
+      <p class="info-sentence">Event Videography · Brand Campaigns · Commercial Production · Drone &amp; Aerial · Agency Collaboration</p>
+    </div>
+    <div class="info-block">
+      <div class="info-label">Production Kit</div>
+      <p class="info-sentence">Cinema rigs, drone fleet, stabilization systems and on-set monitoring — built for every scale.</p>
+    </div>
+    <div class="info-block">
+      <div class="info-label">Trusted By</div>
+      <p class="info-sentence">Gin Mare · Diplomatico · Grey Goose · Patrón · JP Chenet · Cantine Maschio</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 4 — INQUIRE
+══════════════════════════════════════ -->
+<section class="section" id="sec-inquire">
+
+  <!-- Zone A: nav clearance -->
+  <div class="zone-top"></div>
+
+  <!-- Zone B: eyebrow only — 40px -->
+  <div class="zone-eyebrow">
+    <div class="inquire-eyebrow">Get In Touch</div>
+  </div>
+
+  <!-- Zone C: two columns — headline+sub LEFT, form RIGHT — both center aligned -->
+  <div class="zone-main" style="
+    padding: 0 var(--pad);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  ">
+    <!-- Left: headline + sub text together -->
+    <div>
+      <h2 class="inquire-headline" style="font-size:clamp(52px,5.5vw,80px);margin:0 0 24px 0;line-height:1;">
+        Let's create<br>something you<br>can <em>feel.</em>
+      </h2>
+      <p class="inquire-sub">Tell us about your project — events, brand campaigns, corporate productions or something entirely new.</p>
+    </div>
+
+    <!-- Right: form fields + button -->
+    <div>
+      <form action="https://formspree.io/f/REPLACE_WITH_YOUR_ID" method="POST" style="width:100%;">
+        <div class="form-row"><input class="form-field" type="text" name="name" placeholder="Your name" required></div>
+        <div class="form-row"><input class="form-field" type="email" name="email" placeholder="Email address" required></div>
+        <div class="form-row"><textarea class="form-field" name="message" placeholder="Tell us about your project..."></textarea></div>
+        <button type="submit" class="form-submit" style="margin-top:40px;width:100%;display:block;">Start a Conversation</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Zone D+E: divider + footer -->
+  <div class="zone-bottom" style="
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 var(--pad);
+    gap: 16px;
+  ">
+    <div class="zone-divider" style="margin: 0 calc(-1 * var(--pad)) 16px;"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div class="footer-logo">JACK VISUALS</div>
+        <div class="footer-copy">© 2025 Jack Visuals · jackvisuals23.com · All Rights Reserved</div>
+      </div>
+      <div class="footer-links">
+        <a href="https://instagram.com/jackvisuals23" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+          @jackvisuals23
+        </a>
+        <a href="/cdn-cgi/l/email-protection#88e6e9fce0e9e6c8fae2e9e7e6e4e1e6eda6ebe7e5"><span class="__cf_email__" data-cfemail="c8a6a9bca0a9a688baa2a9a7a6a4a1a6ade6aba7a5">[email&#160;protected]</span></a>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // ── Nav fade on scroll ──────────────────────
+  const nav = document.getElementById('mainNav');
+  const sections = ['sec-home','sec-work','sec-about','sec-inquire']
+    .map(id => document.getElementById(id));
+  const THRESHOLD = 140;
+
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    let showNav = false;
+    sections.forEach(sec => {
+      if (!sec) return;
+      const dist = scrollY - sec.offsetTop;
+      if (dist >= -10 && dist < THRESHOLD) showNav = true;
+    });
+    nav.classList.toggle('hidden', !showNav);
+  }, { passive: true });
+
+  // ── Floating drone ──────────────────────────
+  const drone = document.getElementById('heroDrone');
+  const hero  = document.getElementById('sec-home');
+
+  function getRandomPosition() {
+    const hw = hero.offsetWidth;
+    const hh = hero.offsetHeight;
+    const margin = 100;
+    // Restrict to top 40% — headline at large desktop size takes up bottom 60%
+    const maxY = hh * 0.40;
+    return {
+      x: margin + Math.random() * (hw - margin * 2 - 64),
+      y: margin + Math.random() * (maxY - margin - 64)
+    };
+  }
+
+  function moveDrone() {
+    const pos = getRandomPosition();
+    drone.style.left = pos.x + 'px';
+    drone.style.top  = pos.y + 'px';
+  }
+
+  // Set initial position immediately
+  moveDrone();
+  // Move every 3 seconds
+  setInterval(moveDrone, 3000)

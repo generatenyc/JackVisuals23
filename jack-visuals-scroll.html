@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jack Visuals — Mobile Scroll Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #000;
+  --white: #f5f5f7;
+  --blue: #2997ff;
+  --dim: rgba(245,245,247,0.5);
+  --divider: rgba(255,255,255,0.07);
+}
+
+body {
+  background: #1a1a1a;
+  display: flex;
+  justify-content: center;
+  padding: 40px 0 80px;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── PHONE SHELL ── */
+.phone-wrap {
+  width: 390px;
+  height: 844px;
+  border-radius: 48px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 10px #1a1a1a,
+    0 0 0 12px #333,
+    0 60px 120px rgba(0,0,0,0.8);
+  position: relative;
+  background: #000;
+}
+.phone {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  position: relative;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.phone::-webkit-scrollbar { display: none; }
+
+/* ── NAV — fixed inside phone-wrap ── */
+.nav {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  opacity: 1;
+  transition: opacity 0.4s ease;
+  pointer-events: auto;
+}
+.nav.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo-icon {
+  width: 28px; height: 28px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-icon svg { width: 14px; }
+.logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 17px;
+  letter-spacing: 3px;
+  color: #fff;
+}
+.logo-text span {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+.nav-inquire {
+  padding: 8px 16px;
+  border: 1px solid rgba(41,151,255,0.4);
+  color: var(--blue);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.nav-inquire:hover { background: rgba(41,151,255,0.1); }
+
+/* ════════════════════════════
+   SECTION 1: HERO
+════════════════════════════ */
+.hero {
+  position: relative;
+  height: 844px;
+  min-height: 844px;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 24px 60px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.hero-video-sim {
+  position: absolute;
+  inset: 0;
+  background: #000;
+}
+/* Simulated aerial drone video */
+.hero-video-sim::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.15) 100%),
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(15,40,10,0.5) 0%, transparent 70%);
+  animation: videoDrift 8s ease-in-out infinite alternate;
+}
+@keyframes videoDrift {
+  0%   { filter: brightness(0.8); }
+  100% { filter: brightness(1.1); }
+}
+.hero-eyebrow {
+  position: relative;
+  z-index: 2;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 12px;
+}
+.hero-headline {
+  position: relative;
+  z-index: 2;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 88px;
+  line-height: 0.88;
+  letter-spacing: 0.5px;
+  color: #fff;
+}
+
+/* ════════════════════════════
+   SECTION 2: FEATURED WORK
+════════════════════════════ */
+.section {
+  background: var(--black);
+  border-top: 1px solid var(--divider);
+  overflow: hidden;
+  height: 844px;
+  min-height: 844px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column; /* zones stack vertically */
+}
+
+.section-header {
+  padding: 64px 24px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.section-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 6px;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 44px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  color: #fff;
+}
+.view-all {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--blue);
+  text-decoration: none;
+  padding-bottom: 4px;
+}
+
+/* Carousel */
+.carousel {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 0 24px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  align-items: stretch;
+}
+.carousel::-webkit-scrollbar { display: none; }
+
+.card {
+  flex: 0 0 260px;
+  scroll-snap-align: start;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  height: 100%;
+}
+.card-thumb {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.card-bg {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+  width: 100%;
+  height: 100%;
+}
+.card:hover .card-bg { transform: scale(1.04); }
+.bg-1 { background: linear-gradient(160deg, #1a2a14, #050808); }
+.bg-2 { background: linear-gradient(160deg, #0f1a28, #030810); }
+.bg-3 { background: linear-gradient(160deg, #1a1020, #050208); }
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, transparent 60%);
+}
+.card-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 20px 16px;
+}
+.card-cat {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 4px;
+}
+.card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  color: #fff;
+}
+
+/* Dots */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 0 24px;
+  flex-shrink: 0;
+}
+.dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: all 0.3s;
+}
+.dot.active { width: 16px; border-radius: 3px; background: rgba(255,255,255,0.5); }
+
+/* ════════════════════════════
+   SECTION 3: ABOUT
+════════════════════════════ */
+.about-cols {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 20px;
+  padding: 8px 24px 16px;
+  align-items: stretch;
+  flex: 0 0 calc(50% - 52px);
+  height: calc(50% - 52px);
+}
+.about-photo {
+  border-radius: 10px;
+  background: #111;
+  position: relative;
+  overflow: hidden;
+  min-height: 100%;
+  height: 100%;
+}
+.photo-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #111, #0a0a0a);
+}
+.photo-placeholder {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.photo-placeholder svg { opacity: 0.1; }
+.photo-placeholder span {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.12);
+}
+.about-text-col { display: flex; flex-direction: column; }
+.about-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 8px;
+}
+.about-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 34px;
+  letter-spacing: 0.5px;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+.about-body {
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.5);
+}
+
+/* Info blocks */
+.about-info {
+  padding: 24px 24px 40px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  flex: 0 0 50%;
+  height: 50%;
+}
+.info-block { margin-top: 0; }
+.info-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 6px;
+}
+.info-sentence {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+}
+
+/* ════════════════════════════
+   SECTION 4: INQUIRE
+════════════════════════════ */
+.inquire-section {
+  padding: 60px 24px 80px;
+}
+.inquire-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 12px;
+}
+.inquire-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  letter-spacing: 0.5px;
+  line-height: 0.95;
+  color: #fff;
+  margin-bottom: 14px;
+}
+.inquire-headline em { color: var(--blue); font-style: normal; }
+.inquire-sub {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+/* Form */
+.form-row {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  transition: border-color 0.2s;
+}
+.form-row:first-of-type { border-top: 1px solid rgba(255,255,255,0.1); }
+.form-row:focus-within { border-color: rgba(255,255,255,0.35); }
+.form-field {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #fff;
+  padding: 18px 0;
+}
+.form-field::placeholder { color: rgba(255,255,255,0.22); }
+textarea.form-field { resize: none; height: 100px; }
+
+.form-submit {
+  margin-top: 28px;
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--blue);
+  border: none;
+  padding: 18px 40px;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.form-submit:hover { opacity: 0.85; }
+
+/* Footer */
+.inquire-footer {
+  margin-top: 60px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.footer-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 14px;
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+.footer-links a {
+  font-size: 11px;
+  color: rgba(255,255,255,0.28);
+  text-decoration: none;
+}
+.footer-copy {
+  font-size: 10px;
+  color: rgba(255,255,255,0.14);
+}
+
+/* ══════════════════════════════════════
+   ZONE SYSTEM — section-specific
+   Each section has its OWN zone classes.
+   Changing one section never affects another.
+   Total per section: 844px
+══════════════════════════════════════ */
+
+/* ══════════════════════════════════════
+   SCOPED ZONE SYSTEM — MOBILE
+   Every zone scoped to its section ID.
+   #sec-work .zone-X  ≠  #sec-about .zone-X
+   Editing one section never affects another.
+══════════════════════════════════════ */
+
+/* ── ZONE-TOP: 52px nav clearance, all sections ── */
+#sec-work    .zone-top,
+#sec-about   .zone-top,
+#sec-inquire .zone-top {
+  height: 52px;
+  flex-shrink: 0;
+}
+
+/* ── ZONE-DIVIDER: scoped per section ── */
+#sec-work    .zone-divider,
+#sec-about   .zone-divider,
+#sec-inquire .zone-divider {
+  height: 1px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.07);
+}
+
+/* ── ZONE-HEADER: scoped per section ── */
+#sec-work  .zone-header,
+#sec-about .zone-header {
+  height: 72px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+/* ════════════════════════
+   #sec-about ZONES ONLY
+   top(52) + header(72) + main(240) + divider(1) + bottom(479) = 844
+════════════════════════ */
+#sec-about .zone-main   { height: 240px; flex-shrink: 0; overflow: hidden; }
+#sec-about .zone-bottom { height: 479px; flex-shrink: 0; overflow: hidden; }
+
+/* ════════════════════════
+   #sec-inquire ZONES ONLY
+   top(52) + eyebrow(48) + headline(140) + main(300) + bottom(320) = 860
+   (eyebrow has 16px margin-top built in)
+════════════════════════ */
+#sec-inquire .zone-eyebrow  { height: 32px;  flex-shrink: 0; display:flex; align-items:flex-end; padding: 0 24px 4px; margin-top: 16px; }
+#sec-inquire .zone-headline { height: 140px; flex-shrink: 0; display:flex; align-items:center; padding: 0 24px; }
+#sec-inquire .zone-main     { height: 300px; flex-shrink: 0; }
+#sec-inquire .zone-bottom   { height: 320px; flex-shrink: 0; overflow: hidden; }
+
+</style>
+</head>
+<body>
+
+<div class="phone-wrap">
+  <!-- ── NAV overlays phone ── -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 14 14" fill="none">
+          <rect x="1" y="3" width="10" height="7" rx="1" stroke="white" stroke-width="1"/>
+          <polygon points="11,5.5 13,4.5 13,8.5 11,7.5" fill="white"/>
+          <circle cx="4.5" cy="6.5" r="1.5" stroke="white" stroke-width="0.8"/>
+        </svg>
+      </div>
+      <div class="logo-text">JACK <span>VISUALS</span></div>
+    </div>
+    <a href="#sec-inquire" class="nav-inquire">Inquire</a>
+  </nav>
+  <div class="phone" id="phone">
+
+  <!-- ══════════════════════════════
+       SECTION 1 — HERO
+  ══════════════════════════════ -->
+  <section class="hero" id="sec-home">
+    <div class="hero-video-sim"></div>
+    <div class="hero-eyebrow">Cinematic Video Production</div>
+    <h1 class="hero-headline">Where every<br>video tells<br>a story</h1>
+  </section>
+
+  <!-- ══════════════════════════════
+       SECTION 2 — FEATURED WORK
+  ══════════════════════════════ -->
+  <section class="section" id="sec-work">
+
+    <!-- Zone A: top breathing room -->
+    <div class="zone-top"></div>
+
+    <!-- Zone B: header — always 72px -->
+    <div class="zone-header">
+      <div class="section-title">Featured Work</div>
+      <a href="https://vimeo.com/jackvisuals" target="_blank" class="view-all">All Projects</a>
+    </div>
+
+    <!-- Zone C+D+E combined: cards fill remaining 720px -->
+    <div style="height:720px; display:flex; flex-direction:column;">
+
+      <!-- Cards: flex 1 -->
+      <div class="carousel" id="carousel" style="flex:1; padding-bottom:0;">
+        <div class="card">
+          <div class="card-thumb">
+            <div class="card-bg bg-1"></div>
+            <div class="card-overlay"></div>
+            <div class="card-info">
+              <div class="card-cat">Live Event</div>
+              <div class="card-title">Trinidad Carnival 2024</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-thumb">
+            <div class="card-bg bg-2"></div>
+            <div class="card-overlay"></div>
+            <div class="card-info">
+              <div class="card-cat">Brand</div>
+              <div class="card-title">Grey Goose Campaign</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-thumb">
+            <div class="card-bg bg-3"></div>
+            <div class="card-overlay"></div>
+            <div class="card-info">
+              <div class="card-cat">Aerial</div>
+              <div class="card-title">Coastal Estates</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dots: fixed 44px -->
+      <div class="dots" style="height:44px; flex-shrink:0;">
+        <div class="dot active" id="dot0"></div>
+        <div class="dot" id="dot1"></div>
+        <div class="dot" id="dot2"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════
+       SECTION 3 — ABOUT
+  ══════════════════════════════ -->
+  <section class="section" id="sec-about">
+
+    <!-- Zone A: 52px nav clearance — never remove -->
+    <div class="zone-top"></div>
+
+    <!-- Zone B: 72px header -->
+    <div class="zone-header">
+      <h2 class="about-headline" style="font-size:40px;margin:0;">Jack Visuals</h2>
+    </div>
+
+    <!-- Zone C: 240px (photo + bio) -->
+    <div class="zone-main" style="padding:0 24px 16px;display:grid;grid-template-columns:1fr 1.4fr;gap:16px;align-items:stretch;">
+      <div class="about-photo" style="height:100%;">
+        <div class="photo-bg"></div>
+        <div class="photo-placeholder">
+          <svg width="40" height="40" viewBox="0 0 60 60" fill="none">
+            <circle cx="30" cy="22" r="10" stroke="white" stroke-width="1.5"/>
+            <path d="M10 52 Q10 36 30 36 Q50 36 50 52" stroke="white" stroke-width="1.5" fill="none"/>
+          </svg>
+          <span>Jack's Photo</span>
+        </div>
+      </div>
+      <div class="about-text-col" style="display:flex;flex-direction:column;justify-content:center;height:100%;padding:4px 0;">
+        <p class="about-body" style="margin:0;">With Caribbean roots and a global perspective, Jack brings cultural awareness, rhythm and movement into every production.</p>
+      </div>
+    </div>
+
+    <!-- Zone D: 1px divider — always at exact midpoint -->
+    <div class="zone-divider"></div>
+
+    <!-- Zone E: 479px (info blocks) -->
+    <div class="zone-bottom" style="display:flex;flex-direction:column;justify-content:space-evenly;padding:0 24px;">
+      <div class="info-block">
+        <div class="info-label">What We Offer</div>
+        <p class="info-sentence">Event Videography · Brand Campaigns · Commercial Production · Drone &amp; Aerial · Agency Collaboration</p>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Production Kit</div>
+        <p class="info-sentence">Cinema rigs, drone fleet, stabilization systems and on-set monitoring — built for every scale.</p>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Trusted By</div>
+        <p class="info-sentence">Gin Mare · Diplomatico · Grey Goose · Patrón · JP Chenet · Cantine Maschio</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════
+       SECTION 4 — INQUIRE
+  ══════════════════════════════ -->
+  <section class="section" id="sec-inquire">
+
+    <!-- Zone A: 52px nav clearance — never remove -->
+    <div class="zone-top"></div>
+
+    <!-- Zone B-eyebrow: 32px — edit label freely, nothing shifts -->
+    <div class="zone-eyebrow">
+      <div class="inquire-eyebrow">Get In Touch</div>
+    </div>
+
+    <!-- Zone B-headline: 140px — 3-line headline, independent zone -->
+    <div class="zone-headline">
+      <h2 class="inquire-headline" style="font-size:52px;margin:0;line-height:1;">Let's create<br>something you<br>can <em>feel.</em></h2>
+    </div>
+
+    <!-- Zone C: 300px form — independent, never affected by headline changes -->
+    <div class="zone-main" style="padding:16px 24px 16px;display:flex;flex-direction:column;justify-content:space-between;">
+      <p class="inquire-sub" style="margin-bottom:16px;margin-top:0;">Tell us about your project — events, brand campaigns, or something entirely new.</p>
+      <div>
+        <div class="form-row"><input class="form-field" type="text" placeholder="Your name"></div>
+        <div class="form-row"><input class="form-field" type="email" placeholder="Email address"></div>
+        <div class="form-row"><textarea class="form-field" placeholder="Tell us about your project..." style="height:60px;"></textarea></div>
+      </div>
+        <button type="submit" class="form-submit">Start a Conversation</button>
+      </form>
+    </div>
+
+    <!-- Zone D+E: 320px footer with divider at top -->
+    <div class="zone-bottom" style="display:flex;flex-direction:column;justify-content:center;padding:0 24px;gap:14px;">
+      <div class="zone-divider" style="margin: 0 -24px 14px;"></div>
+      <div class="footer-logo">JACK VISUALS</div>
+      <div class="footer-links">
+        <a href="https://instagram.com/jackvisuals23" target="_blank" style="display:flex;align-items:center;gap:6px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="rgba(255,255,255,0.5)" stroke="none"/>
+          </svg>
+          <span>@jackvisuals23</span>
+        </a>
+        <a href="#"><span class="__cf_email__" data-cfemail="2c424d58444d426c5e464d434240454249024f4341">[email&#160;protected]</span></a>
+      </div>
+      <div class="footer-copy">© 2025 Jack Visuals · jackvisuals23.com</div>
+    </div>
+
+  </section>
+
+</div><!-- /phone -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  const phone  = document.getElementById('phone');
+  const nav    = document.getElementById('mainNav');
+  const sections = ['sec-home','sec-work','sec-about','sec-inquire']
+    .map(id => document.getElementById(id));
+
+  const THRESHOLD = 100; // px from section top where nav is visible
+
+  phone.addEventListener('scroll', () => {
+    const scrollTop = phone.scrollTop;
+    let showNav = false;
+
+    sections.forEach(sec => {
+      if (!sec) return;
+      const secTop = sec.offsetTop - 52; // account for nav height
+      const distF
