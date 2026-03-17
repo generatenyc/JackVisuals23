@@ -61,6 +61,7 @@ Never implement a design change without updating DESIGN.md first.
 
 - **Mobile-first.** All decisions made at 390px width first.
 - **Scroll snap.** Every section snaps to fill the full screen.
+  - 4 sections total: `sec-home`, `sec-work`, `sec-about`, `sec-inquire`
   - Mobile: `scroll-snap-type: y mandatory` on the phone scroll container
   - Desktop: `scroll-snap-type: y mandatory` on `html`
 - **Section height.**
@@ -227,6 +228,10 @@ Video:      Camera_pans_to_viewfinder_video.mp4
 
 ### 5.3 ABOUT
 
+> Services and Trusted By are **not** separate scroll-snap sections.
+> They live inside `#sec-about .zone-bottom` as info blocks.
+> Only 4 scroll-snap sections exist: sec-home, sec-work, sec-about, sec-inquire.
+
 **Mobile zones (844px):**
 
 | Zone | Class | Height | Contents |
@@ -234,8 +239,8 @@ Video:      Camera_pans_to_viewfinder_video.mp4
 | Nav clearance | `#sec-about .zone-top` | 52px | Empty |
 | Header | `#sec-about .zone-header` | 72px | "Jack Visuals" headline |
 | Divider | `#sec-about .zone-divider` | 1px | Horizontal rule |
-| Main | `#sec-about .zone-main` | 440px | Photo left · Bio right |
-| Info blocks | `#sec-about .zone-info` | 278px | Stacked info items |
+| Main | `#sec-about .zone-main` | 240px | Photo left · Bio right |
+| Info blocks | `#sec-about .zone-bottom` | 479px | What We Offer · Production Kit · Trusted By |
 
 **Desktop zones (100vh):**
 
@@ -244,7 +249,7 @@ Video:      Camera_pans_to_viewfinder_video.mp4
 | Nav clearance | `#sec-about .zone-top` | 72px | Empty |
 | Header | `#sec-about .zone-header` | 100px | "Jack Visuals" headline |
 | Divider | `#sec-about .zone-divider` | 1px | Horizontal rule |
-| Main | `#sec-about .zone-main` | flex: 1 | Photo left · Bio right |
+| Main | `#sec-about .zone-main` | flex: 1 | Photo left · Bio right · Info blocks below |
 
 ```
 Header:
@@ -255,93 +260,31 @@ Two-column grid (zone-main):
   Left:   Nathan's photo — object-fit: cover, full zone height
   Right:  Bio text — DM Sans, rgba white 0.7
 
-Info blocks (stacked vertically on both mobile and desktop):
-  Years active, location, specialty, etc.
-  Each block: label (rgba white 0.28) + value (rgba white 0.7)
+Info blocks (zone-bottom — three blocks stacked vertically):
+  Layout: flex-direction: column, justify-content: space-evenly
+  Height: 479px (mobile) · included in flex: 1 area (desktop)
+
+  Block 1 — "What We Offer"
+    Data source: Sanity — *[_type == "service"] | order(order asc)
+    Label: "WHAT WE OFFER" — uppercase, rgba white 0.28
+    Values: service titles listed, DM Sans, rgba white 0.7
+    Empty state: placeholder text if Sanity returns no services
+
+  Block 2 — "Production Kit"
+    Static content (not from CMS)
+    Label: "PRODUCTION KIT" — uppercase, rgba white 0.28
+    Values: equipment list, DM Sans, rgba white 0.7
+
+  Block 3 — "Trusted By"
+    Data source: Sanity — *[_type == "trustedBy"] | order(order asc)
+    Label: "TRUSTED BY" — uppercase, rgba white 0.28
+    Values: client/brand names, DM Sans, rgba white 0.5
+    Empty state: placeholder text if Sanity returns no entries
 ```
 
 ---
 
-### 5.4 SERVICES
-
-**Data source:** Sanity — `*[_type == "service"] | order(order asc)`
-
-**Mobile zones (844px):**
-
-| Zone | Class | Height | Contents |
-|---|---|---|---|
-| Nav clearance | `#sec-services .zone-top` | 52px | Empty |
-| Header | `#sec-services .zone-header` | 72px | "Services" headline |
-| Divider | `#sec-services .zone-divider` | 1px | Horizontal rule |
-| Grid | `#sec-services .zone-main` | flex: 1 | Single column stack |
-
-**Desktop zones (100vh):**
-
-| Zone | Class | Height | Contents |
-|---|---|---|---|
-| Nav clearance | `#sec-services .zone-top` | 72px | Empty |
-| Header | `#sec-services .zone-header` | 100px | "Services" headline |
-| Divider | `#sec-services .zone-divider` | 1px | Horizontal rule |
-| Grid | `#sec-services .zone-main` | flex: 1 | 4-column numbered grid |
-
-```
-Header:
-  "Services" — Bebas Neue, left-aligned
-  Size: 44px (mobile) · 72px (desktop)
-
-Desktop grid:
-  4 columns · each numbered (01, 02, 03, 04...)
-  Number: Bebas Neue, rgba white 0.2, large (48px)
-  Title: Bebas Neue, #f5f5f7, 24px
-  Description: DM Sans, rgba white 0.5, 14px
-
-Mobile:
-  Single column stack
-  Same number + title + description layout
-
-Empty state: show placeholder text if Sanity returns no services
-```
-
----
-
-### 5.5 TRUSTED BY
-
-**Data source:** Sanity — `*[_type == "trustedBy"] | order(order asc)`
-
-**Mobile zones (844px):**
-
-| Zone | Class | Height | Contents |
-|---|---|---|---|
-| Nav clearance | `#sec-trusted .zone-top` | 52px | Empty |
-| Header | `#sec-trusted .zone-header` | 72px | "Trusted By" headline |
-| Divider | `#sec-trusted .zone-divider` | 1px | Horizontal rule |
-| Names | `#sec-trusted .zone-main` | flex: 1 | Stacked text names |
-
-**Desktop zones (100vh):**
-
-| Zone | Class | Height | Contents |
-|---|---|---|---|
-| Nav clearance | `#sec-trusted .zone-top` | 72px | Empty |
-| Header | `#sec-trusted .zone-header` | 100px | "Trusted By" headline |
-| Divider | `#sec-trusted .zone-divider` | 1px | Horizontal rule |
-| Names | `#sec-trusted .zone-main` | flex: 1 | Multi-column text layout |
-
-```
-Header:
-  "Trusted By" — Bebas Neue, left-aligned
-  Size: 44px (mobile) · 72px (desktop)
-
-Names:
-  Text only — no logos
-  Font: Bebas Neue or DM Sans (decide during build)
-  Color: rgba white 0.5 (dim, supporting role)
-
-Empty state: hide section entirely if Sanity returns no entries
-```
-
----
-
-### 5.6 INQUIRE
+### 5.4 INQUIRE
 
 **Mobile zones (844px):**
 
@@ -411,7 +354,7 @@ Footer (zone-bottom):
 
 ---
 
-## 5.7 WORK PAGE (/work)
+## 5.5 WORK PAGE (/work)
 
 **File:** `pages/work.jsx`
 **Data source:** Sanity — `*[_type == "project"] | order(date desc)`
@@ -550,9 +493,7 @@ JackVisuals23/
 │   └── sections/
 │       ├── Home.jsx
 │       ├── FeaturedWork.jsx
-│       ├── About.jsx
-│       ├── Services.jsx
-│       ├── TrustedBy.jsx
+│       ├── About.jsx          ← includes What We Offer, Production Kit, Trusted By
 │       └── Inquire.jsx
 ├── styles/
 │   └── globals.css           ← Brand tokens only — NO section heights here

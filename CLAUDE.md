@@ -225,8 +225,8 @@ npx localtunnel --port 3000
 | Vimeo video fails to load | Show thumbnail, hide play button gracefully |
 | Formspree submission fails | Show error message, do not clear the form |
 | Sanity returns no projects | Show placeholder cards, no blank page |
-| Sanity returns no services | Show placeholder text, no blank section |
-| Sanity returns no trusted by entries | Hide section gracefully |
+| Sanity returns no services | Show placeholder text in About info blocks |
+| Sanity returns no trusted by entries | Show placeholder text in About info blocks |
 | Drone video fails to load | Hero shows black background, no broken element |
 | Camera pan video fails | Skip animation, show Featured Work section directly |
 | User submits form without required fields | Browser validation blocks submit, field highlights |
@@ -287,24 +287,14 @@ npx localtunnel --port 3000
 
 ### Phase 5 — About Section
 - [ ] `About.jsx` built
-- [ ] Two-column grid: photo left, bio text right
-- [ ] Divider line between top and bottom zones
-- [ ] Info blocks stacked vertically on both mobile and desktop
+- [ ] Two-column grid: photo left, bio text right (zone-main)
+- [ ] Divider line between main and bottom zones
+- [ ] zone-bottom: three info blocks — What We Offer, Production Kit, Trusted By
+- [ ] Info blocks stacked with `justify-content: space-evenly` (479px mobile)
+- [ ] Fetches services from Sanity (`order asc`) for What We Offer block
+- [ ] Fetches trusted by entries from Sanity (`order asc`) for Trusted By block
+- [ ] Empty state: placeholder text if Sanity returns no services or trusted by entries
 - [ ] Photo ready for `object-fit: cover` swap
-- [ ] Zone system applied — scoped CSS only
-
-### Phase 5b — Services Section
-- [ ] `Services.jsx` built
-- [ ] Fetches all services from Sanity ordered by `order asc`
-- [ ] 4-column numbered grid (desktop) · single column stack (mobile)
-- [ ] Empty state if Sanity returns no services
-- [ ] Zone system applied — scoped CSS only
-
-### Phase 5c — Trusted By Section
-- [ ] `TrustedBy.jsx` built
-- [ ] Fetches all trusted by entries from Sanity ordered by `order asc`
-- [ ] Text-only display — no logos
-- [ ] Hides gracefully if Sanity returns no entries
 - [ ] Zone system applied — scoped CSS only
 
 ### Phase 6 — Inquire Section
