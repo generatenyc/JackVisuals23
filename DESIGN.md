@@ -532,7 +532,7 @@ JackVisuals23/
 │   ├── images/
 │   │   ├── drone_together.png
 │   │   ├── jack-nathan.jpg
-│   │   └── jack-visuals-logo.jpeg
+│   │   └── jack-visuals-logo.png
 │   └── videos/
 │       ├── drone-hero.mp4
 │       └── camera-pan-viewfinder.mp4

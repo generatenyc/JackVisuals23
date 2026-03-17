@@ -150,7 +150,7 @@ Add a validation warning in the schema if more than 3 are featured.
 
 ```
 /public/images/drone_together.png         ← DJI Avata source photo
-/public/images/jack-visuals-logo.jpeg      ← Jack Visuals logo
+/public/images/jack-visuals-logo.png      ← Jack Visuals logo
 /public/images/jack-nathan.jpg            ← Nathan's photo for About section
 /public/videos/drone-hero.mp4             ← Kie AI hover video
 /public/videos/camera-pan-viewfinder.mp4  ← Camera rotation scroll video

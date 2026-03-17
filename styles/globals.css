@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+/* ============================================
+   BRAND TOKENS — Jack Visuals
+   From DESIGN.md Section 1
+   ============================================ */
+
+:root {
+  /* Colors */
+  --color-bg: #000000;
+  --color-text-primary: #f5f5f7;
+  --color-text-dim: rgba(255, 255, 255, 0.5);
+  --color-text-faint: rgba(255, 255, 255, 0.28);
+  --color-accent-blue: #2997ff;
+  --color-divider: rgba(255, 255, 255, 0.07);
+  --color-nav-bg: rgba(0, 0, 0, 0.85);
+  --color-nav-border: rgba(255, 255, 255, 0.06);
+
+  /* Section heights */
+  --section-height-mobile: 844px;
+
+  /* Nav heights */
+  --nav-height-mobile: 52px;
+  --nav-height-desktop: 72px;
+}
+
+/* ============================================
+   FONTS — Bebas Neue (headlines) + DM Sans (body)
+   ============================================ */
+
+@font-face {
+  font-family: "Bebas Neue";
+  src: url("https://fonts.gstatic.com/s/bebasneue/v14/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src: url("https://fonts.gstatic.com/s/dmsans/v15/rP2Yp2ywxg089UriI5-g4vlH9VoD8CmcqZG40F9JadbnoEwA.woff2") format("woff2");
+  font-weight: 300 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================
+   GLOBAL RESETS
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-snap-type: y mandatory;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: "DM Sans", sans-serif;
+}
+
+body {
+  background: var(--color-bg);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   SCROLL SNAP — Sections
+   ============================================ */
+
+section {
+  scroll-snap-align: start;
+  height: var(--section-height-mobile);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  section {
+    height: 100vh;
+  }
+}
+
+/* ============================================
+   HEADLINE FONT UTILITY
+   ============================================ */
+
+.font-headline {
+  font-family: "Bebas Neue", cursive;
+}
