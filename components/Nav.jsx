@@ -17,10 +17,12 @@ export default function Nav() {
   const handleScroll = useCallback(() => {
     const scrollY = window.scrollY;
     let showNav = false;
+    let foundAnySection = false;
 
     for (const id of SECTION_IDS) {
       const sec = document.getElementById(id);
       if (!sec) continue;
+      foundAnySection = true;
       const dist = scrollY - sec.offsetTop;
       if (dist >= -10 && dist < THRESHOLD) {
         showNav = true;
@@ -28,7 +30,8 @@ export default function Nav() {
       }
     }
 
-    setVisible(showNav);
+    // If no tracked sections exist (e.g. /work page), always show nav
+    setVisible(foundAnySection ? showNav : true);
   }, []);
 
   useEffect(() => {

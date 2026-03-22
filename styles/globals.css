@@ -55,10 +55,14 @@
 }
 
 html {
-  scroll-snap-type: y mandatory;
   background: var(--color-bg);
   color: var(--color-text-primary);
   font-family: "DM Sans", sans-serif;
+}
+
+/* Scroll snap — homepage only (has snap-target sections) */
+html:has(#sec-home) {
+  scroll-snap-type: y mandatory;
 }
 
 body {
