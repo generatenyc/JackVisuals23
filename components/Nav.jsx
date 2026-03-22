@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { usePathname } from "next/navigation";
 
 const SECTION_IDS = [
   "sec-home",
@@ -12,6 +13,8 @@ const SECTION_IDS = [
 const THRESHOLD = 120; // px from section top where nav is visible
 
 export default function Nav() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [visible, setVisible] = useState(true);
 
   const handleScroll = useCallback(() => {
@@ -40,12 +43,15 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  const scrollToInquire = (e) => {
-    e.preventDefault();
-    const target = document.getElementById("sec-inquire");
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
+  const handleInquireClick = (e) => {
+    if (isHome) {
+      e.preventDefault();
+      const target = document.getElementById("sec-inquire");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
     }
+    // On non-home pages, let the browser navigate to /#sec-inquire
   };
 
   return (
@@ -82,9 +88,9 @@ export default function Nav() {
       </div>
 
       <a
-        href="#sec-inquire"
+        href={isHome ? "#sec-inquire" : "/#sec-inquire"}
         className="nav-inquire"
-        onClick={scrollToInquire}
+        onClick={handleInquireClick}
       >
         Inquire
       </a>
