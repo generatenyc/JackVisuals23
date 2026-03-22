@@ -54,6 +54,10 @@
   height: 100%;
 }
 
+#sec-about .about-photo img {
+  object-position: top;
+}
+
 /* Bio text column */
 #sec-about .about-text-col {
   display: flex;
