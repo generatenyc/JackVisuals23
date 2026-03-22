@@ -1,0 +1,326 @@
+/* ============================================
+   SECTION: INQUIRE — #sec-inquire
+   DESIGN.md Section 5.4
+   Mobile: eyebrow → headline → form → footer
+   Desktop: two-column (headline+sub left, form right)
+   ============================================ */
+
+#sec-inquire {
+  background: var(--color-bg);
+}
+
+/* Nav clearance */
+#sec-inquire .zone-top {
+  height: 52px;
+  flex-shrink: 0;
+}
+
+/* Eyebrow */
+#sec-inquire .zone-eyebrow {
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 24px 4px;
+}
+
+#sec-inquire .inquire-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Headline zone — mobile only */
+#sec-inquire .zone-headline {
+  height: 140px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+
+#sec-inquire .inquire-headline {
+  font-family: "Bebas Neue", cursive;
+  font-size: 52px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  color: #fff;
+  margin: 0;
+}
+
+#sec-inquire .inquire-headline em {
+  color: var(--color-accent-blue);
+  font-style: normal;
+}
+
+/* Left column — hidden on mobile, shown on desktop */
+#sec-inquire .inquire-left {
+  display: none;
+}
+
+/* Form zone */
+#sec-inquire .zone-main {
+  height: 300px;
+  flex-shrink: 0;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+#sec-inquire .inquire-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#sec-inquire .inquire-sub {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+#sec-inquire .inquire-form form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form fields */
+#sec-inquire .form-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 0.2s;
+}
+
+#sec-inquire .form-row:first-child {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#sec-inquire .form-row:focus-within {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+#sec-inquire .form-field {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #fff;
+  padding: 18px 0;
+}
+
+#sec-inquire .form-field::placeholder {
+  color: rgba(255, 255, 255, 0.22);
+}
+
+#sec-inquire textarea.form-field {
+  resize: none;
+  height: 60px;
+}
+
+/* Submit button with clip-path shape */
+#sec-inquire .form-submit {
+  margin-top: auto;
+  width: 100%;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--color-accent-blue);
+  border: none;
+  padding: 18px 40px;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+#sec-inquire .form-submit:hover {
+  opacity: 0.85;
+}
+
+/* Footer */
+#sec-inquire .zone-bottom {
+  height: 312px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 24px;
+  overflow: hidden;
+}
+
+#sec-inquire .footer-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 0 -24px 14px;
+  flex-shrink: 0;
+}
+
+#sec-inquire .footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+#sec-inquire .footer-logo {
+  font-family: "Bebas Neue", cursive;
+  font-size: 18px;
+  letter-spacing: 4px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+#sec-inquire .footer-links {
+  display: flex;
+  gap: 18px;
+}
+
+#sec-inquire .footer-links a {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.28);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+
+#sec-inquire .footer-links a:hover {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+#sec-inquire .footer-copy {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.14);
+}
+
+/* ── Desktop overrides — #sec-inquire ── */
+@media (min-width: 768px) {
+  #sec-inquire .zone-top {
+    height: 100px;
+  }
+
+  #sec-inquire .zone-eyebrow {
+    padding: 0 80px;
+  }
+
+  #sec-inquire .inquire-eyebrow {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: var(--color-accent-blue);
+  }
+
+  /* Hide mobile headline zone on desktop */
+  #sec-inquire .zone-headline {
+    display: none;
+    height: 0;
+  }
+
+  /* Show left column on desktop */
+  #sec-inquire .inquire-left {
+    display: block;
+  }
+
+  /* Hide mobile sub text */
+  #sec-inquire .inquire-sub-mobile {
+    display: none;
+  }
+
+  /* Two-column grid */
+  #sec-inquire .zone-main {
+    height: auto;
+    flex: 1;
+    padding: 0 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  #sec-inquire .inquire-headline {
+    font-size: clamp(52px, 5.5vw, 80px);
+    margin: 0 0 24px 0;
+  }
+
+  #sec-inquire .inquire-sub {
+    font-size: 15px;
+    margin: 0;
+  }
+
+  #sec-inquire .inquire-form form {
+    display: block;
+  }
+
+  #sec-inquire .form-field {
+    font-size: 15px;
+    padding: 16px 0;
+  }
+
+  #sec-inquire .form-field::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  #sec-inquire textarea.form-field {
+    height: 80px;
+  }
+
+  #sec-inquire .form-submit {
+    margin-top: 40px;
+    padding: 18px 48px;
+  }
+
+  /* Footer */
+  #sec-inquire .zone-bottom {
+    height: 240px;
+    padding: 0 80px;
+  }
+
+  #sec-inquire .footer-divider {
+    margin: 0 -80px 16px;
+  }
+
+  #sec-inquire .footer-content {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    row-gap: 6px;
+    column-gap: 0;
+  }
+
+  #sec-inquire .footer-logo {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 22px;
+  }
+
+  #sec-inquire .footer-copy {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 11px;
+  }
+
+  #sec-inquire .footer-links {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: center;
+    gap: 24px;
+  }
+
+  #sec-inquire .footer-links a {
+    font-size: 12px;
+  }
+}

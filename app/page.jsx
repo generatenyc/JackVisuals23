@@ -2,6 +2,7 @@ import Nav from "@/components/Nav";
 import Home from "@/components/sections/Home";
 import FeaturedWork from "@/components/sections/FeaturedWork";
 import About from "@/components/sections/About";
+import Inquire from "@/components/sections/Inquire";
 import {
   client,
   featuredProjectsQuery,
@@ -36,15 +37,7 @@ export default async function HomePage() {
         <Home />
         <FeaturedWork projects={featuredProjects} />
         <About services={services} trustedBy={trustedBy} />
-
-        {/* Phase 6: Full Inquire component replaces this placeholder */}
-        <section id="sec-inquire">
-          <div className="flex items-center justify-center h-full">
-            <h2 className="font-headline text-3xl" style={{ opacity: 0.3 }}>
-              Inquire
-            </h2>
-          </div>
-        </section>
+        <Inquire />
       </main>
     </>
   );
