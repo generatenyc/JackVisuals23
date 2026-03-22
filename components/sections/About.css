@@ -35,17 +35,19 @@
 /* Two-column content area — fills remaining section height */
 #sec-about .about-content {
   flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 220px;
+  display: flex;
+  align-items: center;
   padding-right: 24px;
   min-height: 0;
 }
 
 /* Left column — bio + info blocks stacked */
 #sec-about .about-left {
+  flex: 1;
   display: flex;
   flex-direction: column;
   padding: 0 24px;
+  min-width: 0;
 }
 
 #sec-about .about-body {
@@ -89,8 +91,9 @@
   position: relative;
   overflow: hidden;
   padding: 0 24px 24px 0;
+  width: 220px;
   height: 480px;
-  align-self: start;
+  flex-shrink: 0;
 }
 
 #sec-about .about-photo img {
