@@ -31,8 +31,14 @@ export default function About({ services = [], trustedBy = [] }) {
         <h2 className="about-title">Jack Visuals</h2>
       </div>
 
-      {/* Zone C: photo + bio */}
+      {/* Zone C: bio left, photo right */}
       <div className="zone-main">
+        <div className="about-text-col">
+          <p className="about-body">
+            With Caribbean roots and a global perspective, Jack brings cultural
+            awareness, rhythm and movement into every production.
+          </p>
+        </div>
         <div className="about-photo">
           <Image
             src="/images/jack-nathan.jpg"
@@ -42,12 +48,6 @@ export default function About({ services = [], trustedBy = [] }) {
             style={{ objectFit: "cover" }}
             priority={false}
           />
-        </div>
-        <div className="about-text-col">
-          <p className="about-body">
-            With Caribbean roots and a global perspective, Jack brings cultural
-            awareness, rhythm and movement into every production.
-          </p>
         </div>
       </div>
 

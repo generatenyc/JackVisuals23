@@ -32,30 +32,17 @@
   color: #fff;
 }
 
-/* Zone: main — photo left, bio right */
+/* Zone: main — bio left, photo right */
 #sec-about .zone-main {
   height: 240px;
   flex-shrink: 0;
   overflow: hidden;
   padding: 0 24px 16px;
   display: grid;
-  grid-template-columns: 1fr 1.4fr;
+  grid-template-columns: 1.4fr 1fr;
   grid-template-rows: 1fr;
   gap: 16px;
-  align-items: stretch;
-}
-
-/* Photo container */
-#sec-about .about-photo {
-  border-radius: 10px;
-  background: #111;
-  position: relative;
-  overflow: hidden;
-  height: 100%;
-}
-
-#sec-about .about-photo img {
-  object-position: top;
+  align-items: center;
 }
 
 /* Bio text column */
@@ -63,8 +50,23 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100%;
   padding: 4px 0;
+}
+
+/* Photo container — portrait orientation */
+#sec-about .about-photo {
+  border-radius: 10px;
+  background: #111;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+  height: 100%;
+  align-self: stretch;
+  justify-self: end;
+}
+
+#sec-about .about-photo img {
+  object-position: center;
 }
 
 #sec-about .about-body {
