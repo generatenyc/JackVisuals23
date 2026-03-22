@@ -209,7 +209,7 @@
 }
 
 /* ── Mobile fix — #sec-inquire ── */
-@media (max-width: 767px) {
+@media (max-width: 820px) {
   #sec-inquire .inquire-eyebrow {
     color: #2997ff;
     margin-bottom: 12px;
