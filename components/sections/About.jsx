@@ -59,15 +59,17 @@ export default function About({ services = [], trustedBy = [] }) {
             </p>
           </div>
         </div>
-        <div className="about-photo">
-          <Image
-            src="/images/jack-nathan.jpg"
-            alt="Nathan of Jack Visuals — cinematic video producer based in Trinidad and Tobago"
-            fill
-            sizes="220px"
-            style={{ objectFit: "cover" }}
-            priority={false}
-          />
+        <div className="about-photo-wrapper">
+          <div className="about-photo">
+            <Image
+              src="/images/jack-nathan.jpg"
+              alt="Nathan of Jack Visuals — cinematic video producer based in Trinidad and Tobago"
+              fill
+              sizes="220px"
+              style={{ objectFit: "cover" }}
+              priority={false}
+            />
+          </div>
         </div>
       </div>
     </section>
