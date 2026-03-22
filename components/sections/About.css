@@ -86,26 +86,12 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* Photo wrapper — handles padding and vertical centering */
-#sec-about .about-photo-wrapper {
-  padding: 0 24px 0 0;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
 /* Photo container */
 #sec-about .about-photo {
-  position: relative;
-  overflow: hidden;
-  padding: 0;
   width: 220px;
   height: 480px;
   flex-shrink: 0;
-}
-
-#sec-about .about-photo img {
-  object-position: top center;
+  margin: auto 24px auto 0;
 }
 
 /* ── Desktop overrides — #sec-about ── */
