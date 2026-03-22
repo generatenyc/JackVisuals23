@@ -739,7 +739,8 @@ section {
 #work-page .wp-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2px;
+  column-gap: 2px;
+  row-gap: 16px;
   padding: 0 24px 40px;
 }
 
