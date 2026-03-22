@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import "./About.css";
 
 /* Placeholder content matching HTML mockup files — replaced by Sanity data when available */
 const PLACEHOLDER_SERVICES =
