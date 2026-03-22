@@ -36,7 +36,10 @@ export default function About({ services = [], trustedBy = [] }) {
         <div className="about-left">
           <p className="about-body">
             With Caribbean roots and a global perspective, Jack brings cultural
-            awareness, rhythm and movement into every production.
+            awareness, rhythm and movement into every production. From intimate
+            brand stories to large-scale live events, his work is defined by
+            precision, emotion, and cinematic detail. Based in Trinidad and
+            Tobago, Jack Visuals operates across the Caribbean and beyond.
           </p>
           <div className="about-info-block">
             <div className="about-info-label">What We Offer</div>
