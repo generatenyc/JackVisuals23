@@ -306,13 +306,6 @@ section {
   opacity: 1;
 }
 
-/* Mobile override — reduce hero headline on phones */
-@media (max-width: 820px) {
-  #sec-home .hero-headline {
-    font-size: 64px;
-  }
-}
-
 /* Desktop overrides — #sec-home */
 @media (min-width: 768px) {
   #sec-home {

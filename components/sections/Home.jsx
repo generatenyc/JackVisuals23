@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import "./Home.css";
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
