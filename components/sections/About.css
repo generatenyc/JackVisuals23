@@ -89,7 +89,9 @@
 /* Photo container */
 #sec-about .about-photo {
   width: 220px;
-  height: 480px;
+  max-height: 420px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
   flex-shrink: 0;
   margin: 0 24px 0 0;
 }
