@@ -1,5 +1,10 @@
 import "../styles/globals.css";
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata = {
   title: {
     default: "Jack Visuals — Cinematic Video Production | Trinidad & Tobago",

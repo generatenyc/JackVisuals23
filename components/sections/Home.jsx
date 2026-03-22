@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
-  const droneRef = useRef(null);
+  const [dronePos, setDronePos] = useState({ left: "40%", top: "15%" });
 
   useEffect(() => {
     // Trigger headline slide-up animation after mount
@@ -14,14 +14,10 @@ export default function Home() {
 
   // Reposition drone placeholder every 3 seconds within top 40%
   useEffect(() => {
-    const drone = droneRef.current;
-    if (!drone) return;
-
     function reposition() {
       const x = 10 + Math.random() * 60; // 10%–70% from left
       const y = 5 + Math.random() * 25; // 5%–30% from top
-      drone.style.left = `${x}%`;
-      drone.style.top = `${y}%`;
+      setDronePos({ left: `${x}%`, top: `${y}%` });
     }
 
     reposition();
@@ -35,8 +31,8 @@ export default function Home() {
       <div className="hero-video-sim">
         {/* DRONE VIDEO PLACEHOLDER — swap in drone-hero.mp4 when ready */}
         <div
-          ref={droneRef}
           className="hero-drone-placeholder"
+          style={{ left: dronePos.left, top: dronePos.top }}
           aria-hidden="true"
         />
       </div>
