@@ -330,6 +330,350 @@ section {
 }
 
 /* ============================================
+   SECTION: FEATURED WORK — #sec-work
+   DESIGN.md Section 5.2
+   ============================================ */
+
+#sec-work {
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-divider);
+}
+
+/* Zone: nav clearance */
+#sec-work .zone-top {
+  height: var(--nav-height-mobile);
+  flex-shrink: 0;
+}
+
+/* Zone: header */
+#sec-work .zone-header {
+  height: 72px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+/* Section title */
+#sec-work .work-title {
+  font-family: "Bebas Neue", cursive;
+  font-size: 44px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  color: #fff;
+}
+
+/* "All Projects" link */
+#sec-work .work-view-all {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-accent-blue);
+  text-decoration: none;
+  padding-bottom: 4px;
+}
+
+/* Cards zone — contains carousel + dots (mobile) or grid (desktop) */
+#sec-work .work-cards-zone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Cards container — mobile: horizontal carousel */
+#sec-work .work-cards {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 0 24px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  align-items: stretch;
+}
+
+#sec-work .work-cards::-webkit-scrollbar {
+  display: none;
+}
+
+/* Card */
+#sec-work .work-card {
+  flex: 0 0 260px;
+  scroll-snap-align: start;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Card background — gradient placeholder */
+#sec-work .work-card-bg {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#sec-work .work-card:hover .work-card-bg {
+  transform: scale(1.04);
+}
+
+#sec-work .work-bg-1 {
+  background: linear-gradient(160deg, #1a2a14, #050808);
+}
+
+#sec-work .work-bg-2 {
+  background: linear-gradient(160deg, #0f1a28, #030810);
+}
+
+#sec-work .work-bg-3 {
+  background: linear-gradient(160deg, #1a1020, #050208);
+}
+
+/* Mobile: gradient overlay — always visible */
+#sec-work .work-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, transparent 60%);
+  z-index: 1;
+}
+
+/* Mobile: card info — always visible at bottom */
+#sec-work .work-card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 16px;
+  z-index: 2;
+}
+
+/* Category label */
+#sec-work .work-card-cat {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 4px;
+}
+
+/* Card title */
+#sec-work .work-card-title {
+  font-family: "Bebas Neue", cursive;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  color: #fff;
+}
+
+/* Desktop-only elements — hidden on mobile */
+#sec-work .work-card-tag,
+#sec-work .work-card-hover,
+#sec-work .work-card-play {
+  display: none;
+}
+
+/* Dots — mobile carousel indicator */
+#sec-work .work-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 0 24px;
+  flex-shrink: 0;
+  height: 44px;
+}
+
+#sec-work .work-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all 0.3s;
+}
+
+#sec-work .work-dot-active {
+  width: 16px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Desktop overrides — #sec-work ── */
+@media (min-width: 768px) {
+  #sec-work .zone-top {
+    height: var(--nav-height-desktop);
+  }
+
+  #sec-work .zone-header {
+    height: 100px;
+    padding: 0 80px;
+  }
+
+  #sec-work .work-title {
+    font-size: clamp(48px, 5vw, 72px);
+  }
+
+  #sec-work .work-view-all {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(41, 151, 255, 0.3);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  #sec-work .work-view-all:hover {
+    border-color: var(--color-accent-blue);
+  }
+
+  #sec-work .work-view-all::after {
+    content: "\2192";
+    font-size: 18px;
+  }
+
+  /* Cards container — desktop: 3-column grid */
+  #sec-work .work-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    overflow: hidden;
+    padding: 0;
+    scroll-snap-type: none;
+  }
+
+  /* Card — desktop overrides */
+  #sec-work .work-card {
+    border-radius: 0;
+    background: #0a0a0a;
+  }
+
+  /* Hide mobile overlay and info on desktop */
+  #sec-work .work-card-overlay,
+  #sec-work .work-card-info {
+    display: none;
+  }
+
+  /* Tag — always visible top-left on desktop */
+  #sec-work .work-card-tag {
+    display: block;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: opacity 0.3s;
+  }
+
+  /* Hover layer — desktop */
+  #sec-work .work-card-hover {
+    display: flex;
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 32px 28px;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.5) 40%,
+      transparent 70%
+    );
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+  }
+
+  #sec-work .work-card:hover .work-card-hover {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Hover category */
+  #sec-work .work-card-hover-cat {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--color-accent-blue);
+    margin-bottom: 10px;
+  }
+
+  /* Hover title */
+  #sec-work .work-card-hover-title {
+    font-family: "Bebas Neue", cursive;
+    font-size: 32px;
+    letter-spacing: 0.5px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  /* Hover spec line */
+  #sec-work .work-card-spec {
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Play button — desktop hover */
+  #sec-work .work-card-play {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.85);
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s, border-color 0.2s;
+    pointer-events: none;
+    z-index: 9;
+  }
+
+  #sec-work .work-card:hover .work-card-play {
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+  }
+
+  #sec-work .work-card-play:hover {
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+
+  #sec-work .work-card-play svg {
+    fill: white;
+    width: 20px;
+    margin-left: 3px;
+  }
+
+  /* Hide dots on desktop */
+  #sec-work .work-dots {
+    display: none;
+  }
+}
+
+/* ============================================
    HEADLINE FONT UTILITY
    ============================================ */
 
