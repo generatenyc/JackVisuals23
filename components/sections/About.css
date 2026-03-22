@@ -1,21 +1,21 @@
 /* ============================================
    SECTION: ABOUT — #sec-about
    DESIGN.md Section 5.3
-   top(52) + header(72) + main(240) + divider(1) + bottom(479) = 844
-   Moved from globals.css to bypass Turbopack compilation issue.
+   Two-column layout: text left (1fr), portrait photo right (220px).
+   Photo runs full section height, no border radius.
    ============================================ */
 
 #sec-about {
   background: var(--color-bg);
 }
 
-/* Zone: nav clearance */
+/* Nav clearance */
 #sec-about .zone-top {
   height: var(--nav-height-mobile);
   flex-shrink: 0;
 }
 
-/* Zone: header */
+/* Header */
 #sec-about .zone-header {
   height: 72px;
   flex-shrink: 0;
@@ -32,41 +32,21 @@
   color: #fff;
 }
 
-/* Zone: main — bio left, photo right */
-#sec-about .zone-main {
-  height: 240px;
-  flex-shrink: 0;
-  overflow: hidden;
-  padding: 0 24px 16px;
+/* Two-column content area — fills remaining section height */
+#sec-about .about-content {
+  flex: 1;
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  grid-template-rows: 1fr;
-  gap: 16px;
-  align-items: center;
+  grid-template-columns: 1fr 220px;
+  min-height: 0;
 }
 
-/* Bio text column */
-#sec-about .about-text-col {
+/* Left column — bio + info blocks stacked */
+#sec-about .about-left {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 4px 0;
-}
-
-/* Photo container — portrait orientation */
-#sec-about .about-photo {
-  border-radius: 10px;
-  background: #111;
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 2 / 3;
-  height: 100%;
-  align-self: stretch;
-  justify-self: end;
-}
-
-#sec-about .about-photo img {
-  object-position: center;
+  padding: 0 24px;
+  gap: 0;
 }
 
 #sec-about .about-body {
@@ -74,24 +54,14 @@
   font-weight: 300;
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 24px;
 }
 
-/* Zone: divider */
-#sec-about .zone-divider {
-  height: 1px;
-  flex-shrink: 0;
-  background: var(--color-divider);
-}
-
-/* Zone: bottom — info blocks */
-#sec-about .zone-bottom {
-  height: 479px;
-  flex-shrink: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  padding: 0 24px;
+/* Info blocks — separated by subtle top border */
+#sec-about .about-info-block {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 #sec-about .about-info-label {
@@ -110,9 +80,19 @@
   line-height: 1.6;
 }
 
-/* Trusted By — slightly dimmer per mockup */
+/* Trusted By — slightly dimmer */
 #sec-about .about-trusted-by {
   color: rgba(255, 255, 255, 0.5);
+}
+
+/* Photo column — full height, no border radius */
+#sec-about .about-photo {
+  position: relative;
+  overflow: hidden;
+}
+
+#sec-about .about-photo img {
+  object-position: center;
 }
 
 /* ── Desktop overrides — #sec-about ── */
@@ -130,28 +110,14 @@
     font-size: 56px;
   }
 
-  /* Desktop: zone-main is 280px per mockup */
-  #sec-about .zone-main {
-    height: 280px;
-    padding: 0 80px 20px;
-    gap: 32px;
-  }
-
-  #sec-about .about-photo {
-    border-radius: 12px;
+  #sec-about .about-left {
+    padding: 0 80px;
   }
 
   #sec-about .about-body {
     font-size: 16px;
     line-height: 1.8;
     color: rgba(255, 255, 255, 0.55);
-  }
-
-  /* Desktop: zone-bottom uses flex: 1 (fills remaining) */
-  #sec-about .zone-bottom {
-    height: auto;
-    flex: 1;
-    padding: 0 80px;
   }
 
   #sec-about .about-info-label {
