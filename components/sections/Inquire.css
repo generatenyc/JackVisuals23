@@ -208,6 +208,17 @@
   color: rgba(255, 255, 255, 0.14);
 }
 
+/* ── Mobile fix — #sec-inquire ── */
+@media (max-width: 767px) {
+  #sec-inquire .inquire-form form {
+    display: block;
+  }
+
+  #sec-inquire .form-submit {
+    margin-top: 28px;
+  }
+}
+
 /* ── Desktop overrides — #sec-inquire ── */
 @media (min-width: 768px) {
   #sec-inquire .zone-top {
