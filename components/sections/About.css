@@ -89,6 +89,7 @@
   position: relative;
   overflow: hidden;
   padding: 0 24px 24px 0;
+  align-self: center;
 }
 
 #sec-about .about-photo img {
