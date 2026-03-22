@@ -220,7 +220,8 @@ section {
   position: relative;
   background: #000;
   justify-content: flex-end;
-  padding: 0 24px 60px;
+  padding: var(--nav-height-mobile) 24px 60px;
+  overflow: visible;
 }
 
 /* Background layer — gradient overlay for depth */
@@ -301,7 +302,7 @@ section {
 @media (min-width: 768px) {
   #sec-home {
     min-height: 700px;
-    padding: 0 80px 100px;
+    padding: var(--nav-height-desktop) 80px 100px;
   }
 
   #sec-home .hero-video-sim::after {
