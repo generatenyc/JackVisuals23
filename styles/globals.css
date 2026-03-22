@@ -212,6 +212,123 @@ section {
 }
 
 /* ============================================
+   SECTION: HOME (Hero) — #sec-home
+   DESIGN.md Section 5.1
+   ============================================ */
+
+#sec-home {
+  position: relative;
+  background: #000;
+  justify-content: flex-end;
+  padding: 0 24px 60px;
+}
+
+/* Background layer — gradient overlay for depth */
+#sec-home .hero-video-sim {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 0;
+}
+
+#sec-home .hero-video-sim::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.15) 100%),
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(15, 40, 10, 0.5) 0%, transparent 70%);
+  animation: heroVideoDrift 8s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes heroVideoDrift {
+  0% { filter: brightness(0.8); }
+  100% { filter: brightness(1.1); }
+}
+
+/* Drone placeholder — repositions every 3s via JS */
+#sec-home .hero-drone-placeholder {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 50%;
+  transition: top 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+              left 2.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: droneBob 2s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes droneBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Eyebrow */
+#sec-home .hero-eyebrow {
+  position: relative;
+  z-index: 2;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-accent-blue);
+  margin-bottom: 12px;
+}
+
+/* Headline */
+#sec-home .hero-headline {
+  position: relative;
+  z-index: 2;
+  font-family: "Bebas Neue", cursive;
+  font-size: 88px;
+  line-height: 0.88;
+  letter-spacing: 0.5px;
+  color: #fff;
+  transform: translateY(40px);
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.8s ease;
+}
+
+#sec-home .hero-headline-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Desktop overrides — #sec-home */
+@media (min-width: 768px) {
+  #sec-home {
+    min-height: 700px;
+    padding: 0 80px 100px;
+  }
+
+  #sec-home .hero-video-sim::after {
+    background:
+      linear-gradient(to top, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.15) 100%),
+      radial-gradient(ellipse 50% 40% at 30% 40%, rgba(255, 255, 255, 0.015) 0%, transparent 70%);
+  }
+
+  #sec-home .hero-drone-placeholder {
+    width: 140px;
+    height: 140px;
+  }
+
+  #sec-home .hero-eyebrow {
+    font-size: 13px;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+  }
+
+  #sec-home .hero-headline {
+    font-size: clamp(80px, 10vw, 140px);
+    letter-spacing: 1px;
+    max-width: 800px;
+  }
+}
+
+/* ============================================
    HEADLINE FONT UTILITY
    ============================================ */
 

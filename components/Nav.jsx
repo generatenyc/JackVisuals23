@@ -6,8 +6,6 @@ const SECTION_IDS = [
   "sec-home",
   "sec-work",
   "sec-about",
-  "sec-services",
-  "sec-trusted",
   "sec-inquire",
 ];
 
