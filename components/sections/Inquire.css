@@ -210,6 +210,11 @@
 
 /* ── Mobile fix — #sec-inquire ── */
 @media (max-width: 767px) {
+  #sec-inquire .inquire-eyebrow {
+    color: #2997ff;
+    margin-bottom: 12px;
+  }
+
   #sec-inquire .inquire-form form {
     display: block;
   }
