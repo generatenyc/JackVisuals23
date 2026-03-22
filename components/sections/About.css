@@ -89,11 +89,12 @@
   position: relative;
   overflow: hidden;
   padding: 0 24px 24px 0;
-  align-self: center;
+  height: 480px;
+  align-self: start;
 }
 
 #sec-about .about-photo img {
-  object-position: center;
+  object-position: top center;
 }
 
 /* ── Desktop overrides — #sec-about ── */
