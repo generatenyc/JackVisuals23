@@ -63,6 +63,18 @@ html {
 }
 
 /* Scroll snap — homepage only (has snap-target sections) */
+html:has(#sec-home) {
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 52px;
+  overflow-y: scroll;
+}
+
+@media (min-width: 821px) {
+  html:has(#sec-home) {
+    scroll-padding-top: 72px;
+  }
+}
+
 body {
   background: var(--color-bg);
   min-height: 100vh;
@@ -70,17 +82,6 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-body:has(#sec-home) {
-  scroll-snap-type: y mandatory;
-  scroll-padding-top: 52px;
-}
-
-@media (min-width: 821px) {
-  body:has(#sec-home) {
-    scroll-padding-top: 72px;
-  }
 }
 
 /* ============================================
