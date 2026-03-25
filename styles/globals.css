@@ -229,7 +229,6 @@ section {
   background: #000;
   justify-content: flex-end;
   padding: var(--nav-height-mobile) 24px 60px;
-  overflow: visible;
 }
 
 /* Background layer — gradient overlay for depth */
