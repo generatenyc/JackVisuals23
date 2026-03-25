@@ -62,19 +62,6 @@ html {
   overflow-x: clip;
 }
 
-/* Scroll snap — homepage only (has snap-target sections) */
-html:has(#sec-home) {
-  scroll-snap-type: y mandatory;
-  scroll-padding-top: 52px;
-  overflow-y: scroll;
-}
-
-@media (min-width: 821px) {
-  html:has(#sec-home) {
-    scroll-padding-top: 72px;
-  }
-}
-
 body {
   background: var(--color-bg);
   min-height: 100vh;
@@ -82,6 +69,20 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scroll snap container — dedicated div wrapping all sections */
+#snap-container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 52px;
+}
+
+@media (min-width: 821px) {
+  #snap-container {
+    scroll-padding-top: 72px;
+  }
 }
 
 /* ============================================

@@ -34,10 +34,12 @@ export default async function HomePage() {
     <>
       <Nav />
       <main>
-        <Home />
-        <FeaturedWork projects={featuredProjects} />
-        <About services={services} trustedBy={trustedBy} />
-        <Inquire />
+        <div id="snap-container">
+          <Home />
+          <FeaturedWork projects={featuredProjects} />
+          <About services={services} trustedBy={trustedBy} />
+          <Inquire />
+        </div>
       </main>
     </>
   );
