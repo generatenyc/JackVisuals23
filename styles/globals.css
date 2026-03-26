@@ -17,7 +17,7 @@
   --color-nav-border: rgba(255, 255, 255, 0.06);
 
   /* Section heights */
-  --section-height-mobile: 844px;
+  /* --section-height-mobile: 844px; */ /* Removed: now using 100dvh for cross-platform consistency */
 
   /* Nav heights */
   --nav-height-mobile: 52px;
@@ -73,7 +73,7 @@ body {
 
 /* Scroll snap container — dedicated div wrapping all sections */
 #snap-container {
-  height: 100vh;
+  height: 100dvh;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
   scroll-padding-top: 52px;
@@ -91,17 +91,11 @@ body {
 
 section {
   scroll-snap-align: start;
-  height: var(--section-height-mobile);
+  height: 100dvh;
   overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
-}
-
-@media (min-width: 768px) {
-  section {
-    height: 100vh;
-  }
 }
 
 /* ============================================
