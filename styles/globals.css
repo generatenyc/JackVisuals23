@@ -71,6 +71,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* TODO: Scroll snap not snapping cleanly on all viewport sizes. Revisit before launch. */
 /* Scroll snap container — dedicated div wrapping all sections */
 #snap-container {
   height: 100dvh;
