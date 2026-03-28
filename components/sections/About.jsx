@@ -116,7 +116,7 @@ export default function About({ services = [], trustedBy = [] }) {
 
       const ctx = canvas.getContext("2d");
       const totalFrames = framesRef.current.length;
-      const duration = 4000; // 4 seconds
+      const duration = 3000; // 3 seconds
       const frameInterval = duration / totalFrames;
       let currentFrame = 0;
 
