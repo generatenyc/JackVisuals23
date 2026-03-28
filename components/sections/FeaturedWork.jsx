@@ -8,6 +8,12 @@ import "./FeaturedWork.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Configure ScrollTrigger for #snap-container
+ScrollTrigger.config({ ignoreMobileResize: true });
+ScrollTrigger.defaults({
+  scroller: "#snap-container",
+});
+
 /* Placeholder cards shown when Sanity has no featured projects */
 const PLACEHOLDER_CARDS = [
   { _id: "placeholder-1", title: "Trinidad Carnival 2024", category: "Live Event" },
@@ -59,6 +65,8 @@ export default function FeaturedWork({ projects = [] }) {
           loadedFrames++;
           if (loadedFrames === frameCount) {
             setAnimationReady(true);
+            // Force ScrollTrigger to recalculate after frames load
+            ScrollTrigger.refresh();
           }
         };
         img.onerror = () => {
@@ -72,14 +80,31 @@ export default function FeaturedWork({ projects = [] }) {
 
     preloadFrames();
 
-    // Render current frame
+    // Render current frame with aspect ratio preservation
     const render = (frameIndex) => {
       const img = frames[frameIndex];
       if (img && img.complete) {
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
+
+        // Calculate scale to fit image within canvas while preserving aspect ratio
+        const scale = Math.min(
+          canvas.width / img.naturalWidth,
+          canvas.height / img.naturalHeight
+        );
+
+        // Center the image
+        const x = (canvas.width - img.naturalWidth * scale) / 2;
+        const y = (canvas.height - img.naturalHeight * scale) / 2;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(
+          img,
+          x,
+          y,
+          img.naturalWidth * scale,
+          img.naturalHeight * scale
+        );
       }
     };
 

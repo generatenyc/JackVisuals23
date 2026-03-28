@@ -1,12 +1,14 @@
 /* ── Camera animation canvas — Phase 8 ── */
 #sec-work .camera-animation-canvas {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 5;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: 80%;
+  max-width: 90%;
+  object-fit: contain;
+  z-index: 10;
   background: #000;
 }
 
