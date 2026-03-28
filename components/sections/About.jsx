@@ -155,31 +155,43 @@ export default function About({ services = [], trustedBy = [] }) {
 
     const revealPhoto = () => {
       const canvas = canvasRef.current;
-      const photo = photoRef.current;
+      const photoWrapper = photoRef.current;
 
-      if (!canvas || !photo) return;
+      if (!canvas || !photoWrapper) return;
 
-      // Photo starts scaled down and invisible
-      gsap.set(photo, { scale: 0.92, opacity: 0 });
+      // Make sure photo is ready but invisible
+      gsap.set(photoWrapper, { opacity: 0, scale: 1 });
 
-      // Canvas fades out
-      gsap.to(canvas, {
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.inOut",
-      });
-
-      // Photo scales up and fades in simultaneously
-      gsap.to(photo, {
-        scale: 1,
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out",
-        delay: 0.3,
+      // Shutter burst — canvas flashes white 3 times like a camera firing
+      const shutterTimeline = gsap.timeline({
         onComplete: () => {
+          canvas.style.display = "none";
           canvas.style.pointerEvents = "none";
         },
       });
+
+      shutterTimeline
+        // Flash 1 — quick
+        .to(canvas, { backgroundColor: "#ffffff", duration: 0.06, ease: "none" })
+        .to(canvas, { backgroundColor: "#000000", duration: 0.08, ease: "none" })
+        // Flash 2 — quicker
+        .to(canvas, { backgroundColor: "#ffffff", duration: 0.05, ease: "none" })
+        .to(canvas, { backgroundColor: "#000000", duration: 0.06, ease: "none" })
+        // Flash 3 — final burst, longer white
+        .to(canvas, { backgroundColor: "#ffffff", duration: 0.1, ease: "none" })
+        // Photo slams in during the white flash
+        .to(
+          photoWrapper,
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.15,
+            ease: "power4.out",
+          },
+          "-=0.08"
+        )
+        // Canvas fades from white
+        .to(canvas, { opacity: 0, duration: 0.15, ease: "none" }, "-=0.15");
     };
 
     const observer = new IntersectionObserver(
@@ -248,6 +260,7 @@ export default function About({ services = [], trustedBy = [] }) {
             )}
             <div
               ref={photoRef}
+              className="about-photo-wrapper-inner"
               style={{ opacity: useFallback ? 1 : 0 }}
             >
               <NextImage

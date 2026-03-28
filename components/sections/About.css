@@ -26,6 +26,7 @@
   z-index: 2;
   background: #000;
   object-fit: cover;
+  transition: none; /* no CSS transitions — GSAP handles everything */
 }
 
 /* Nav clearance */
