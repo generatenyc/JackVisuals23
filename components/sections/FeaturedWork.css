@@ -1,3 +1,15 @@
+/* ── Camera animation canvas — Phase 8 ── */
+#sec-work .camera-animation-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 5;
+  background: #000;
+}
+
 /* ── Desktop overrides — #sec-work ── */
 /* Extracted from globals.css for Turbopack compatibility */
 @media (min-width: 821px) {
