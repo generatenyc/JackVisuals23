@@ -43,7 +43,7 @@ export default {
       name: "category",
       title: "Category",
       type: "string",
-      description: "Select a category or type a custom one",
+      description: "Select from the preset list. If your category is not listed, leave this blank and use the Custom Category field below.",
       options: {
         list: [
           { title: "Live Event", value: "Live Event" },
@@ -54,6 +54,12 @@ export default {
         ],
         layout: "dropdown",
       },
+    },
+    {
+      name: "customCategory",
+      title: "Custom Category",
+      type: "string",
+      description: "Only fill this in if your category is not in the preset list above. Leave blank otherwise.",
     },
   ],
 };
