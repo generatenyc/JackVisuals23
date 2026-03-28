@@ -61,7 +61,12 @@ export default function Nav() {
     >
       <div className="nav-logo">
         <div className="nav-logo-icon">
-          <svg viewBox="0 0 14 14" fill="none">
+          <svg
+            viewBox="0 0 14 14"
+            fill="none"
+            aria-label="Jack Visuals logo"
+            role="img"
+          >
             <rect
               x="1"
               y="3"

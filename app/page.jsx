@@ -16,15 +16,17 @@ export default async function HomePage() {
   let trustedBy = [];
 
   try {
-    featuredProjects = await client.fetch(featuredProjectsQuery);
+    featuredProjects = await client.fetch(featuredProjectsQuery, {}, {
+      next: { revalidate: 3600 },
+    });
   } catch {
     /* Sanity fetch failed — FeaturedWork will show placeholder cards */
   }
 
   try {
     [services, trustedBy] = await Promise.all([
-      client.fetch(servicesQuery),
-      client.fetch(trustedByQuery),
+      client.fetch(servicesQuery, {}, { next: { revalidate: 3600 } }),
+      client.fetch(trustedByQuery, {}, { next: { revalidate: 3600 } }),
     ]);
   } catch {
     /* Sanity fetch failed — About will show placeholder text */
