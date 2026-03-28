@@ -4,7 +4,6 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "@studio-freight/lenis";
 import "./FeaturedWork.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -73,20 +72,6 @@ export default function FeaturedWork({ projects = [] }) {
 
     preloadFrames();
 
-    // Initialize Lenis smooth scroll
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      smoothWheel: true,
-    });
-
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
     // Render current frame
     const render = (frameIndex) => {
       const img = frames[frameIndex];
@@ -101,6 +86,7 @@ export default function FeaturedWork({ projects = [] }) {
     // GSAP ScrollTrigger — bind scroll to frame progress
     const scrollTrigger = ScrollTrigger.create({
       trigger: "#sec-work",
+      scroller: "#snap-container", // Use snap container instead of window
       start: "top top",
       end: "bottom bottom",
       scrub: 0.5,
@@ -122,7 +108,6 @@ export default function FeaturedWork({ projects = [] }) {
 
     return () => {
       scrollTrigger.kill();
-      lenis.destroy();
     };
   }, [animationReady]);
 
