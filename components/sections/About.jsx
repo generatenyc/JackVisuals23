@@ -10,7 +10,14 @@ const PLACEHOLDER_SERVICES =
 const PLACEHOLDER_TRUSTED_BY =
   "Gin Mare · Diplomatico · Grey Goose · Patrón · JP Chenet · Cantine Maschio";
 
-export default function About({ services = [], trustedBy = [] }) {
+const PLACEHOLDER_PRODUCTION_KIT =
+  "Cinema rigs, drone fleet, stabilization systems and on-set monitoring — built for every scale.";
+
+export default function About({
+  services = [],
+  trustedBy = [],
+  productionKit = null,
+}) {
   const servicesText =
     services.length > 0
       ? services.map((s) => s.title).join(" · ")
@@ -20,6 +27,9 @@ export default function About({ services = [], trustedBy = [] }) {
     trustedBy.length > 0
       ? trustedBy.map((t) => t.name).join(" · ")
       : PLACEHOLDER_TRUSTED_BY;
+
+  const productionKitText =
+    productionKit?.description || PLACEHOLDER_PRODUCTION_KIT;
 
   return (
     <section id="sec-about">
@@ -47,10 +57,7 @@ export default function About({ services = [], trustedBy = [] }) {
           </div>
           <div className="about-info-block">
             <div className="about-info-label">Production Kit</div>
-            <p className="about-info-sentence">
-              Cinema rigs, drone fleet, stabilization systems and on-set
-              monitoring — built for every scale.
-            </p>
+            <p className="about-info-sentence">{productionKitText}</p>
           </div>
           <div className="about-info-block">
             <div className="about-info-label">Trusted By</div>

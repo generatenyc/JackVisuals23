@@ -2,6 +2,7 @@
 /node_modules
 /.pnp
 .pnp.js
+sanity/node_modules
 
 # testing
 /coverage
@@ -12,6 +13,8 @@
 
 # production
 /build
+sanity/dist
+sanity/.sanity
 
 # misc
 .DS_Store
