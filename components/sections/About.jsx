@@ -3,11 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import NextImage from "next/image";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./About.css";
-
-gsap.registerPlugin(ScrollTrigger);
-ScrollTrigger.config({ ignoreMobileResize: true });
 
 const TOTAL_FRAMES = 151;
 const FRAME_PATH = "/videos/frames/frame_";
@@ -45,6 +41,7 @@ const PLACEHOLDER_TRUSTED_BY =
 export default function About({ services = [], trustedBy = [] }) {
   const canvasRef = useRef(null);
   const wrapperRef = useRef(null);
+  const photoRef = useRef(null);
   const framesRef = useRef([]);
   const [framesReady, setFramesReady] = useState(false);
   const [useFallback, setUseFallback] = useState(false);
@@ -72,85 +69,138 @@ export default function About({ services = [], trustedBy = [] }) {
       clearTimeout(timeout);
       framesRef.current = frames;
       setFramesReady(true);
-      ScrollTrigger.refresh();
     });
 
     return () => clearTimeout(timeout);
   }, [framesReady]);
 
-  /* Camera animation — one-time photo reveal */
+  /* Draw first frame immediately when frames are ready */
   useEffect(() => {
-    if (!framesReady || useFallback) return;
+    if (!framesReady || useFallback || !framesRef.current[0]) return;
 
     const canvas = canvasRef.current;
     const wrapper = wrapperRef.current;
     if (!canvas || !wrapper) return;
 
-    const ctx = canvas.getContext("2d");
-
     // Match canvas to photo wrapper dimensions
-    const resizeCanvas = () => {
+    canvas.width = wrapper.offsetWidth;
+    canvas.height = wrapper.offsetHeight;
+
+    const ctx = canvas.getContext("2d");
+    const img = framesRef.current[0];
+
+    const scale = Math.min(
+      canvas.width / img.naturalWidth,
+      canvas.height / img.naturalHeight
+    );
+    const x = (canvas.width - img.naturalWidth * scale) / 2;
+    const y = (canvas.height - img.naturalHeight * scale) / 2;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, x, y, img.naturalWidth * scale, img.naturalHeight * scale);
+  }, [framesReady, useFallback]);
+
+  /* Camera animation — auto-play on section entry */
+  useEffect(() => {
+    if (!framesReady || useFallback) return;
+
+    const section = document.querySelector("#sec-about");
+    if (!section) return;
+
+    let hasPlayed = false;
+
+    const playAnimation = () => {
+      const canvas = canvasRef.current;
+      const wrapper = wrapperRef.current;
+      if (!canvas || !wrapper) return;
+
+      const ctx = canvas.getContext("2d");
+      const totalFrames = framesRef.current.length;
+      const duration = 4000; // 4 seconds
+      const frameInterval = duration / totalFrames;
+      let currentFrame = 0;
+
       canvas.width = wrapper.offsetWidth;
       canvas.height = wrapper.offsetHeight;
-    };
-    resizeCanvas();
 
-    // Draw frame without resizing canvas on every call
-    const drawFrame = (index) => {
-      const img = framesRef.current[index];
-      if (!img) return;
+      const drawFrame = (index) => {
+        const img = framesRef.current[index];
+        if (!img) return;
 
-      const scale = Math.min(
-        canvas.width / img.naturalWidth,
-        canvas.height / img.naturalHeight
-      );
-      const x = (canvas.width - img.naturalWidth * scale) / 2;
-      const y = (canvas.height - img.naturalHeight * scale) / 2;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(
-        img,
-        x,
-        y,
-        img.naturalWidth * scale,
-        img.naturalHeight * scale
-      );
-    };
-
-    // Draw first frame immediately
-    drawFrame(0);
-
-    // One-directional scroll trigger — animation plays as About scrolls into view
-    const trigger = ScrollTrigger.create({
-      trigger: "#sec-about",
-      scroller: "#snap-container",
-      start: "top bottom",
-      end: "top top",
-      scrub: 1,
-      onUpdate: (self) => {
-        const index = Math.min(
-          TOTAL_FRAMES - 1,
-          Math.floor(self.progress * TOTAL_FRAMES)
+        const scale = Math.min(
+          canvas.width / img.naturalWidth,
+          canvas.height / img.naturalHeight
         );
-        drawFrame(index);
+        const x = (canvas.width - img.naturalWidth * scale) / 2;
+        const y = (canvas.height - img.naturalHeight * scale) / 2;
 
-        // At 100% reveal the photo — one time only, never resets
-        if (self.progress >= 0.99) {
-          gsap.to(canvas, {
-            opacity: 0,
-            duration: 0.5,
-            onComplete: () => {
-              canvas.style.pointerEvents = "none";
-              trigger.kill(); // Kill trigger after reveal
-            },
-          });
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, x, y, img.naturalWidth * scale, img.naturalHeight * scale);
+      };
+
+      // Draw first frame
+      drawFrame(0);
+
+      // Advance frames at consistent interval
+      const interval = setInterval(() => {
+        currentFrame++;
+        if (currentFrame >= totalFrames) {
+          clearInterval(interval);
+          revealPhoto();
+          return;
         }
-      },
-    });
-
-    return () => {
-      if (trigger) trigger.kill();
+        drawFrame(currentFrame);
+      }, frameInterval);
     };
+
+    const revealPhoto = () => {
+      const canvas = canvasRef.current;
+      const photo = photoRef.current;
+
+      if (!canvas || !photo) return;
+
+      // Photo starts scaled down and invisible
+      gsap.set(photo, { scale: 0.92, opacity: 0 });
+
+      // Canvas fades out
+      gsap.to(canvas, {
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.inOut",
+      });
+
+      // Photo scales up and fades in simultaneously
+      gsap.to(photo, {
+        scale: 1,
+        opacity: 1,
+        duration: 1,
+        ease: "power2.out",
+        delay: 0.3,
+        onComplete: () => {
+          canvas.style.pointerEvents = "none";
+        },
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasPlayed) {
+            hasPlayed = true;
+            observer.disconnect();
+            playAnimation();
+          }
+        });
+      },
+      {
+        root: document.querySelector("#snap-container"),
+        threshold: 0.5,
+      }
+    );
+
+    observer.observe(section);
+
+    return () => observer.disconnect();
   }, [framesReady, useFallback]);
 
   return (
@@ -196,19 +246,24 @@ export default function About({ services = [], trustedBy = [] }) {
             {!useFallback && (
               <canvas ref={canvasRef} className="camera-canvas-overlay" />
             )}
-            <NextImage
-              src="/images/jack-nathan.jpg"
-              alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
-              width={220}
-              height={480}
-              style={{
-                objectFit: "cover",
-                objectPosition: "top center",
-                width: "100%",
-                height: "100%",
-              }}
-              priority={false}
-            />
+            <div
+              ref={photoRef}
+              style={{ opacity: useFallback ? 1 : 0 }}
+            >
+              <NextImage
+                src="/images/jack-nathan.jpg"
+                alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
+                width={220}
+                height={480}
+                style={{
+                  objectFit: "cover",
+                  objectPosition: "top center",
+                  width: "100%",
+                  height: "100%",
+                }}
+                priority={false}
+              />
+            </div>
           </div>
         </div>
       </div>
