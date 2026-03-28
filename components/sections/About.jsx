@@ -159,39 +159,30 @@ export default function About({ services = [], trustedBy = [] }) {
 
       if (!canvas || !photoWrapper) return;
 
-      // Make sure photo is ready but invisible
-      gsap.set(photoWrapper, { opacity: 0, scale: 1 });
+      // Photo starts scaled up and invisible
+      gsap.set(photoWrapper, { opacity: 0, scale: 1.1 });
 
-      // Shutter burst — canvas flashes white 3 times like a camera firing
-      const shutterTimeline = gsap.timeline({
+      const timeline = gsap.timeline({
         onComplete: () => {
           canvas.style.display = "none";
           canvas.style.pointerEvents = "none";
         },
       });
 
-      shutterTimeline
-        // Flash 1 — quick
-        .to(canvas, { backgroundColor: "#ffffff", duration: 0.06, ease: "none" })
-        .to(canvas, { backgroundColor: "#000000", duration: 0.08, ease: "none" })
-        // Flash 2 — quicker
-        .to(canvas, { backgroundColor: "#ffffff", duration: 0.05, ease: "none" })
-        .to(canvas, { backgroundColor: "#000000", duration: 0.06, ease: "none" })
-        // Flash 3 — final burst, longer white
-        .to(canvas, { backgroundColor: "#ffffff", duration: 0.1, ease: "none" })
-        // Photo slams in during the white flash
+      timeline
+        // Canvas cuts to black instantly
+        .to(canvas, { opacity: 0, duration: 0.08, ease: "none" })
+        // Photo punches in — scales down from 110% to 100% with slight bounce
         .to(
           photoWrapper,
           {
             opacity: 1,
             scale: 1,
-            duration: 0.15,
-            ease: "power4.out",
+            duration: 0.45,
+            ease: "back.out(1.4)",
           },
-          "-=0.08"
-        )
-        // Canvas fades from white
-        .to(canvas, { opacity: 0, duration: 0.15, ease: "none" }, "-=0.15");
+          "-=0.04"
+        );
     };
 
     const observer = new IntersectionObserver(
