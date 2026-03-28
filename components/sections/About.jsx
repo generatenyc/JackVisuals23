@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import NextImage from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./About.css";
@@ -68,6 +68,7 @@ export default function About({ services = [], trustedBy = [] }) {
     }, 4000);
 
     preloadFrames().then((frames) => {
+      console.log('Frames loaded:', frames.filter(Boolean).length);
       clearTimeout(timeout);
       framesRef.current = frames;
       setFramesReady(true);
@@ -195,7 +196,7 @@ export default function About({ services = [], trustedBy = [] }) {
             {!useFallback && (
               <canvas ref={canvasRef} className="camera-canvas-overlay" />
             )}
-            <Image
+            <NextImage
               src="/images/jack-nathan.jpg"
               alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
               width={220}
