@@ -2,17 +2,6 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import "./FeaturedWork.css";
-
-gsap.registerPlugin(ScrollTrigger);
-
-// Configure ScrollTrigger for #snap-container
-ScrollTrigger.config({ ignoreMobileResize: true });
-ScrollTrigger.defaults({
-  scroller: "#snap-container",
-});
 
 /* Placeholder cards shown when Sanity has no featured projects */
 const PLACEHOLDER_CARDS = [
@@ -26,10 +15,7 @@ const BG_CLASSES = ["work-bg-1", "work-bg-2", "work-bg-3"];
 export default function FeaturedWork({ projects = [] }) {
   const cards = projects.length > 0 ? projects : PLACEHOLDER_CARDS;
   const carouselRef = useRef(null);
-  const canvasRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [animationReady, setAnimationReady] = useState(false);
-  const [animationError, setAnimationError] = useState(false);
 
   /* Track carousel scroll position for dot indicator */
   const handleScroll = useCallback(() => {
@@ -47,95 +33,6 @@ export default function FeaturedWork({ projects = [] }) {
     return () => el.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  /* Camera scroll animation — Phase 8 */
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    const frameCount = 151;
-    const frames = [];
-    let loadedFrames = 0;
-
-    // Preload all frames
-    const preloadFrames = () => {
-      for (let i = 1; i <= frameCount; i++) {
-        const img = new Image();
-        img.onload = () => {
-          loadedFrames++;
-          if (loadedFrames === frameCount) {
-            setAnimationReady(true);
-            // Force ScrollTrigger to recalculate after frames load
-            ScrollTrigger.refresh();
-          }
-        };
-        img.onerror = () => {
-          console.error(`Failed to load frame ${i}`);
-          setAnimationError(true);
-        };
-        img.src = `/videos/frames/frame_${String(i).padStart(4, "0")}.jpg`;
-        frames[i - 1] = img;
-      }
-    };
-
-    preloadFrames();
-
-    // Render current frame with aspect ratio preservation
-    const render = (frameIndex) => {
-      const img = frames[frameIndex];
-      if (img && img.complete) {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-
-        // Calculate scale to fit image within canvas while preserving aspect ratio
-        const scale = Math.min(
-          canvas.width / img.naturalWidth,
-          canvas.height / img.naturalHeight
-        );
-
-        // Center the image
-        const x = (canvas.width - img.naturalWidth * scale) / 2;
-        const y = (canvas.height - img.naturalHeight * scale) / 2;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(
-          img,
-          x,
-          y,
-          img.naturalWidth * scale,
-          img.naturalHeight * scale
-        );
-      }
-    };
-
-    // GSAP ScrollTrigger — bind scroll to frame progress
-    const scrollTrigger = ScrollTrigger.create({
-      trigger: "#sec-work",
-      scroller: "#snap-container", // Use snap container instead of window
-      start: "top top",
-      end: "bottom bottom",
-      scrub: 0.5,
-      onUpdate: (self) => {
-        const frameIndex = Math.min(
-          frameCount - 1,
-          Math.floor(self.progress * frameCount)
-        );
-        render(frameIndex);
-
-        // Show cards when animation reaches 100%
-        if (self.progress >= 0.99 && animationReady) {
-          canvas.style.opacity = "0";
-        } else {
-          canvas.style.opacity = "1";
-        }
-      },
-    });
-
-    return () => {
-      scrollTrigger.kill();
-    };
-  }, [animationReady]);
-
   return (
     <section id="sec-work">
       <div className="zone-top" />
@@ -147,25 +44,7 @@ export default function FeaturedWork({ projects = [] }) {
         </Link>
       </div>
 
-      {/* Camera scroll animation canvas */}
-      {!animationError && (
-        <canvas
-          ref={canvasRef}
-          className="camera-animation-canvas"
-          style={{
-            opacity: animationReady ? 1 : 0,
-            transition: "opacity 0.5s ease",
-          }}
-        />
-      )}
-
-      <div
-        className="work-cards-zone"
-        style={{
-          opacity: animationError || !animationReady ? 1 : 0,
-          pointerEvents: animationError || !animationReady ? "auto" : "none",
-        }}
-      >
+      <div className="work-cards-zone">
         <div className="work-cards" ref={carouselRef}>
           {cards.map((card, i) => (
             <div key={card._id} className="work-card">
