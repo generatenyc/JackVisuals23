@@ -6,7 +6,7 @@ import trustedBy from "./schemas/trustedBy";
 
 export default defineConfig({
   name: "jack-visuals",
-  title: "Jack Visuals",
+  title: "Jack Visuals Studio",
   projectId: "yqj0dj48",
   dataset: "production",
   plugins: [structureTool()],
