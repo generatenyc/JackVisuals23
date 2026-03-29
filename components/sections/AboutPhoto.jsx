@@ -290,9 +290,17 @@ export default function AboutPhoto() {
   return (
     <div className="about-photo" ref={photoWrapperRef}>
       {/* Bottom canvas: Nathan's photo drawn during animation (z-index: 1) */}
-      <canvas ref={canvasBottomRef} className="about-canvas-bottom" />
+      <canvas
+        ref={canvasBottomRef}
+        className="about-canvas-bottom"
+        style={{ background: "#000", display: "block" }}
+      />
       {/* Top canvas: camera frames + scan wipe (z-index: 2) */}
-      <canvas ref={canvasTopRef} className="about-canvas-top" />
+      <canvas
+        ref={canvasTopRef}
+        className="about-canvas-top"
+        style={{ background: "#000", display: "block" }}
+      />
       {/* Next.js Image — only mounted after animation completes */}
       {showPhoto && (
         <div className="about-photo-img-wrapper">

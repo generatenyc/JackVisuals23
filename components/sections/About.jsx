@@ -14,7 +14,9 @@ const PLACEHOLDER_TRUSTED_BY =
 // jack-nathan.jpg never appears in the initial HTML, eliminating the flash.
 const AboutPhoto = dynamic(() => import("./AboutPhoto"), {
   ssr: false,
-  loading: () => <div className="about-photo" style={{ background: "#000" }} />,
+  loading: () => (
+    <div className="about-photo" style={{ background: "#000", position: "relative" }} />
+  ),
 });
 
 export default function About({ services = [], trustedBy = [] }) {
