@@ -386,118 +386,132 @@ export default function AnimationTestPage() {
     });
   };
 
-  // Effect 5: Full Canvas Scan Wipe
-  const runEffect5 = () => {
+  // Effect 5: Full Canvas Scan Wipe (Clean Rebuild)
+  const runEffect5 = async () => {
     const canvasTop = canvas5Ref.current;
-    const canvasPhoto = canvas5PhotoRef.current;
-    if (!canvasTop || !canvasPhoto) return;
+    const canvasBottom = canvas5PhotoRef.current;
+    if (!canvasTop || !canvasBottom) return;
 
     const ctxTop = canvasTop.getContext("2d");
-    const img = cameraFrameRef.current;
-    if (!img) return;
+    const ctxBottom = canvasBottom.getContext("2d");
 
-    // Helper to draw scan line with glow
-    const drawScanLine = (ctx, x, height, alpha = 1) => {
-      ctx.save();
-      ctx.globalAlpha = alpha;
+    console.log("Effect 5: Starting clean rebuild");
 
-      // Outer glow
-      ctx.shadowColor = "#2997ff";
-      ctx.shadowBlur = 20;
-      ctx.strokeStyle = "#2997ff";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
+    // Step 1: Fill bottom canvas solid black
+    ctxBottom.fillStyle = "#000";
+    ctxBottom.fillRect(0, 0, 400, 500);
+    console.log("Step 1: Bottom canvas filled black");
 
-      // Inner bright core
-      ctx.shadowBlur = 5;
-      ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
+    // Step 2: Load and draw camera last frame on top canvas (frame_0181.jpg)
+    const cameraFrame = new window.Image();
+    cameraFrame.src = "/videos/frames/frame_0181.jpg";
+    await new Promise((resolve) => {
+      cameraFrame.onload = resolve;
+    });
+    ctxTop.drawImage(cameraFrame, 0, 0, 400, 500);
+    console.log("Step 2: Camera frame drawn on top canvas");
 
-      ctx.restore();
-    };
+    // Step 3: Draw Nathan's photo on bottom canvas with object-fit: cover
+    const photo = new window.Image();
+    photo.src = "/images/jack-nathan.jpg";
+    await new Promise((resolve) => {
+      photo.onload = resolve;
+    });
 
-    const scanProgress = { x: 0 };
-    const scanLineOpacity = { value: 1 };
+    // Calculate source crop for object-fit: cover
+    const photoAspect = photo.naturalWidth / photo.naturalHeight;
+    const canvasAspect = 400 / 500;
+    let sx, sy, sw, sh;
 
-    gsap.to(scanProgress, {
-      x: canvasTop.width,
+    if (photoAspect > canvasAspect) {
+      // Image is wider - crop horizontally
+      sh = photo.naturalHeight;
+      sw = sh * canvasAspect;
+      sx = (photo.naturalWidth - sw) / 2;
+      sy = 0;
+    } else {
+      // Image is taller - crop vertically
+      sw = photo.naturalWidth;
+      sh = sw / canvasAspect;
+      sx = 0;
+      sy = (photo.naturalHeight - sh) / 2;
+    }
+
+    ctxBottom.drawImage(photo, sx, sy, sw, sh, 0, 0, 400, 500);
+    console.log("Step 3: Nathan's photo drawn on bottom canvas");
+
+    // Step 4: Run scan wipe — right to left
+    const progress = { x: 400 };
+
+    gsap.to(progress, {
+      x: 0,
       duration: 1.2,
       ease: "power2.inOut",
       onUpdate: () => {
-        const x = scanProgress.x;
+        const x = progress.x;
 
         // Clear top canvas
-        ctxTop.clearRect(0, 0, canvasTop.width, canvasTop.height);
+        ctxTop.clearRect(0, 0, 400, 500);
 
-        // Draw camera frame clipped to right of scan line
-        const scale = Math.min(
-          canvasTop.width / img.naturalWidth,
-          canvasTop.height / img.naturalHeight
-        );
-        const imgX = (canvasTop.width - img.naturalWidth * scale) / 2;
-        const imgY = (canvasTop.height - img.naturalHeight * scale) / 2;
-
+        // Draw camera frame clipped to RIGHT of scan line
         ctxTop.save();
         ctxTop.beginPath();
-        ctxTop.rect(x, 0, canvasTop.width - x, canvasTop.height);
+        ctxTop.rect(x, 0, 400 - x, 500);
         ctxTop.clip();
-        ctxTop.drawImage(
-          img,
-          imgX,
-          imgY,
-          img.naturalWidth * scale,
-          img.naturalHeight * scale
-        );
+        ctxTop.drawImage(cameraFrame, 0, 0, 400, 500);
         ctxTop.restore();
 
-        // Draw scan line on top
-        drawScanLine(ctxTop, x, canvasTop.height);
+        // Draw scan line with glow
+        ctxTop.save();
+        ctxTop.shadowColor = "#2997ff";
+        ctxTop.shadowBlur = 20;
+        ctxTop.strokeStyle = "#2997ff";
+        ctxTop.lineWidth = 2;
+        ctxTop.beginPath();
+        ctxTop.moveTo(x, 0);
+        ctxTop.lineTo(x, 500);
+        ctxTop.stroke();
+
+        ctxTop.shadowBlur = 5;
+        ctxTop.strokeStyle = "#ffffff";
+        ctxTop.lineWidth = 1;
+        ctxTop.beginPath();
+        ctxTop.moveTo(x, 0);
+        ctxTop.lineTo(x, 500);
+        ctxTop.stroke();
+        ctxTop.restore();
       },
       onComplete: () => {
-        // Fade out scan line
-        gsap.to(scanLineOpacity, {
-          value: 0,
-          duration: 0.3,
-          onUpdate: () => {
-            ctxTop.clearRect(0, 0, canvasTop.width, canvasTop.height);
-            // Redraw fading scan line at right edge
-            drawScanLine(
-              ctxTop,
-              canvasTop.width,
-              canvasTop.height,
-              scanLineOpacity.value
-            );
-          },
-          onComplete: () => {
-            ctxTop.clearRect(0, 0, canvasTop.width, canvasTop.height);
-          },
-        });
+        // Clear top canvas completely — Nathan fully visible on bottom
+        ctxTop.clearRect(0, 0, 400, 500);
+        console.log("Step 4: Scan wipe complete");
       },
     });
   };
 
-  const resetEffect5 = () => {
+  const resetEffect5 = async () => {
     const canvasTop = canvas5Ref.current;
-    const canvasPhoto = canvas5PhotoRef.current;
-    if (!canvasTop || !canvasPhoto) return;
+    const canvasBottom = canvas5PhotoRef.current;
+    if (!canvasTop || !canvasBottom) return;
 
-    gsap.killTweensOf(canvasTop);
+    gsap.killTweensOf({});
 
     const ctxTop = canvasTop.getContext("2d");
-    const ctxPhoto = canvasPhoto.getContext("2d");
+    const ctxBottom = canvasBottom.getContext("2d");
 
-    // Reset photo canvas
-    drawNathanPhoto(ctxPhoto, canvasPhoto);
+    // Reset bottom to black
+    ctxBottom.fillStyle = "#000";
+    ctxBottom.fillRect(0, 0, 400, 500);
 
-    // Reset camera canvas
-    drawCameraFrame(ctxTop, canvasTop);
+    // Reset top to camera frame
+    const cameraFrame = new window.Image();
+    cameraFrame.src = "/videos/frames/frame_0181.jpg";
+    await new Promise((resolve) => {
+      cameraFrame.onload = resolve;
+    });
+    ctxTop.drawImage(cameraFrame, 0, 0, 400, 500);
+
+    console.log("Effect 5 reset");
   };
 
   const resetEffect = (canvasRef, photoRef) => {
