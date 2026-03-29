@@ -14,6 +14,7 @@ export default function AboutPhoto() {
   const photoWrapperRef = useRef(null);
   const canvasBottomRef = useRef(null);
   const canvasTopRef = useRef(null);
+  const photoImgRef = useRef(null);
 
   // Helper: object-fit: cover for camera frames
   const drawImageCover = (ctx, img, canvasW, canvasH) => {
@@ -280,11 +281,20 @@ export default function AboutPhoto() {
       });
     });
 
-    // Step 5: Hide canvases, mount Next.js Image
-    canvasTop.style.display = "none";
-    canvasBottom.style.display = "none";
+    // Step 5: Mount Next.js Image first, then hide canvases once image is loaded
     setShowPhoto(true);
-    console.log("AboutPhoto: Animation complete - photo revealed");
+
+    const checkImageLoaded = () => {
+      const img = photoImgRef.current?.querySelector("img");
+      if (img && img.complete) {
+        canvasTop.style.display = "none";
+        canvasBottom.style.display = "none";
+        console.log("AboutPhoto: Animation complete - photo revealed");
+      } else {
+        requestAnimationFrame(checkImageLoaded);
+      }
+    };
+    requestAnimationFrame(checkImageLoaded);
   };
 
   return (
@@ -301,9 +311,9 @@ export default function AboutPhoto() {
         className="about-canvas-top"
         style={{ background: "#000", display: "block" }}
       />
-      {/* Next.js Image — only mounted after animation completes */}
+      {/* Next.js Image — mounted before canvases hide; canvases hide only after image is loaded */}
       {showPhoto && (
-        <div className="about-photo-img-wrapper">
+        <div ref={photoImgRef} className="about-photo-img-wrapper">
           <NextImage
             src="/images/jack-nathan.jpg"
             alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
