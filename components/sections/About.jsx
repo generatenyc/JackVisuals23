@@ -16,11 +16,11 @@ export default function About({ services = [], trustedBy = [] }) {
   // Camera animation state
   const [framesLoaded, setFramesLoaded] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
+  const [showPhoto, setShowPhoto] = useState(false);
   const framesRef = useRef([]);
   const photoWrapperRef = useRef(null);
   const canvasBottomRef = useRef(null);
   const canvasTopRef = useRef(null);
-  const photoImgRef = useRef(null);
 
   // Helper: object-fit: cover for camera frames
   const drawImageCover = (ctx, img, canvasW, canvasH) => {
@@ -58,11 +58,7 @@ export default function About({ services = [], trustedBy = [] }) {
     timeoutId = setTimeout(() => {
       if (!framesLoaded) {
         console.log("About: Frame loading timeout - showing fallback photo");
-        setFramesLoaded(false);
-        // Reveal photo immediately
-        if (photoImgRef.current) {
-          photoImgRef.current.style.removeProperty("display");
-        }
+        setShowPhoto(true);
       }
     }, 4000);
 
@@ -309,9 +305,7 @@ export default function About({ services = [], trustedBy = [] }) {
     // Step 5: Hide canvases and reveal photo
     canvasTop.style.display = "none";
     canvasBottom.style.display = "none";
-    if (photoImgRef.current) {
-      photoImgRef.current.style.display = "block";
-    }
+    setShowPhoto(true);
     console.log("About: Animation complete - canvases hidden, photo revealed");
   };
   const servicesText =
@@ -365,29 +359,23 @@ export default function About({ services = [], trustedBy = [] }) {
 
         {/* Camera animation */}
         <div className="about-photo" ref={photoWrapperRef}>
-          {/* Fallback: Next.js Image (z-index: 0) - hidden until animation completes */}
-          <div
-            ref={photoImgRef}
-            className="about-photo-img-wrapper"
-          >
-            <NextImage
-              src="/images/jack-nathan.jpg"
-              alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
-              fill
-              priority
-              loading="eager"
-              className="about-photo-img"
-              sizes="(max-width: 820px) 100vw, 220px"
-              style={{
-                objectFit: "cover",
-                objectPosition: "top center",
-              }}
-            />
-          </div>
           {/* Bottom canvas: Nathan's photo (z-index: 1) */}
           <canvas ref={canvasBottomRef} className="about-canvas-bottom" />
           {/* Top canvas: Camera frames + scan wipe (z-index: 2) */}
           <canvas ref={canvasTopRef} className="about-canvas-top" />
+          {/* Next.js Image — not in DOM until animation completes */}
+          {showPhoto && (
+            <div className="about-photo-img-wrapper">
+              <NextImage
+                src="/images/jack-nathan.jpg"
+                alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
+                fill
+                priority
+                sizes="(max-width: 820px) 100vw, 220px"
+                className="about-photo-img"
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>
