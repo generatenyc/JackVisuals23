@@ -386,11 +386,45 @@ export default function AnimationTestPage() {
     });
   };
 
+  // Effect 5: Helper function for object-fit: cover
+  const drawImageCover = (ctx, img, canvasW, canvasH) => {
+    const imgAspect = img.naturalWidth / img.naturalHeight;
+    const canvasAspect = canvasW / canvasH;
+    let sx, sy, sw, sh;
+
+    if (imgAspect > canvasAspect) {
+      // Image is wider - crop horizontally
+      sh = img.naturalHeight;
+      sw = sh * canvasAspect;
+      sx = (img.naturalWidth - sw) / 2;
+      sy = 0;
+    } else {
+      // Image is taller - crop vertically
+      sw = img.naturalWidth;
+      sh = sw / canvasAspect;
+      sx = 0;
+      sy = (img.naturalHeight - sh) / 2;
+    }
+
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvasW, canvasH);
+  };
+
+  // Effect 5: Animation guard flag
+  const [isEffect5Playing, setIsEffect5Playing] = useState(false);
+
   // Effect 5: Full Canvas Scan Wipe (Clean Rebuild)
   const runEffect5 = async () => {
+    // Guard: prevent multiple simultaneous animations
+    if (isEffect5Playing) {
+      console.log("Effect 5: Already playing, ignoring click");
+      return;
+    }
+
     const canvasTop = canvas5Ref.current;
     const canvasBottom = canvas5PhotoRef.current;
     if (!canvasTop || !canvasBottom) return;
+
+    setIsEffect5Playing(true);
 
     const ctxTop = canvasTop.getContext("2d");
     const ctxBottom = canvasBottom.getContext("2d");
@@ -408,8 +442,8 @@ export default function AnimationTestPage() {
     await new Promise((resolve) => {
       cameraFrame.onload = resolve;
     });
-    ctxTop.drawImage(cameraFrame, 0, 0, 400, 500);
-    console.log("Step 2: Camera frame drawn on top canvas");
+    drawImageCover(ctxTop, cameraFrame, 400, 500);
+    console.log("Step 2: Camera frame drawn on top canvas (cover fit)");
 
     // Step 3: Draw Nathan's photo on bottom canvas with object-fit: cover
     const photo = new window.Image();
@@ -417,31 +451,14 @@ export default function AnimationTestPage() {
     await new Promise((resolve) => {
       photo.onload = resolve;
     });
-
-    // Calculate source crop for object-fit: cover
-    const photoAspect = photo.naturalWidth / photo.naturalHeight;
-    const canvasAspect = 400 / 500;
-    let sx, sy, sw, sh;
-
-    if (photoAspect > canvasAspect) {
-      // Image is wider - crop horizontally
-      sh = photo.naturalHeight;
-      sw = sh * canvasAspect;
-      sx = (photo.naturalWidth - sw) / 2;
-      sy = 0;
-    } else {
-      // Image is taller - crop vertically
-      sw = photo.naturalWidth;
-      sh = sw / canvasAspect;
-      sx = 0;
-      sy = (photo.naturalHeight - sh) / 2;
-    }
-
-    ctxBottom.drawImage(photo, sx, sy, sw, sh, 0, 0, 400, 500);
-    console.log("Step 3: Nathan's photo drawn on bottom canvas");
+    drawImageCover(ctxBottom, photo, 400, 500);
+    console.log("Step 3: Nathan's photo drawn on bottom canvas (cover fit)");
 
     // Step 4: Run scan wipe — right to left
     const progress = { x: 400 };
+
+    // Kill any existing tweens
+    gsap.killTweensOf(progress);
 
     gsap.to(progress, {
       x: 0,
@@ -458,7 +475,7 @@ export default function AnimationTestPage() {
         ctxTop.beginPath();
         ctxTop.rect(x, 0, 400 - x, 500);
         ctxTop.clip();
-        ctxTop.drawImage(cameraFrame, 0, 0, 400, 500);
+        drawImageCover(ctxTop, cameraFrame, 400, 500);
         ctxTop.restore();
 
         // Draw scan line with glow
@@ -484,6 +501,7 @@ export default function AnimationTestPage() {
       onComplete: () => {
         // Clear top canvas completely — Nathan fully visible on bottom
         ctxTop.clearRect(0, 0, 400, 500);
+        setIsEffect5Playing(false);
         console.log("Step 4: Scan wipe complete");
       },
     });
@@ -494,7 +512,9 @@ export default function AnimationTestPage() {
     const canvasBottom = canvas5PhotoRef.current;
     if (!canvasTop || !canvasBottom) return;
 
+    // Kill any running animations
     gsap.killTweensOf({});
+    setIsEffect5Playing(false);
 
     const ctxTop = canvasTop.getContext("2d");
     const ctxBottom = canvasBottom.getContext("2d");
@@ -509,7 +529,7 @@ export default function AnimationTestPage() {
     await new Promise((resolve) => {
       cameraFrame.onload = resolve;
     });
-    ctxTop.drawImage(cameraFrame, 0, 0, 400, 500);
+    drawImageCover(ctxTop, cameraFrame, 400, 500);
 
     console.log("Effect 5 reset");
   };
