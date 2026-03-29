@@ -470,15 +470,15 @@ export default function AnimationTestPage() {
         // Clear top canvas
         ctxTop.clearRect(0, 0, 400, 500);
 
-        // Draw camera frame clipped to RIGHT of scan line
+        // Camera visible LEFT of scan line
         ctxTop.save();
         ctxTop.beginPath();
-        ctxTop.rect(x, 0, 400 - x, 500);
+        ctxTop.rect(0, 0, x, 500);
         ctxTop.clip();
         drawImageCover(ctxTop, cameraFrame, 400, 500);
         ctxTop.restore();
 
-        // Draw scan line with glow
+        // Draw scan line at position x
         ctxTop.save();
         ctxTop.shadowColor = "#2997ff";
         ctxTop.shadowBlur = 20;
