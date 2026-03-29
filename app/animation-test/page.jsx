@@ -443,21 +443,55 @@ export default function AnimationTestPage() {
 
     // Step 2: Load and draw camera last frame on top canvas (frame_0181.jpg)
     const cameraFrame = new window.Image();
-    cameraFrame.src = "/videos/frames/frame_0181.jpg";
-    await new Promise((resolve) => {
-      cameraFrame.onload = resolve;
+    const framePath = "/videos/frames/frame_0181.jpg";
+    cameraFrame.src = framePath;
+    console.log("Loading frame:", framePath);
+    await new Promise((resolve, reject) => {
+      cameraFrame.onload = () => {
+        console.log("Frame loaded successfully:", cameraFrame.naturalWidth, "x", cameraFrame.naturalHeight);
+        resolve();
+      };
+      cameraFrame.onerror = () => {
+        console.error("Failed to load frame:", framePath);
+        reject(new Error("Frame load failed"));
+      };
     });
     drawImageCover(ctxTop, cameraFrame, W, H);
     console.log("Step 2: Camera frame drawn on top canvas (cover fit)");
 
-    // Step 3: Draw Nathan's photo on bottom canvas with object-fit: cover
+    // Step 3: Draw Nathan's photo on bottom canvas with object-fit: contain
     const photo = new window.Image();
     photo.src = "/images/jack-nathan.jpg";
     await new Promise((resolve) => {
       photo.onload = resolve;
     });
-    drawImageCover(ctxBottom, photo, W, H);
-    console.log("Step 3: Nathan's photo drawn on bottom canvas (cover fit)");
+
+    // Draw black background first
+    ctxBottom.fillStyle = "#000";
+    ctxBottom.fillRect(0, 0, W, H);
+
+    // Draw photo with object-fit: contain — no cropping
+    const photoAspect = photo.naturalWidth / photo.naturalHeight;
+    const canvasAspect = W / H;
+
+    let drawW, drawH, drawX, drawY;
+
+    if (photoAspect > canvasAspect) {
+      // Photo wider than canvas — fit to width
+      drawW = W;
+      drawH = W / photoAspect;
+      drawX = 0;
+      drawY = (H - drawH) / 2;
+    } else {
+      // Photo taller than canvas — fit to height
+      drawH = H;
+      drawW = H * photoAspect;
+      drawX = (W - drawW) / 2;
+      drawY = 0;
+    }
+
+    ctxBottom.drawImage(photo, 0, 0, photo.naturalWidth, photo.naturalHeight, drawX, drawY, drawW, drawH);
+    console.log("Step 3: Nathan's photo drawn on bottom canvas (contain fit)");
 
     // Step 4: Run scan wipe — right to left
     const progress = { x: W };
@@ -534,9 +568,17 @@ export default function AnimationTestPage() {
 
     // Reset top to camera frame
     const cameraFrame = new window.Image();
-    cameraFrame.src = "/videos/frames/frame_0181.jpg";
-    await new Promise((resolve) => {
-      cameraFrame.onload = resolve;
+    const framePath = "/videos/frames/frame_0181.jpg";
+    cameraFrame.src = framePath;
+    await new Promise((resolve, reject) => {
+      cameraFrame.onload = () => {
+        console.log("Reset: Frame loaded");
+        resolve();
+      };
+      cameraFrame.onerror = () => {
+        console.error("Reset: Failed to load frame:", framePath);
+        reject(new Error("Frame load failed"));
+      };
     });
     drawImageCover(ctxTop, cameraFrame, W, H);
 
