@@ -9,33 +9,7 @@
   background: var(--color-bg);
 }
 
-/* Camera animation — Phase 8: Scan wipe effect */
-.about-photo-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  height: 100%;
-}
-
-.about-canvas-photo {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-.about-canvas-top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-}
-
-/* Fallback: Next.js Image when frames don't load */
+/* Photo styling */
 .about-photo-img {
   object-fit: cover;
   object-position: top center;
@@ -120,6 +94,7 @@
 
 /* Photo container */
 #sec-about .about-photo {
+  position: relative;
   width: 220px;
   max-height: 420px;
   aspect-ratio: 2 / 3;
