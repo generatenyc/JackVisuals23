@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import NextImage from "next/image";
 import gsap from "gsap";
 
 // Client-only component — imported via dynamic({ ssr: false }) in About.jsx.
@@ -317,13 +316,15 @@ export default function AboutPhoto() {
       {/* Next.js Image — mounted before canvases hide; canvases hide only after image is loaded */}
       {showPhoto && (
         <div ref={photoImgRef} className="about-photo-img-wrapper">
-          <NextImage
+          <img
             src="/images/jack-nathan.jpg"
             alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
-            width={220}
-            height={330}
-            priority
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
           />
         </div>
       )}
