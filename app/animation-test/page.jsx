@@ -412,6 +412,40 @@ export default function AnimationTestPage() {
   // Effect 5: Animation guard flag
   const [isEffect5Playing, setIsEffect5Playing] = useState(false);
 
+  // Effect 5: Frame preloading for full sequence
+  const [effect5FramesLoaded, setEffect5FramesLoaded] = useState(false);
+  const effect5FramesRef = useRef([]);
+
+  // Effect 5: Preload all 181 frames on page load
+  useEffect(() => {
+    const totalFrames = 181;
+    const frames = [];
+    let loadedCount = 0;
+
+    console.log("Effect 5: Starting frame preload...");
+
+    const checkAllLoaded = () => {
+      loadedCount++;
+      if (loadedCount === totalFrames) {
+        effect5FramesRef.current = frames;
+        setEffect5FramesLoaded(true);
+        console.log(`Effect 5: All ${totalFrames} frames loaded`);
+      }
+    };
+
+    for (let i = 1; i <= totalFrames; i++) {
+      const img = new window.Image();
+      const frameNum = String(i).padStart(4, "0");
+      img.src = `/videos/frames/frame_${frameNum}.jpg`;
+      img.onload = checkAllLoaded;
+      img.onerror = () => {
+        console.error(`Effect 5: Failed to load frame ${frameNum}`);
+        checkAllLoaded(); // Continue even if one frame fails
+      };
+      frames.push(img);
+    }
+  }, []);
+
   // Effect 5: Full Canvas Scan Wipe (Clean Rebuild)
   const runEffect5 = async () => {
     // Guard: prevent multiple simultaneous animations
@@ -542,6 +576,150 @@ export default function AnimationTestPage() {
         ctxTop.clearRect(0, 0, W, H);
         setIsEffect5Playing(false);
         console.log("Step 4: Scan wipe complete");
+      },
+    });
+  };
+
+  // Effect 5: Full sequence playback (frame 1 → all frames → scan wipe)
+  const runFullSequence5 = async () => {
+    // Guard: prevent multiple simultaneous animations
+    if (isEffect5Playing) {
+      console.log("Effect 5: Already playing, ignoring click");
+      return;
+    }
+
+    if (!effect5FramesLoaded) {
+      console.log("Effect 5: Frames not loaded yet");
+      return;
+    }
+
+    const canvasTop = canvas5Ref.current;
+    const canvasBottom = canvas5PhotoRef.current;
+    if (!canvasTop || !canvasBottom) return;
+
+    setIsEffect5Playing(true);
+
+    const ctxTop = canvasTop.getContext("2d");
+    const ctxBottom = canvasBottom.getContext("2d");
+
+    const W = canvasTop.width;
+    const H = canvasTop.height;
+
+    console.log("Effect 5: Starting full sequence");
+
+    // Step 1: Fill bottom canvas solid black
+    ctxBottom.fillStyle = "#000";
+    ctxBottom.fillRect(0, 0, W, H);
+
+    // Step 2: Play all 181 frames over 3 seconds
+    const totalFrames = 181;
+    const duration = 3000; // 3 seconds
+    const frameDelay = duration / totalFrames; // ~16.6ms per frame
+
+    let currentFrame = 0;
+
+    const playFrames = () => {
+      return new Promise((resolve) => {
+        const interval = setInterval(() => {
+          if (currentFrame >= totalFrames) {
+            clearInterval(interval);
+            resolve();
+            return;
+          }
+
+          const frameImg = effect5FramesRef.current[currentFrame];
+          if (frameImg && frameImg.complete) {
+            ctxTop.clearRect(0, 0, W, H);
+            drawImageCover(ctxTop, frameImg, W, H);
+          }
+
+          currentFrame++;
+        }, frameDelay);
+      });
+    };
+
+    // Play frames
+    await playFrames();
+    console.log("Effect 5: Frame sequence complete, starting scan wipe");
+
+    // Step 3: Draw Nathan's photo on bottom canvas (prepare for scan wipe)
+    const photo = new window.Image();
+    photo.src = "/images/jack-nathan.jpg";
+    await new Promise((resolve) => {
+      photo.onload = resolve;
+    });
+
+    // Draw black background
+    ctxBottom.fillStyle = "#000";
+    ctxBottom.fillRect(0, 0, W, H);
+
+    // Draw photo with object-fit: contain
+    const photoAspect = photo.naturalWidth / photo.naturalHeight;
+    const canvasAspect = W / H;
+
+    let drawW, drawH, drawX, drawY;
+
+    if (photoAspect > canvasAspect) {
+      drawW = W;
+      drawH = W / photoAspect;
+      drawX = 0;
+      drawY = (H - drawH) / 2;
+    } else {
+      drawH = H;
+      drawW = H * photoAspect;
+      drawX = (W - drawW) / 2;
+      drawY = 0;
+    }
+
+    ctxBottom.drawImage(photo, 0, 0, photo.naturalWidth, photo.naturalHeight, drawX, drawY, drawW, drawH);
+
+    // Step 4: Run scan wipe with last frame
+    const lastFrame = effect5FramesRef.current[totalFrames - 1];
+    const progress = { x: 0 };
+
+    gsap.killTweensOf(progress);
+
+    gsap.to(progress, {
+      x: W,
+      duration: 1.2,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        const x = progress.x;
+
+        ctxTop.clearRect(0, 0, W, H);
+
+        // Camera visible RIGHT of scan line
+        ctxTop.save();
+        ctxTop.beginPath();
+        ctxTop.rect(x, 0, W - x, H);
+        ctxTop.clip();
+        drawImageCover(ctxTop, lastFrame, W, H);
+        ctxTop.restore();
+
+        // Draw scan line
+        ctxTop.save();
+        ctxTop.shadowColor = "#2997ff";
+        ctxTop.shadowBlur = 20;
+        ctxTop.strokeStyle = "#2997ff";
+        ctxTop.lineWidth = 2;
+        ctxTop.beginPath();
+        ctxTop.moveTo(x, 0);
+        ctxTop.lineTo(x, H);
+        ctxTop.stroke();
+
+        ctxTop.shadowBlur = 5;
+        ctxTop.strokeStyle = "#ffffff";
+        ctxTop.lineWidth = 1;
+        ctxTop.beginPath();
+        ctxTop.moveTo(x, 0);
+        ctxTop.lineTo(x, H);
+        ctxTop.stroke();
+        ctxTop.restore();
+      },
+      onComplete: () => {
+        ctxTop.clearRect(0, 0, W, H);
+        setIsEffect5Playing(false);
+        console.log("Effect 5: Full sequence complete");
       },
     });
   };
@@ -889,8 +1067,41 @@ export default function AnimationTestPage() {
                 height={500}
                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 2 }}
               />
+              {/* Loading indicator */}
+              {!effect5FramesLoaded && (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "10px",
+                    left: "10px",
+                    padding: "8px 12px",
+                    background: "rgba(0, 0, 0, 0.8)",
+                    color: "#2997ff",
+                    fontSize: "11px",
+                    border: "1px solid #2997ff",
+                    zIndex: 3,
+                  }}
+                >
+                  Loading 181 frames...
+                </div>
+              )}
             </div>
-            <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
+            <div style={{ marginTop: "20px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <button
+                onClick={runFullSequence5}
+                disabled={!effect5FramesLoaded}
+                style={{
+                  padding: "10px 20px",
+                  background: effect5FramesLoaded ? "#2997ff" : "#555",
+                  color: "#fff",
+                  border: "none",
+                  cursor: effect5FramesLoaded ? "pointer" : "not-allowed",
+                  fontSize: "14px",
+                  opacity: effect5FramesLoaded ? 1 : 0.5,
+                }}
+              >
+                Play Full Sequence
+              </button>
               <button
                 onClick={runEffect5}
                 style={{
@@ -928,6 +1139,8 @@ export default function AnimationTestPage() {
             <li>LCD coordinates: (190, 440) to (710, 860) in 1440×1440 source, scaled proportionally</li>
             <li>Effects 1-4 reveal photo in LCD area first, then expand to full size</li>
             <li>Effect 5 reveals photo at full size across entire canvas (no expand needed)</li>
+            <li>Effect 5 "Play Full Sequence": plays all 181 frames (3s) then scan wipe (1.2s)</li>
+            <li>Effect 5 "Play Effect": only plays scan wipe from last frame (testing purposes)</li>
             <li>All timing and easing can be adjusted based on preference</li>
           </ul>
         </div>
