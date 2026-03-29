@@ -61,8 +61,7 @@ export default function About({ services = [], trustedBy = [] }) {
         setFramesLoaded(false);
         // Reveal photo immediately
         if (photoImgRef.current) {
-          photoImgRef.current.style.opacity = "1";
-          photoImgRef.current.style.visibility = "visible";
+          photoImgRef.current.style.removeProperty("display");
         }
       }
     }, 4000);
@@ -311,8 +310,7 @@ export default function About({ services = [], trustedBy = [] }) {
     canvasTop.style.display = "none";
     canvasBottom.style.display = "none";
     if (photoImgRef.current) {
-      photoImgRef.current.style.opacity = "1";
-      photoImgRef.current.style.visibility = "visible";
+      photoImgRef.current.style.display = "block";
     }
     console.log("About: Animation complete - canvases hidden, photo revealed");
   };
@@ -376,13 +374,14 @@ export default function About({ services = [], trustedBy = [] }) {
               src="/images/jack-nathan.jpg"
               alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
               fill
+              priority
+              loading="eager"
               className="about-photo-img"
-              sizes="(max-width: 820px) 100vw, 50vw"
+              sizes="(max-width: 820px) 100vw, 220px"
               style={{
                 objectFit: "cover",
                 objectPosition: "top center",
               }}
-              priority={false}
             />
           </div>
           {/* Bottom canvas: Nathan's photo (z-index: 1) */}
