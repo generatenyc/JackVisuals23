@@ -607,9 +607,38 @@ export default function AnimationTestPage() {
 
     console.log("Effect 5: Starting full sequence");
 
-    // Step 1: Fill bottom canvas solid black
+    // Step 1: Preload and draw Nathan's photo on bottom canvas BEFORE frame animation
+    // This eliminates delay between frame animation and scan wipe
+    const photo = new window.Image();
+    photo.src = "/images/jack-nathan.jpg";
+    await new Promise((resolve) => {
+      photo.onload = resolve;
+    });
+
+    // Draw black background
     ctxBottom.fillStyle = "#000";
     ctxBottom.fillRect(0, 0, W, H);
+
+    // Draw photo with object-fit: contain
+    const photoAspect = photo.naturalWidth / photo.naturalHeight;
+    const canvasAspect = W / H;
+
+    let drawW, drawH, drawX, drawY;
+
+    if (photoAspect > canvasAspect) {
+      drawW = W;
+      drawH = W / photoAspect;
+      drawX = 0;
+      drawY = (H - drawH) / 2;
+    } else {
+      drawH = H;
+      drawW = H * photoAspect;
+      drawX = (W - drawW) / 2;
+      drawY = 0;
+    }
+
+    ctxBottom.drawImage(photo, 0, 0, photo.naturalWidth, photo.naturalHeight, drawX, drawY, drawW, drawH);
+    console.log("Effect 5: Nathan photo ready on bottom canvas");
 
     // Step 2: Play all 181 frames over 3 seconds
     const totalFrames = 181;
@@ -640,40 +669,9 @@ export default function AnimationTestPage() {
 
     // Play frames
     await playFrames();
-    console.log("Effect 5: Frame sequence complete, starting scan wipe");
+    console.log("Effect 5: Frame sequence complete, starting scan wipe immediately");
 
-    // Step 3: Draw Nathan's photo on bottom canvas (prepare for scan wipe)
-    const photo = new window.Image();
-    photo.src = "/images/jack-nathan.jpg";
-    await new Promise((resolve) => {
-      photo.onload = resolve;
-    });
-
-    // Draw black background
-    ctxBottom.fillStyle = "#000";
-    ctxBottom.fillRect(0, 0, W, H);
-
-    // Draw photo with object-fit: contain
-    const photoAspect = photo.naturalWidth / photo.naturalHeight;
-    const canvasAspect = W / H;
-
-    let drawW, drawH, drawX, drawY;
-
-    if (photoAspect > canvasAspect) {
-      drawW = W;
-      drawH = W / photoAspect;
-      drawX = 0;
-      drawY = (H - drawH) / 2;
-    } else {
-      drawH = H;
-      drawW = H * photoAspect;
-      drawX = (W - drawW) / 2;
-      drawY = 0;
-    }
-
-    ctxBottom.drawImage(photo, 0, 0, photo.naturalWidth, photo.naturalHeight, drawX, drawY, drawW, drawH);
-
-    // Step 4: Run scan wipe with last frame
+    // Step 3: Run scan wipe with last frame (zero delay - bottom canvas already prepared)
     const lastFrame = effect5FramesRef.current[totalFrames - 1];
     const progress = { x: 0 };
 
