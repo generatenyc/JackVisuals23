@@ -15,6 +15,7 @@ export default function AboutPhoto() {
   const canvasTopRef = useRef(null);
   const photoImgRef = useRef(null);
   const revealDimensionsRef = useRef({ width: 0, height: 0 });
+  const imgReadyRef = useRef(false);
 
   // Helper: object-fit: cover for camera frames
   const drawImageCover = (ctx, img, canvasW, canvasH) => {
@@ -287,16 +288,25 @@ export default function AboutPhoto() {
       width: revealWrapper.offsetWidth,
       height: revealWrapper.offsetHeight,
     };
+    imgReadyRef.current = false;
     console.log("Revealing photo at:", revealDimensionsRef.current.width, "x", revealDimensionsRef.current.height);
     setShowPhoto(true);
 
-    // Double rAF: give React two frames to render the img before hiding canvases
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        canvasTop.style.display = "none";
-        canvasBottom.style.display = "none";
-        console.log("AboutPhoto: Animation complete - photo revealed");
-      });
+    // Wait for img onLoad to fire, then one rAF for paint before hiding canvases
+    await new Promise((resolve) => {
+      const check = () => {
+        if (imgReadyRef.current) {
+          requestAnimationFrame(() => {
+            canvasTop.style.display = "none";
+            canvasBottom.style.display = "none";
+            console.log("AboutPhoto: Animation complete - photo revealed");
+            resolve();
+          });
+        } else {
+          requestAnimationFrame(check);
+        }
+      };
+      requestAnimationFrame(check);
     });
   };
 
@@ -320,6 +330,9 @@ export default function AboutPhoto() {
           <img
             src="/images/jack-nathan.jpg"
             alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
+            onLoad={() => {
+              imgReadyRef.current = true;
+            }}
             style={{
               width: revealDimensionsRef.current.width
                 ? `${revealDimensionsRef.current.width}px`
