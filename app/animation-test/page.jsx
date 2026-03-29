@@ -429,11 +429,16 @@ export default function AnimationTestPage() {
     const ctxTop = canvasTop.getContext("2d");
     const ctxBottom = canvasBottom.getContext("2d");
 
+    // Use actual canvas dimensions
+    const W = canvasTop.width;
+    const H = canvasTop.height;
+
     console.log("Effect 5: Starting clean rebuild");
+    console.log(`Canvas dimensions: ${W}x${H}`);
 
     // Step 1: Fill bottom canvas solid black
     ctxBottom.fillStyle = "#000";
-    ctxBottom.fillRect(0, 0, 400, 500);
+    ctxBottom.fillRect(0, 0, W, H);
     console.log("Step 1: Bottom canvas filled black");
 
     // Step 2: Load and draw camera last frame on top canvas (frame_0181.jpg)
@@ -442,7 +447,7 @@ export default function AnimationTestPage() {
     await new Promise((resolve) => {
       cameraFrame.onload = resolve;
     });
-    drawImageCover(ctxTop, cameraFrame, 400, 500);
+    drawImageCover(ctxTop, cameraFrame, W, H);
     console.log("Step 2: Camera frame drawn on top canvas (cover fit)");
 
     // Step 3: Draw Nathan's photo on bottom canvas with object-fit: cover
@@ -451,11 +456,11 @@ export default function AnimationTestPage() {
     await new Promise((resolve) => {
       photo.onload = resolve;
     });
-    drawImageCover(ctxBottom, photo, 400, 500);
+    drawImageCover(ctxBottom, photo, W, H);
     console.log("Step 3: Nathan's photo drawn on bottom canvas (cover fit)");
 
     // Step 4: Run scan wipe — right to left
-    const progress = { x: 400 };
+    const progress = { x: W };
 
     // Kill any existing tweens
     gsap.killTweensOf(progress);
@@ -468,14 +473,14 @@ export default function AnimationTestPage() {
         const x = progress.x;
 
         // Clear top canvas
-        ctxTop.clearRect(0, 0, 400, 500);
+        ctxTop.clearRect(0, 0, W, H);
 
         // Camera visible LEFT of scan line
         ctxTop.save();
         ctxTop.beginPath();
-        ctxTop.rect(0, 0, x, 500);
+        ctxTop.rect(0, 0, x, H);
         ctxTop.clip();
-        drawImageCover(ctxTop, cameraFrame, 400, 500);
+        drawImageCover(ctxTop, cameraFrame, W, H);
         ctxTop.restore();
 
         // Draw scan line at position x
@@ -486,7 +491,7 @@ export default function AnimationTestPage() {
         ctxTop.lineWidth = 2;
         ctxTop.beginPath();
         ctxTop.moveTo(x, 0);
-        ctxTop.lineTo(x, 500);
+        ctxTop.lineTo(x, H);
         ctxTop.stroke();
 
         ctxTop.shadowBlur = 5;
@@ -494,13 +499,13 @@ export default function AnimationTestPage() {
         ctxTop.lineWidth = 1;
         ctxTop.beginPath();
         ctxTop.moveTo(x, 0);
-        ctxTop.lineTo(x, 500);
+        ctxTop.lineTo(x, H);
         ctxTop.stroke();
         ctxTop.restore();
       },
       onComplete: () => {
         // Clear top canvas completely — Nathan fully visible on bottom
-        ctxTop.clearRect(0, 0, 400, 500);
+        ctxTop.clearRect(0, 0, W, H);
         setIsEffect5Playing(false);
         console.log("Step 4: Scan wipe complete");
       },
@@ -519,9 +524,13 @@ export default function AnimationTestPage() {
     const ctxTop = canvasTop.getContext("2d");
     const ctxBottom = canvasBottom.getContext("2d");
 
+    // Use actual canvas dimensions
+    const W = canvasTop.width;
+    const H = canvasTop.height;
+
     // Reset bottom to black
     ctxBottom.fillStyle = "#000";
-    ctxBottom.fillRect(0, 0, 400, 500);
+    ctxBottom.fillRect(0, 0, W, H);
 
     // Reset top to camera frame
     const cameraFrame = new window.Image();
@@ -529,7 +538,7 @@ export default function AnimationTestPage() {
     await new Promise((resolve) => {
       cameraFrame.onload = resolve;
     });
-    drawImageCover(ctxTop, cameraFrame, 400, 500);
+    drawImageCover(ctxTop, cameraFrame, W, H);
 
     console.log("Effect 5 reset");
   };
@@ -823,19 +832,19 @@ export default function AnimationTestPage() {
             <h2 style={{ fontSize: "18px", marginBottom: "20px", color: "#2997ff" }}>
               5. Full Canvas Scan Wipe (Jo's idea)
             </h2>
-            <div style={{ position: "relative", width: "100%", maxWidth: "400px", aspectRatio: "1/1", background: "#000" }}>
+            <div style={{ position: "relative", width: "400px", height: "500px", background: "#000" }}>
               {/* Bottom layer: Nathan's photo (always visible) */}
               <canvas
                 ref={canvas5PhotoRef}
                 width={400}
-                height={400}
+                height={500}
                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1 }}
               />
               {/* Top layer: Camera frame (progressively clipped) */}
               <canvas
                 ref={canvas5Ref}
                 width={400}
-                height={400}
+                height={500}
                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 2 }}
               />
             </div>
