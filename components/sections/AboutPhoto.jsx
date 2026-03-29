@@ -286,9 +286,17 @@ export default function AboutPhoto() {
     const checkImageLoaded = () => {
       const img = photoImgRef.current?.querySelector("img");
       if (img && img.complete && img.naturalWidth > 0) {
-        // Force dimensions before revealing to prevent any resize flash
-        img.style.width = "220px";
-        img.style.height = "330px";
+        // Read actual wrapper dimensions at reveal time — correct on all viewports
+        const wrapper = photoImgRef.current;
+        const W = wrapper.offsetWidth;
+        const H = wrapper.offsetHeight;
+
+        img.style.width = `${W}px`;
+        img.style.height = `${H}px`;
+        img.style.position = "absolute";
+        img.style.top = "0";
+        img.style.left = "0";
+
         canvasTop.style.display = "none";
         canvasBottom.style.display = "none";
         console.log("AboutPhoto: Animation complete - photo revealed");
@@ -319,11 +327,7 @@ export default function AboutPhoto() {
           <img
             src="/images/jack-nathan.jpg"
             alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
-            width={220}
-            height={330}
             style={{
-              width: "220px",
-              height: "330px",
               objectFit: "cover",
               display: "block",
               position: "absolute",
