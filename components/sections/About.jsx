@@ -22,6 +22,29 @@ export default function About({ services = [], trustedBy = [] }) {
   const canvasTopRef = useRef(null);
   const photoImgRef = useRef(null);
 
+  // Helper: object-fit: cover for camera frames
+  const drawImageCover = (ctx, img, canvasW, canvasH) => {
+    const imgAspect = img.naturalWidth / img.naturalHeight;
+    const canvasAspect = canvasW / canvasH;
+    let sx, sy, sw, sh;
+
+    if (imgAspect > canvasAspect) {
+      // Image is wider - crop horizontally
+      sh = img.naturalHeight;
+      sw = sh * canvasAspect;
+      sx = (img.naturalWidth - sw) / 2;
+      sy = 0;
+    } else {
+      // Image is taller - crop vertically
+      sw = img.naturalWidth;
+      sh = sw / canvasAspect;
+      sx = 0;
+      sy = (img.naturalHeight - sh) / 2;
+    }
+
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvasW, canvasH);
+  };
+
   // Preload all 181 frames on mount
   useEffect(() => {
     const totalFrames = 181;
@@ -51,6 +74,32 @@ export default function About({ services = [], trustedBy = [] }) {
         framesRef.current = frames;
         setFramesLoaded(true);
         console.log(`About: All ${totalFrames} frames loaded`);
+
+        // Size both canvases immediately and draw first frame
+        const wrapper = photoWrapperRef.current;
+        const canvasTop = canvasTopRef.current;
+        const canvasBottom = canvasBottomRef.current;
+
+        if (wrapper && canvasTop && canvasBottom) {
+          const W = wrapper.offsetWidth;
+          const H = wrapper.offsetHeight;
+
+          canvasTop.width = W;
+          canvasTop.height = H;
+          canvasBottom.width = W;
+          canvasBottom.height = H;
+
+          // Fill bottom canvas black
+          const ctxBottom = canvasBottom.getContext("2d");
+          ctxBottom.fillStyle = "#000";
+          ctxBottom.fillRect(0, 0, W, H);
+
+          // Draw first frame on top canvas immediately
+          const ctxTop = canvasTop.getContext("2d");
+          drawImageCover(ctxTop, frames[0], W, H);
+
+          console.log(`About: Canvases pre-sized to ${W}x${H}, first frame drawn`);
+        }
       }
     };
 
@@ -98,29 +147,6 @@ export default function About({ services = [], trustedBy = [] }) {
 
     return () => observer.disconnect();
   }, [framesLoaded, hasPlayed]);
-
-  // Helper: object-fit: cover for camera frames
-  const drawImageCover = (ctx, img, canvasW, canvasH) => {
-    const imgAspect = img.naturalWidth / img.naturalHeight;
-    const canvasAspect = canvasW / canvasH;
-    let sx, sy, sw, sh;
-
-    if (imgAspect > canvasAspect) {
-      // Image is wider - crop horizontally
-      sh = img.naturalHeight;
-      sw = sh * canvasAspect;
-      sx = (img.naturalWidth - sw) / 2;
-      sy = 0;
-    } else {
-      // Image is taller - crop vertically
-      sw = img.naturalWidth;
-      sh = sw / canvasAspect;
-      sx = 0;
-      sy = (img.naturalHeight - sh) / 2;
-    }
-
-    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvasW, canvasH);
-  };
 
   // Main animation sequence
   const runAnimation = async () => {

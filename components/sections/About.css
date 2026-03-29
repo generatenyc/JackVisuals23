@@ -132,6 +132,7 @@
   overflow: hidden;
   flex-shrink: 0;
   margin: 0 24px 0 0;
+  background: #000;
 }
 
 /* ── Mobile layout — #sec-about ── */
