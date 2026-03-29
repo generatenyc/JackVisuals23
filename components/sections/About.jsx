@@ -22,13 +22,6 @@ export default function About({ services = [], trustedBy = [] }) {
   const canvasTopRef = useRef(null);
   const photoImgRef = useRef(null);
 
-  // Hide photo on mount - will reveal after animation completes
-  useEffect(() => {
-    if (photoImgRef.current) {
-      photoImgRef.current.style.opacity = "0";
-    }
-  }, []);
-
   // Preload all 181 frames on mount
   useEffect(() => {
     const totalFrames = 181;
@@ -46,6 +39,7 @@ export default function About({ services = [], trustedBy = [] }) {
         // Reveal photo immediately
         if (photoImgRef.current) {
           photoImgRef.current.style.opacity = "1";
+          photoImgRef.current.style.visibility = "visible";
         }
       }
     }, 4000);
@@ -292,6 +286,7 @@ export default function About({ services = [], trustedBy = [] }) {
     canvasBottom.remove();
     if (photoImgRef.current) {
       photoImgRef.current.style.opacity = "1";
+      photoImgRef.current.style.visibility = "visible";
     }
     console.log("About: Animation complete - canvases removed, photo revealed");
   };
