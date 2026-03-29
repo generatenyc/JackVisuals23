@@ -74,17 +74,25 @@ export default function About({ services = [], trustedBy = [] }) {
     return () => clearTimeout(timeout);
   }, [framesReady]);
 
-  /* Draw first frame immediately when frames are ready */
+  /* Set canvas dimensions once when frames are ready */
   useEffect(() => {
-    if (!framesReady || useFallback || !framesRef.current[0]) return;
+    if (!framesReady || useFallback) return;
 
     const canvas = canvasRef.current;
     const wrapper = wrapperRef.current;
     if (!canvas || !wrapper) return;
 
-    // Match canvas to photo wrapper dimensions
+    // Set canvas dimensions once — do not reset on every draw
     canvas.width = wrapper.offsetWidth;
     canvas.height = wrapper.offsetHeight;
+  }, [framesReady, useFallback]);
+
+  /* Draw first frame immediately when frames are ready */
+  useEffect(() => {
+    if (!framesReady || useFallback || !framesRef.current[0]) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     const img = framesRef.current[0];
@@ -111,17 +119,13 @@ export default function About({ services = [], trustedBy = [] }) {
 
     const playAnimation = () => {
       const canvas = canvasRef.current;
-      const wrapper = wrapperRef.current;
-      if (!canvas || !wrapper) return;
+      if (!canvas) return;
 
       const ctx = canvas.getContext("2d");
       const totalFrames = framesRef.current.length;
       const duration = 3000; // 3 seconds
       const frameInterval = duration / totalFrames;
       let currentFrame = 0;
-
-      canvas.width = wrapper.offsetWidth;
-      canvas.height = wrapper.offsetHeight;
 
       const drawFrame = (index) => {
         const img = framesRef.current[index];
@@ -159,8 +163,46 @@ export default function About({ services = [], trustedBy = [] }) {
 
       if (!canvas || !photoWrapper) return;
 
-      // Photo starts scaled up and invisible
-      gsap.set(photoWrapper, { opacity: 0, scale: 1.1 });
+      // Source frame dimensions
+      const SOURCE_W = 1440;
+      const SOURCE_H = 1440;
+
+      // Viewfinder coordinates in source frame
+      const VF = {
+        x: 190,
+        y: 440,
+        w: 520,
+        h: 420,
+      };
+
+      // Map to canvas dimensions
+      const scaleX = canvas.width / SOURCE_W;
+      const scaleY = canvas.height / SOURCE_H;
+
+      const mapped = {
+        x: VF.x * scaleX,
+        y: VF.y * scaleY,
+        w: VF.w * scaleX,
+        h: VF.h * scaleY,
+      };
+
+      // Get photo wrapper's position relative to its parent
+      const wrapperRect = photoWrapper.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+
+      // Calculate offset from canvas to photo wrapper
+      const offsetX = wrapperRect.left - canvasRect.left;
+      const offsetY = wrapperRect.top - canvasRect.top;
+
+      // Set photo to start at viewfinder position and size
+      // These are relative to the photo wrapper's own coordinate space
+      gsap.set(photoWrapper, {
+        opacity: 0,
+        scale: mapped.w / wrapperRect.width,
+        transformOrigin: "center center",
+        x: mapped.x + mapped.w / 2 - (offsetX + wrapperRect.width / 2),
+        y: mapped.y + mapped.h / 2 - (offsetY + wrapperRect.height / 2),
+      });
 
       const timeline = gsap.timeline({
         onComplete: () => {
@@ -170,18 +212,31 @@ export default function About({ services = [], trustedBy = [] }) {
       });
 
       timeline
-        // Canvas cuts to black instantly
-        .to(canvas, { opacity: 0, duration: 0.08, ease: "none" })
-        // Photo punches in — scales down from 110% to 100% with slight bounce
+        // Photo fades in on the LCD screen — small, in position
+        .to(photoWrapper, {
+          opacity: 1,
+          duration: 0.4,
+          ease: "power2.inOut",
+        })
+        // Hold on screen for a moment
+        .to({}, { duration: 0.5 })
+        // Camera body fades out
+        .to(canvas, {
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.inOut",
+        })
+        // Photo expands dramatically to full size and position simultaneously
         .to(
           photoWrapper,
           {
-            opacity: 1,
             scale: 1,
-            duration: 0.45,
-            ease: "back.out(1.4)",
+            x: 0,
+            y: 0,
+            duration: 0.7,
+            ease: "expo.out",
           },
-          "-=0.04"
+          "-=0.4"
         );
     };
 
@@ -251,19 +306,18 @@ export default function About({ services = [], trustedBy = [] }) {
             )}
             <div
               ref={photoRef}
-              className="about-photo-wrapper-inner"
+              className="about-photo-reveal"
               style={{ opacity: useFallback ? 1 : 0 }}
             >
               <NextImage
                 src="/images/jack-nathan.jpg"
                 alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
-                width={220}
-                height={480}
+                fill
+                className="about-photo-img"
+                sizes="(max-width: 820px) 100vw, 50vw"
                 style={{
                   objectFit: "cover",
                   objectPosition: "top center",
-                  width: "100%",
-                  height: "100%",
                 }}
                 priority={false}
               />
