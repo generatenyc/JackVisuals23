@@ -493,14 +493,14 @@ export default function AnimationTestPage() {
     ctxBottom.drawImage(photo, 0, 0, photo.naturalWidth, photo.naturalHeight, drawX, drawY, drawW, drawH);
     console.log("Step 3: Nathan's photo drawn on bottom canvas (contain fit)");
 
-    // Step 4: Run scan wipe — right to left
-    const progress = { x: W };
+    // Step 4: Run scan wipe — left to right
+    const progress = { x: 0 };
 
     // Kill any existing tweens
     gsap.killTweensOf(progress);
 
     gsap.to(progress, {
-      x: 0,
+      x: W,
       duration: 1.2,
       ease: "power2.inOut",
       onUpdate: () => {
@@ -509,10 +509,10 @@ export default function AnimationTestPage() {
         // Clear top canvas
         ctxTop.clearRect(0, 0, W, H);
 
-        // Camera visible LEFT of scan line
+        // Camera visible RIGHT of scan line
         ctxTop.save();
         ctxTop.beginPath();
-        ctxTop.rect(0, 0, x, H);
+        ctxTop.rect(x, 0, W - x, H);
         ctxTop.clip();
         drawImageCover(ctxTop, cameraFrame, W, H);
         ctxTop.restore();
