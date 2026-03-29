@@ -16,13 +16,14 @@
   z-index: 0;
 }
 
-/* Photo wrapper — rendered only after animation completes (see About.jsx showPhoto state) */
+/* Photo wrapper — rendered only after animation completes (see AboutPhoto.jsx showPhoto state) */
 #sec-about .about-photo-img-wrapper {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 /* Canvas layers for camera animation */

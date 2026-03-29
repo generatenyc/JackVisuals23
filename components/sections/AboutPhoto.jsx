@@ -287,6 +287,9 @@ export default function AboutPhoto() {
     const checkImageLoaded = () => {
       const img = photoImgRef.current?.querySelector("img");
       if (img && img.complete) {
+        const wrapper = photoImgRef.current;
+        console.log("wrapper offsetWidth:", wrapper?.offsetWidth);
+        console.log("wrapper offsetHeight:", wrapper?.offsetHeight);
         canvasTop.style.display = "none";
         canvasBottom.style.display = "none";
         console.log("AboutPhoto: Animation complete - photo revealed");
@@ -317,10 +320,10 @@ export default function AboutPhoto() {
           <NextImage
             src="/images/jack-nathan.jpg"
             alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
-            fill
+            width={220}
+            height={330}
             priority
-            sizes="(max-width: 820px) 100vw, 220px"
-            className="about-photo-img"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         </div>
       )}
