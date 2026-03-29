@@ -8,14 +8,10 @@ import gsap from "gsap";
 export default function AboutPhoto() {
   const [framesLoaded, setFramesLoaded] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
-  const [showPhoto, setShowPhoto] = useState(false);
   const framesRef = useRef([]);
   const photoWrapperRef = useRef(null);
   const canvasBottomRef = useRef(null);
   const canvasTopRef = useRef(null);
-  const photoImgRef = useRef(null);
-  const revealDimensionsRef = useRef({ width: 0, height: 0 });
-  const imgReadyRef = useRef(false);
 
   // Helper: object-fit: cover for camera frames
   const drawImageCover = (ctx, img, canvasW, canvasH) => {
@@ -50,8 +46,7 @@ export default function AboutPhoto() {
     // Fallback: if frames don't load in 4 seconds, skip animation
     timeoutId = setTimeout(() => {
       if (!framesLoaded) {
-        console.log("AboutPhoto: Frame loading timeout - showing fallback photo");
-        setShowPhoto(true);
+        console.log("AboutPhoto: Frame loading timeout - skipping animation");
       }
     }, 4000);
 
@@ -282,32 +277,9 @@ export default function AboutPhoto() {
       });
     });
 
-    // Step 5: Capture wrapper dimensions BEFORE mount so img renders at correct size on first paint
-    const revealWrapper = canvasBottom.parentElement;
-    revealDimensionsRef.current = {
-      width: revealWrapper.offsetWidth,
-      height: revealWrapper.offsetHeight,
-    };
-    imgReadyRef.current = false;
-    console.log("Revealing photo at:", revealDimensionsRef.current.width, "x", revealDimensionsRef.current.height);
-    setShowPhoto(true);
-
-    // Wait for img onLoad to fire, then one rAF for paint before hiding canvases
-    await new Promise((resolve) => {
-      const check = () => {
-        if (imgReadyRef.current) {
-          requestAnimationFrame(() => {
-            canvasTop.style.display = "none";
-            canvasBottom.style.display = "none";
-            console.log("AboutPhoto: Animation complete - photo revealed");
-            resolve();
-          });
-        } else {
-          requestAnimationFrame(check);
-        }
-      };
-      requestAnimationFrame(check);
-    });
+    // Step 5: Hide top canvas — bottom canvas already shows Nathan's photo at correct dimensions
+    canvasTop.style.display = "none";
+    console.log("AboutPhoto: Animation complete - photo revealed via bottom canvas");
   };
 
   return (
@@ -324,31 +296,6 @@ export default function AboutPhoto() {
         className="about-canvas-top"
         style={{ background: "#000", display: "block" }}
       />
-      {/* Next.js Image — mounted before canvases hide; canvases hide only after image is loaded */}
-      {showPhoto && (
-        <div ref={photoImgRef} className="about-photo-img-wrapper">
-          <img
-            src="/images/jack-nathan.jpg"
-            alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
-            onLoad={() => {
-              imgReadyRef.current = true;
-            }}
-            style={{
-              width: revealDimensionsRef.current.width
-                ? `${revealDimensionsRef.current.width}px`
-                : "100%",
-              height: revealDimensionsRef.current.height
-                ? `${revealDimensionsRef.current.height}px`
-                : "100%",
-              objectFit: "cover",
-              display: "block",
-              position: "absolute",
-              top: 0,
-              left: 0,
-            }}
-          />
-        </div>
-      )}
     </div>
   );
 }
