@@ -26,6 +26,13 @@
   overflow: hidden;
 }
 
+/* Override Tailwind v4 base reset (img { height: auto }) so image fills wrapper on first paint */
+#sec-about .about-photo-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* Canvas layers for camera animation */
 #sec-about .about-canvas-bottom,
 #sec-about .about-canvas-top {
