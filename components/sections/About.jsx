@@ -131,9 +131,11 @@ export default function About({ services = [], trustedBy = [] }) {
     photoCanvas.width = wrapper.offsetWidth;
     photoCanvas.height = wrapper.offsetHeight;
 
-    // Draw Nathan's photo on bottom canvas (always visible)
+    // Fill bottom canvas with solid black during camera animation
+    // Photo will be drawn when scan wipe starts
     const ctxPhoto = photoCanvas.getContext("2d");
-    drawNathanPhoto(ctxPhoto, photoCanvas);
+    ctxPhoto.fillStyle = "#000";
+    ctxPhoto.fillRect(0, 0, photoCanvas.width, photoCanvas.height);
   }, [framesReady, useFallback]);
 
   /* Draw first frame immediately when frames are ready */
@@ -211,6 +213,10 @@ export default function About({ services = [], trustedBy = [] }) {
       const canvasTop = canvasRef.current;
       const canvasPhoto = photoCanvasRef.current;
       if (!canvasTop || !canvasPhoto) return;
+
+      // Draw Nathan's photo on bottom canvas NOW (not during camera animation)
+      const ctxPhoto = canvasPhoto.getContext("2d");
+      drawNathanPhoto(ctxPhoto, canvasPhoto);
 
       const ctxTop = canvasTop.getContext("2d");
       const img = framesRef.current[framesRef.current.length - 1]; // Last frame (frame_0151.jpg)
