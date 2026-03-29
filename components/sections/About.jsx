@@ -20,6 +20,14 @@ export default function About({ services = [], trustedBy = [] }) {
   const photoWrapperRef = useRef(null);
   const canvasBottomRef = useRef(null);
   const canvasTopRef = useRef(null);
+  const photoImgRef = useRef(null);
+
+  // Hide photo on mount - will reveal after animation completes
+  useEffect(() => {
+    if (photoImgRef.current) {
+      photoImgRef.current.style.opacity = "0";
+    }
+  }, []);
 
   // Preload all 181 frames on mount
   useEffect(() => {
@@ -35,6 +43,10 @@ export default function About({ services = [], trustedBy = [] }) {
       if (!framesLoaded) {
         console.log("About: Frame loading timeout - showing fallback photo");
         setFramesLoaded(false);
+        // Reveal photo immediately
+        if (photoImgRef.current) {
+          photoImgRef.current.style.opacity = "1";
+        }
       }
     }, 4000);
 
@@ -275,10 +287,13 @@ export default function About({ services = [], trustedBy = [] }) {
       });
     });
 
-    // Step 5: Remove canvases from DOM to free memory
+    // Step 5: Remove canvases from DOM and reveal photo
     canvasTop.remove();
     canvasBottom.remove();
-    console.log("About: Animation complete - canvases removed from DOM");
+    if (photoImgRef.current) {
+      photoImgRef.current.style.opacity = "1";
+    }
+    console.log("About: Animation complete - canvases removed, photo revealed");
   };
   const servicesText =
     services.length > 0
@@ -331,19 +346,24 @@ export default function About({ services = [], trustedBy = [] }) {
 
         {/* Camera animation */}
         <div className="about-photo" ref={photoWrapperRef}>
-          {/* Fallback: Next.js Image (z-index: 0) */}
-          <NextImage
-            src="/images/jack-nathan.jpg"
-            alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
-            fill
-            className="about-photo-img"
-            sizes="(max-width: 820px) 100vw, 50vw"
-            style={{
-              objectFit: "cover",
-              objectPosition: "top center",
-            }}
-            priority={false}
-          />
+          {/* Fallback: Next.js Image (z-index: 0) - hidden until animation completes */}
+          <div
+            ref={photoImgRef}
+            className="about-photo-img-wrapper"
+          >
+            <NextImage
+              src="/images/jack-nathan.jpg"
+              alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
+              fill
+              className="about-photo-img"
+              sizes="(max-width: 820px) 100vw, 50vw"
+              style={{
+                objectFit: "cover",
+                objectPosition: "top center",
+              }}
+              priority={false}
+            />
+          </div>
           {/* Bottom canvas: Nathan's photo (z-index: 1) */}
           <canvas ref={canvasBottomRef} className="about-canvas-bottom" />
           {/* Top canvas: Camera frames + scan wipe (z-index: 2) */}
