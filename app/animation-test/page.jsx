@@ -15,6 +15,7 @@ export default function AnimationTestPage() {
   const canvas3Ref = useRef(null);
   const canvas4Ref = useRef(null);
   const canvas5Ref = useRef(null);
+  const canvas5PhotoRef = useRef(null); // Effect 5: bottom layer for Nathan's photo
 
   // Photo refs for each effect
   const photo1Ref = useRef(null);
@@ -69,6 +70,13 @@ export default function AnimationTestPage() {
       const ctx = canvas.getContext("2d");
       drawCameraFrame(ctx, canvas);
     });
+
+    // Effect 5: Also draw Nathan's photo on the bottom canvas
+    const photoCanvas = canvas5PhotoRef.current;
+    if (photoCanvas) {
+      const ctx = photoCanvas.getContext("2d");
+      drawNathanPhoto(ctx, photoCanvas);
+    }
   }, [imagesLoaded]);
 
   const drawCameraFrame = (ctx, canvas) => {
@@ -92,6 +100,37 @@ export default function AnimationTestPage() {
       img.naturalWidth * scale,
       img.naturalHeight * scale
     );
+  };
+
+  const drawNathanPhoto = (ctx, canvas) => {
+    const img = nathanPhotoRef.current;
+    if (!img) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw photo to fill canvas, object-fit: cover, object-position: top center
+    const imgAspect = img.naturalWidth / img.naturalHeight;
+    const canvasAspect = canvas.width / canvas.height;
+
+    let drawWidth, drawHeight, drawX, drawY;
+
+    if (imgAspect > canvasAspect) {
+      // Image is wider - fit to height
+      drawHeight = canvas.height;
+      drawWidth = drawHeight * imgAspect;
+      drawX = (canvas.width - drawWidth) / 2;
+      drawY = 0; // top alignment
+    } else {
+      // Image is taller - fit to width
+      drawWidth = canvas.width;
+      drawHeight = drawWidth / imgAspect;
+      drawX = 0;
+      drawY = 0; // top alignment
+    }
+
+    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
   };
 
   const getLCDCoords = (canvas) => {
@@ -349,80 +388,116 @@ export default function AnimationTestPage() {
 
   // Effect 5: Full Canvas Scan Wipe
   const runEffect5 = () => {
-    const canvas = canvas5Ref.current;
-    const photo = photo5Ref.current;
-    if (!canvas || !photo) return;
+    const canvasTop = canvas5Ref.current;
+    const canvasPhoto = canvas5PhotoRef.current;
+    if (!canvasTop || !canvasPhoto) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctxTop = canvasTop.getContext("2d");
+    const img = cameraFrameRef.current;
+    if (!img) return;
 
-    gsap.set(photo, { opacity: 0 });
+    // Helper to draw scan line with glow
+    const drawScanLine = (ctx, x, height, alpha = 1) => {
+      ctx.save();
+      ctx.globalAlpha = alpha;
 
-    const scanline = { x: 0 };
-    const lineWidth = 3;
+      // Outer glow
+      ctx.shadowColor = "#2997ff";
+      ctx.shadowBlur = 20;
+      ctx.strokeStyle = "#2997ff";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
 
-    gsap.to(scanline, {
-      x: canvas.width,
-      duration: 1.5,
+      // Inner bright core
+      ctx.shadowBlur = 5;
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+
+      ctx.restore();
+    };
+
+    const scanProgress = { x: 0 };
+    const scanLineOpacity = { value: 1 };
+
+    gsap.to(scanProgress, {
+      x: canvasTop.width,
+      duration: 1.2,
       ease: "power2.inOut",
       onUpdate: () => {
-        // Clear everything left of scanline (black)
-        ctx.fillStyle = "#000";
-        ctx.fillRect(0, 0, scanline.x, canvas.height);
+        const x = scanProgress.x;
 
-        // Draw camera frame right of scanline
-        const img = cameraFrameRef.current;
-        if (!img) return;
+        // Clear top canvas
+        ctxTop.clearRect(0, 0, canvasTop.width, canvasTop.height);
 
+        // Draw camera frame clipped to right of scan line
         const scale = Math.min(
-          canvas.width / img.naturalWidth,
-          canvas.height / img.naturalHeight
+          canvasTop.width / img.naturalWidth,
+          canvasTop.height / img.naturalHeight
         );
-        const x = (canvas.width - img.naturalWidth * scale) / 2;
-        const y = (canvas.height - img.naturalHeight * scale) / 2;
+        const imgX = (canvasTop.width - img.naturalWidth * scale) / 2;
+        const imgY = (canvasTop.height - img.naturalHeight * scale) / 2;
 
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(scanline.x, 0, canvas.width - scanline.x, canvas.height);
-        ctx.clip();
-        ctx.drawImage(
+        ctxTop.save();
+        ctxTop.beginPath();
+        ctxTop.rect(x, 0, canvasTop.width - x, canvasTop.height);
+        ctxTop.clip();
+        ctxTop.drawImage(
           img,
-          x,
-          y,
+          imgX,
+          imgY,
           img.naturalWidth * scale,
           img.naturalHeight * scale
         );
-        ctx.restore();
+        ctxTop.restore();
 
-        // Draw glowing vertical scanline
-        const gradient = ctx.createLinearGradient(
-          scanline.x - lineWidth * 3,
-          0,
-          scanline.x + lineWidth * 3,
-          0
-        );
-        gradient.addColorStop(0, "rgba(41, 151, 255, 0)");
-        gradient.addColorStop(0.3, "rgba(41, 151, 255, 0.6)");
-        gradient.addColorStop(0.5, "rgba(41, 151, 255, 1)");
-        gradient.addColorStop(0.7, "rgba(41, 151, 255, 0.6)");
-        gradient.addColorStop(1, "rgba(41, 151, 255, 0)");
-
-        ctx.fillStyle = gradient;
-        ctx.fillRect(scanline.x - lineWidth, 0, lineWidth * 2, canvas.height);
-
-        // Reveal photo in wake of scanline
-        const photoOpacity = Math.min(scanline.x / canvas.width, 1);
-        photo.style.opacity = photoOpacity;
+        // Draw scan line on top
+        drawScanLine(ctxTop, x, canvasTop.height);
       },
       onComplete: () => {
-        gsap.to(canvas, {
-          opacity: 0,
+        // Fade out scan line
+        gsap.to(scanLineOpacity, {
+          value: 0,
           duration: 0.3,
+          onUpdate: () => {
+            ctxTop.clearRect(0, 0, canvasTop.width, canvasTop.height);
+            // Redraw fading scan line at right edge
+            drawScanLine(
+              ctxTop,
+              canvasTop.width,
+              canvasTop.height,
+              scanLineOpacity.value
+            );
+          },
           onComplete: () => {
-            photo.style.opacity = 1;
+            ctxTop.clearRect(0, 0, canvasTop.width, canvasTop.height);
           },
         });
       },
     });
+  };
+
+  const resetEffect5 = () => {
+    const canvasTop = canvas5Ref.current;
+    const canvasPhoto = canvas5PhotoRef.current;
+    if (!canvasTop || !canvasPhoto) return;
+
+    gsap.killTweensOf(canvasTop);
+
+    const ctxTop = canvasTop.getContext("2d");
+    const ctxPhoto = canvasPhoto.getContext("2d");
+
+    // Reset photo canvas
+    drawNathanPhoto(ctxPhoto, canvasPhoto);
+
+    // Reset camera canvas
+    drawCameraFrame(ctxTop, canvasTop);
   };
 
   const resetEffect = (canvasRef, photoRef) => {
@@ -715,30 +790,20 @@ export default function AnimationTestPage() {
               5. Full Canvas Scan Wipe (Jo's idea)
             </h2>
             <div style={{ position: "relative", width: "100%", maxWidth: "400px", aspectRatio: "1/1", background: "#000" }}>
+              {/* Bottom layer: Nathan's photo (always visible) */}
+              <canvas
+                ref={canvas5PhotoRef}
+                width={400}
+                height={400}
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1 }}
+              />
+              {/* Top layer: Camera frame (progressively clipped) */}
               <canvas
                 ref={canvas5Ref}
                 width={400}
                 height={400}
                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 2 }}
               />
-              <div
-                ref={photo5Ref}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  opacity: 0,
-                  overflow: "hidden",
-                }}
-              >
-                <Image
-                  src="/images/jack-nathan.jpg"
-                  alt="Nathan"
-                  fill
-                  style={{ objectFit: "cover", objectPosition: "top center" }}
-                />
-              </div>
             </div>
             <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
               <button
@@ -755,7 +820,7 @@ export default function AnimationTestPage() {
                 Play Effect
               </button>
               <button
-                onClick={() => resetEffect(canvas5Ref, photo5Ref)}
+                onClick={() => resetEffect5()}
                 style={{
                   padding: "10px 20px",
                   background: "#333",
