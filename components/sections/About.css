@@ -9,7 +9,7 @@
   background: var(--color-bg);
 }
 
-/* Camera animation — Phase 8 */
+/* Camera animation — Phase 8: Scan wipe effect */
 .about-photo-wrapper {
   position: relative;
   display: inline-block;
@@ -17,26 +17,25 @@
   height: 100%;
 }
 
-.camera-canvas-overlay {
+.about-canvas-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.about-canvas-top {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: 2;
-  background: #000;
-  transition: none; /* no CSS transitions — GSAP handles everything */
 }
 
-.about-photo-reveal {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
+/* Fallback: Next.js Image when frames don't load */
 .about-photo-img {
   object-fit: cover;
   object-position: top center;

@@ -39,9 +39,10 @@ const PLACEHOLDER_TRUSTED_BY =
   "Gin Mare · Diplomatico · Grey Goose · Patrón · JP Chenet · Cantine Maschio";
 
 export default function About({ services = [], trustedBy = [] }) {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef(null); // Top canvas - camera frames
+  const photoCanvasRef = useRef(null); // Bottom canvas - Nathan's photo
   const wrapperRef = useRef(null);
-  const photoRef = useRef(null);
+  const nathanPhotoRef = useRef(null); // Nathan's photo image for canvas drawing
   const framesRef = useRef([]);
   const [framesReady, setFramesReady] = useState(false);
   const [useFallback, setUseFallback] = useState(false);
@@ -55,6 +56,15 @@ export default function About({ services = [], trustedBy = [] }) {
     trustedBy.length > 0
       ? trustedBy.map((t) => t.name).join(" · ")
       : PLACEHOLDER_TRUSTED_BY;
+
+  /* Preload Nathan's photo for canvas drawing */
+  useEffect(() => {
+    const img = new window.Image();
+    img.onload = () => {
+      nathanPhotoRef.current = img;
+    };
+    img.src = "/images/jack-nathan.jpg";
+  }, []);
 
   /* Preload frames with fallback timeout */
   useEffect(() => {
@@ -74,17 +84,56 @@ export default function About({ services = [], trustedBy = [] }) {
     return () => clearTimeout(timeout);
   }, [framesReady]);
 
+  /* Helper: Draw Nathan's photo on canvas with object-fit: cover */
+  const drawNathanPhoto = (ctx, canvas) => {
+    const img = nathanPhotoRef.current;
+    if (!img) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw photo to fill canvas, object-fit: cover, object-position: top center
+    const imgAspect = img.naturalWidth / img.naturalHeight;
+    const canvasAspect = canvas.width / canvas.height;
+
+    let drawWidth, drawHeight, drawX, drawY;
+
+    if (imgAspect > canvasAspect) {
+      // Image is wider - fit to height
+      drawHeight = canvas.height;
+      drawWidth = drawHeight * imgAspect;
+      drawX = (canvas.width - drawWidth) / 2;
+      drawY = 0; // top alignment
+    } else {
+      // Image is taller - fit to width
+      drawWidth = canvas.width;
+      drawHeight = drawWidth / imgAspect;
+      drawX = 0;
+      drawY = 0; // top alignment
+    }
+
+    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+  };
+
   /* Set canvas dimensions once when frames are ready */
   useEffect(() => {
     if (!framesReady || useFallback) return;
 
     const canvas = canvasRef.current;
+    const photoCanvas = photoCanvasRef.current;
     const wrapper = wrapperRef.current;
-    if (!canvas || !wrapper) return;
+    if (!canvas || !photoCanvas || !wrapper) return;
 
-    // Set canvas dimensions once — do not reset on every draw
+    // Set both canvas dimensions once — do not reset on every draw
     canvas.width = wrapper.offsetWidth;
     canvas.height = wrapper.offsetHeight;
+    photoCanvas.width = wrapper.offsetWidth;
+    photoCanvas.height = wrapper.offsetHeight;
+
+    // Draw Nathan's photo on bottom canvas (always visible)
+    const ctxPhoto = photoCanvas.getContext("2d");
+    drawNathanPhoto(ctxPhoto, photoCanvas);
   }, [framesReady, useFallback]);
 
   /* Draw first frame immediately when frames are ready */
@@ -150,94 +199,111 @@ export default function About({ services = [], trustedBy = [] }) {
         currentFrame++;
         if (currentFrame >= totalFrames) {
           clearInterval(interval);
-          revealPhoto();
+          runScanWipe();
           return;
         }
         drawFrame(currentFrame);
       }, frameInterval);
     };
 
-    const revealPhoto = () => {
-      const canvas = canvasRef.current;
-      const photoWrapper = photoRef.current;
+    /* DESIGN UPDATE: Replaced viewfinder reveal with scan wipe effect [March 2026] */
+    const runScanWipe = () => {
+      const canvasTop = canvasRef.current;
+      const canvasPhoto = photoCanvasRef.current;
+      if (!canvasTop || !canvasPhoto) return;
 
-      if (!canvas || !photoWrapper) return;
+      const ctxTop = canvasTop.getContext("2d");
+      const img = framesRef.current[framesRef.current.length - 1]; // Last frame (frame_0151.jpg)
+      if (!img) return;
 
-      // Source frame dimensions
-      const SOURCE_W = 1440;
-      const SOURCE_H = 1440;
+      // Helper to draw scan line with glow
+      const drawScanLine = (ctx, x, height, alpha = 1) => {
+        ctx.save();
+        ctx.globalAlpha = alpha;
 
-      // Viewfinder coordinates in source frame
-      const VF = {
-        x: 190,
-        y: 440,
-        w: 520,
-        h: 420,
+        // Outer glow
+        ctx.shadowColor = "#2997ff";
+        ctx.shadowBlur = 20;
+        ctx.strokeStyle = "#2997ff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+
+        // Inner bright core
+        ctx.shadowBlur = 5;
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+
+        ctx.restore();
       };
 
-      // Map to canvas dimensions
-      const scaleX = canvas.width / SOURCE_W;
-      const scaleY = canvas.height / SOURCE_H;
+      const scanProgress = { x: 0 };
+      const scanLineOpacity = { value: 1 };
 
-      const mapped = {
-        x: VF.x * scaleX,
-        y: VF.y * scaleY,
-        w: VF.w * scaleX,
-        h: VF.h * scaleY,
-      };
+      gsap.to(scanProgress, {
+        x: canvasTop.width,
+        duration: 1.2,
+        ease: "power2.inOut",
+        onUpdate: () => {
+          const x = scanProgress.x;
 
-      // Get photo wrapper's position relative to its parent
-      const wrapperRect = photoWrapper.getBoundingClientRect();
-      const canvasRect = canvas.getBoundingClientRect();
+          // Clear top canvas
+          ctxTop.clearRect(0, 0, canvasTop.width, canvasTop.height);
 
-      // Calculate offset from canvas to photo wrapper
-      const offsetX = wrapperRect.left - canvasRect.left;
-      const offsetY = wrapperRect.top - canvasRect.top;
+          // Draw camera frame clipped to right of scan line
+          const scale = Math.min(
+            canvasTop.width / img.naturalWidth,
+            canvasTop.height / img.naturalHeight
+          );
+          const imgX = (canvasTop.width - img.naturalWidth * scale) / 2;
+          const imgY = (canvasTop.height - img.naturalHeight * scale) / 2;
 
-      // Set photo to start at viewfinder position and size
-      // These are relative to the photo wrapper's own coordinate space
-      gsap.set(photoWrapper, {
-        opacity: 0,
-        scale: mapped.w / wrapperRect.width,
-        transformOrigin: "center center",
-        x: mapped.x + mapped.w / 2 - (offsetX + wrapperRect.width / 2),
-        y: mapped.y + mapped.h / 2 - (offsetY + wrapperRect.height / 2),
-      });
+          ctxTop.save();
+          ctxTop.beginPath();
+          ctxTop.rect(x, 0, canvasTop.width - x, canvasTop.height);
+          ctxTop.clip();
+          ctxTop.drawImage(
+            img,
+            imgX,
+            imgY,
+            img.naturalWidth * scale,
+            img.naturalHeight * scale
+          );
+          ctxTop.restore();
 
-      const timeline = gsap.timeline({
+          // Draw scan line on top
+          drawScanLine(ctxTop, x, canvasTop.height);
+        },
         onComplete: () => {
-          canvas.style.display = "none";
-          canvas.style.pointerEvents = "none";
+          // Fade out scan line
+          gsap.to(scanLineOpacity, {
+            value: 0,
+            duration: 0.3,
+            onUpdate: () => {
+              ctxTop.clearRect(0, 0, canvasTop.width, canvasTop.height);
+              // Redraw fading scan line at right edge
+              drawScanLine(
+                ctxTop,
+                canvasTop.width,
+                canvasTop.height,
+                scanLineOpacity.value
+              );
+            },
+            onComplete: () => {
+              // Remove top canvas from DOM
+              ctxTop.clearRect(0, 0, canvasTop.width, canvasTop.height);
+              canvasTop.style.display = "none";
+              canvasTop.style.pointerEvents = "none";
+            },
+          });
         },
       });
-
-      timeline
-        // Photo fades in on the LCD screen — small, in position
-        .to(photoWrapper, {
-          opacity: 1,
-          duration: 0.4,
-          ease: "power2.inOut",
-        })
-        // Hold on screen for a moment
-        .to({}, { duration: 0.5 })
-        // Camera body fades out
-        .to(canvas, {
-          opacity: 0,
-          duration: 0.6,
-          ease: "power2.inOut",
-        })
-        // Photo expands dramatically to full size and position simultaneously
-        .to(
-          photoWrapper,
-          {
-            scale: 1,
-            x: 0,
-            y: 0,
-            duration: 0.7,
-            ease: "expo.out",
-          },
-          "-=0.4"
-        );
     };
 
     const observer = new IntersectionObserver(
@@ -301,14 +367,19 @@ export default function About({ services = [], trustedBy = [] }) {
         </div>
         <div className="about-photo">
           <div className="about-photo-wrapper" ref={wrapperRef}>
-            {!useFallback && (
-              <canvas ref={canvasRef} className="camera-canvas-overlay" />
-            )}
-            <div
-              ref={photoRef}
-              className="about-photo-reveal"
-              style={{ opacity: useFallback ? 1 : 0 }}
-            >
+            {!useFallback ? (
+              <>
+                {/* Bottom layer: Nathan's photo (always visible) */}
+                <canvas
+                  ref={photoCanvasRef}
+                  className="about-canvas-photo"
+                  aria-label="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
+                />
+                {/* Top layer: Camera frame (progressively clipped) */}
+                <canvas ref={canvasRef} className="about-canvas-top" />
+              </>
+            ) : (
+              /* Fallback: Show photo immediately if frames don't load */
               <NextImage
                 src="/images/jack-nathan.jpg"
                 alt="Nathan — cinematographer and founder of Jack Visuals, Trinidad"
@@ -321,7 +392,7 @@ export default function About({ services = [], trustedBy = [] }) {
                 }}
                 priority={false}
               />
-            </div>
+            )}
           </div>
         </div>
       </div>
