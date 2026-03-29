@@ -281,14 +281,14 @@ export default function About({ services = [], trustedBy = [] }) {
       });
     });
 
-    // Step 5: Remove canvases from DOM and reveal photo
-    canvasTop.remove();
-    canvasBottom.remove();
+    // Step 5: Hide canvases and reveal photo
+    canvasTop.style.display = "none";
+    canvasBottom.style.display = "none";
     if (photoImgRef.current) {
       photoImgRef.current.style.opacity = "1";
       photoImgRef.current.style.visibility = "visible";
     }
-    console.log("About: Animation complete - canvases removed, photo revealed");
+    console.log("About: Animation complete - canvases hidden, photo revealed");
   };
   const servicesText =
     services.length > 0
