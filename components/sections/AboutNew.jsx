@@ -144,8 +144,8 @@ export default async function AboutNew() {
               </div>
             </div>
 
-            {/* Trusted By */}
-            <div className="an-info-block">
+            {/* Trusted By — debug border: remove once confirmed rendering */}
+            <div className="an-info-block an-info-block--debug">
               <p className="an-info-label">Trusted By</p>
               {trustedBy.length > 0 ? (
                 <div className="an-logo-grid">
