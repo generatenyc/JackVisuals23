@@ -43,6 +43,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: start;
+  min-height: 100vh;
 }
 
 /* ─── Left column: photo — sticky, full viewport height ─────────────────── */
@@ -58,7 +59,10 @@
 
 #new-about-page .an-photo-wrapper {
   position: absolute;
-  inset: 0;
+  top: 32px;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 #new-about-page .an-canvas-bottom {
@@ -147,20 +151,6 @@
   color: var(--an-text-icon-label);
   text-align: center;
   line-height: 1.3;
-}
-
-/* ─── Temp debug — remove after confirming all blocks render ────────────── */
-#new-about-page .an-info-block--debug {
-  outline: 1px solid red;
-}
-#new-about-page .an-bio--debug {
-  outline: 1px solid lime;
-}
-#new-about-page .an-info-block--debug-offer {
-  outline: 1px solid orange;
-}
-#new-about-page .an-info-block--debug-kit {
-  outline: 1px solid cyan;
 }
 
 /* ─── Logo grid ─────────────────────────────────────────────────────────── */
