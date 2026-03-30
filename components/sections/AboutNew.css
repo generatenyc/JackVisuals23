@@ -53,6 +53,7 @@
   top: var(--an-nav-height-desktop);
   height: calc(100vh - var(--an-nav-height-desktop));
   overflow: hidden;
+  padding-top: 32px;
 }
 
 #new-about-page .an-photo-wrapper {
