@@ -1,0 +1,230 @@
+/* AboutNew.css — all rules scoped to #new-about-page */
+
+:root {
+  --an-nav-height-desktop: 72px;
+  --an-nav-height-mobile: 52px;
+  --an-bg: #000;
+  --an-bg-photo: #111;
+  --an-text-primary: #fff;
+  --an-text-body: rgba(255, 255, 255, 0.55);
+  --an-text-label: rgba(255, 255, 255, 0.3);
+  --an-text-icon-label: rgba(255, 255, 255, 0.45);
+  --an-border-subtle: rgba(255, 255, 255, 0.07);
+  --an-border-card: rgba(255, 255, 255, 0.08);
+  --an-border-logo: rgba(255, 255, 255, 0.06);
+  --an-bg-card: rgba(255, 255, 255, 0.02);
+  --an-logo-fallback: rgba(255, 255, 255, 0.35);
+}
+
+/* ─── Base ─────────────────────────────────────────────────────────────── */
+
+#new-about-page {
+  background: var(--an-bg);
+  padding-top: var(--an-nav-height-desktop);
+}
+
+#new-about-page .an-inner {
+  max-width: none;
+  padding: 0;
+}
+
+/* Title lives inside the right column — rule kept for font/color, positioning handled by .an-col-right */
+#new-about-page .an-title {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 56px;
+  letter-spacing: 0.5px;
+  color: var(--an-text-primary);
+  margin: 0 0 32px 0;
+  line-height: 1;
+}
+
+/* ─── Two-column layout ─────────────────────────────────────────────────── */
+
+#new-about-page .an-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+}
+
+/* ─── Left column: photo — sticky, full viewport height ─────────────────── */
+
+#new-about-page .an-col-photo {
+  background: var(--an-bg-photo);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#new-about-page .an-photo-wrapper {
+  position: absolute;
+  inset: 0;
+}
+
+#new-about-page .an-canvas-bottom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: block;
+  background: var(--an-bg);
+}
+
+#new-about-page .an-canvas-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: block;
+  background: var(--an-bg);
+}
+
+/* ─── Right column: content ─────────────────────────────────────────────── */
+
+#new-about-page .an-col-right {
+  padding: 48px 56px 80px 44px;
+  display: flex;
+  flex-direction: column;
+}
+
+#new-about-page .an-bio {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--an-text-body);
+  margin-bottom: 32px;
+}
+
+/* ─── Info blocks ───────────────────────────────────────────────────────── */
+
+#new-about-page .an-info-block {
+  border-top: 0.5px solid var(--an-border-subtle);
+  padding: 24px 0;
+}
+
+#new-about-page .an-info-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--an-text-label);
+  margin-bottom: 14px;
+}
+
+/* ─── Icon grid ─────────────────────────────────────────────────────────── */
+
+#new-about-page .an-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+#new-about-page .an-icon-card {
+  border: 0.5px solid var(--an-border-card);
+  border-radius: 8px;
+  background: var(--an-bg-card);
+  padding: 16px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+#new-about-page .an-icon-card svg {
+  width: 24px;
+  height: 24px;
+}
+
+#new-about-page .an-icon-card-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--an-text-icon-label);
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ─── Logo grid ─────────────────────────────────────────────────────────── */
+
+#new-about-page .an-logo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+#new-about-page .an-logo-cell {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.5px solid var(--an-border-logo);
+  border-radius: 6px;
+}
+
+#new-about-page .an-logo-cell img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.5;
+}
+
+#new-about-page .an-logo-text-fallback {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--an-logo-fallback);
+  text-align: center;
+}
+
+/* ─── Mobile (max-width: 820px) ─────────────────────────────────────────── */
+
+@media (max-width: 820px) {
+  #new-about-page {
+    padding-top: var(--an-nav-height-mobile);
+  }
+
+  #new-about-page .an-title {
+    font-size: 36px;
+    padding: 28px 0 20px 24px;
+  }
+
+  #new-about-page .an-columns {
+    display: flex;
+    flex-direction: column;
+    min-height: unset;
+    padding: 0 24px;
+    gap: 20px;
+  }
+
+  #new-about-page .an-col-photo {
+    height: 240px;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #new-about-page .an-col-right {
+    padding: 0 0 40px 0;
+  }
+
+  #new-about-page .an-bio {
+    font-size: 11px;
+    line-height: 1.7;
+  }
+
+  #new-about-page .an-icon-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  #new-about-page .an-logo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
