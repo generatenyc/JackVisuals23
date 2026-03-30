@@ -133,13 +133,22 @@ section {
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .nav-logo-img {
-  height: 44px;
+  height: 28px;
   width: auto;
   filter: invert(1);
+  object-fit: contain;
+}
+
+.nav-logo-text {
+  font-family: "Bebas Neue", cursive;
+  font-size: 15px;
+  letter-spacing: 2.5px;
+  color: #fff;
+  line-height: 1;
 }
 
 /* Inquire button */
@@ -171,7 +180,11 @@ section {
   }
 
   .nav-logo-img {
-    height: 56px;
+    height: 34px;
+  }
+
+  .nav-logo-text {
+    font-size: 18px;
   }
 
   .nav-inquire {

@@ -65,6 +65,7 @@ export default function Nav() {
           alt="Jack Visuals"
           className="nav-logo-img"
         />
+        <span className="nav-logo-text">JACK VISUALS</span>
       </div>
 
       <a
