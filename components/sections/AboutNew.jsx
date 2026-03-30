@@ -112,14 +112,14 @@ export default async function AboutNew() {
           {/* Right column: title + bio + info blocks */}
           <div className="an-col-right">
             <h2 className="an-title">Jack Visuals</h2>
-            <p className="an-bio">
+            <p className="an-bio an-bio--debug">
               Jack Visuals is a cinematic video production studio based in Trinidad &amp; Tobago,
               delivering premium content for luxury brands, live events, and creative agencies.
               From aerial footage to high-end brand films, every frame is crafted with intention.
             </p>
 
             {/* What We Offer */}
-            <div className="an-info-block">
+            <div className="an-info-block an-info-block--debug-offer">
               <p className="an-info-label">What We Offer</p>
               <div className="an-icon-grid">
                 {offerItems.map((item) => (
@@ -132,7 +132,7 @@ export default async function AboutNew() {
             </div>
 
             {/* Production Kit */}
-            <div className="an-info-block">
+            <div className="an-info-block an-info-block--debug-kit">
               <p className="an-info-label">Production Kit</p>
               <div className="an-icon-grid">
                 {KIT_ITEMS.map((item) => (
