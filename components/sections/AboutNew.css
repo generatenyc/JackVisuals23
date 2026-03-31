@@ -39,6 +39,14 @@
   line-height: 1;
 }
 
+/* ─── Override global section rules ────────────────────────────────────── */
+
+#new-about-page #new-about-section {
+  height: auto;
+  overflow: visible;
+  scroll-snap-align: none;
+}
+
 /* ─── Two-column layout ─────────────────────────────────────────────────── */
 
 #new-about-page .an-columns {
