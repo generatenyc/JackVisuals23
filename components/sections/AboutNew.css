@@ -16,6 +16,12 @@
   --an-logo-fallback: rgba(255, 255, 255, 0.35);
 }
 
+/* Fix: body overflow-x: hidden breaks sticky in some browsers.
+   Override only when new-about-page is present. */
+body:has(#new-about-page) {
+  overflow-x: clip;
+}
+
 /* ─── Base ─────────────────────────────────────────────────────────────── */
 
 #new-about-page {
@@ -54,6 +60,7 @@
   grid-template-columns: 1fr 1fr;
   align-items: start;
   min-height: 100vh;
+  overflow: visible;
 }
 
 /* ─── Left column: photo — sticky, full viewport height ─────────────────── */
