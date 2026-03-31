@@ -20,6 +20,8 @@
 
 #new-about-page {
   background: var(--an-bg);
+  min-height: 100vh;
+  overflow: visible;
 }
 
 #new-about-page .an-inner {
