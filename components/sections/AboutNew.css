@@ -42,9 +42,9 @@
 /* ─── Override global section rules ────────────────────────────────────── */
 
 #new-about-page #new-about-section {
-  height: auto;
-  overflow: visible;
-  scroll-snap-align: none;
+  height: auto !important;
+  overflow: visible !important;
+  scroll-snap-align: none !important;
 }
 
 /* ─── Two-column layout ─────────────────────────────────────────────────── */
