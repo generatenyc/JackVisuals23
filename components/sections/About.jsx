@@ -3,6 +3,13 @@
 import dynamic from "next/dynamic";
 import "./About.css";
 
+const AboutPhoto = dynamic(() => import("./AboutPhoto"), {
+  ssr: false,
+  loading: () => (
+    <div className="about-photo" style={{ background: "#000", position: "relative" }} />
+  ),
+});
+
 /* Placeholder content matching HTML mockup files — replaced by Sanity data when available */
 const PLACEHOLDER_SERVICES =
   "Event Videography · Brand Campaigns · Commercial Production · Drone & Aerial · Agency Collaboration";
