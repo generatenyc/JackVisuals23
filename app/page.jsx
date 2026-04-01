@@ -18,7 +18,9 @@ export default async function HomePage() {
   let productionKit = null;
 
   try {
-    featuredProjects = await client.fetch(featuredProjectsQuery);
+    featuredProjects = await client.fetch(featuredProjectsQuery, {}, {
+      next: { revalidate: 3600 },
+    });
   } catch {
     /* Sanity fetch failed — FeaturedWork will show placeholder cards */
   }
@@ -28,6 +30,9 @@ export default async function HomePage() {
       client.fetch(servicesQuery),
       client.fetch(trustedByQuery),
       client.fetch(productionKitQuery),
+    [services, trustedBy] = await Promise.all([
+      client.fetch(servicesQuery, {}, { next: { revalidate: 3600 } }),
+      client.fetch(trustedByQuery, {}, { next: { revalidate: 3600 } }),
     ]);
   } catch {
     /* Sanity fetch failed — About will show placeholder text */
