@@ -154,6 +154,14 @@ Add a validation warning in the schema if more than 3 are featured.
 /public/images/jack-nathan.jpg            ← Nathan's photo for About section
 /public/videos/drone-hero.mp4             ← Kie AI hover video
 /public/videos/camera-pan-viewfinder.mp4  ← Camera rotation scroll video
+/public/videos/frames/                    ← Generated frames (151 JPEGs from FFmpeg, gitignored)
+```
+
+**Note:** The `/public/videos/frames/` folder is generated locally via FFmpeg and excluded from git.
+To regenerate frames after cloning:
+```bash
+mkdir -p public/videos/frames
+ffmpeg -i public/videos/camera-pan-viewfinder.mp4 -vf fps=30 public/videos/frames/frame_%04d.jpg
 ```
 
 ---

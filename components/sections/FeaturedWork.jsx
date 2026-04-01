@@ -44,8 +44,6 @@ export default function FeaturedWork({ projects = [] }) {
         </Link>
       </div>
 
-      {/* Camera scroll animation placeholder — full animation in Phase 8 */}
-
       <div className="work-cards-zone">
         <div className="work-cards" ref={carouselRef}>
           {cards.map((card, i) => (

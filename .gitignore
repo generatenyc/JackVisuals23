@@ -35,3 +35,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# camera animation frames (generated from video via FFmpeg)
+/public/videos/frames/
+
+# sanity studio build artifacts
+sanity/node_modules/
+sanity/dist/
+sanity/.sanity/

@@ -229,58 +229,166 @@ Video:      Camera_pans_to_viewfinder_video.mp4
 
 ### 5.3 ABOUT
 
-> Services and Trusted By are **not** separate scroll-snap sections.
-> They live inside `#sec-about .zone-bottom` as info blocks.
-> Only 4 scroll-snap sections exist: sec-home, sec-work, sec-about, sec-inquire.
+> The About section has two distinct layouts:
+> - **Mobile (max-width: 820px):** Original zone-based layout inside `#sec-about` scroll-snap section. See mobile mockup.
+> - **Desktop (min-width: 821px):** New sticky two-column layout. See desktop mockup and `AboutNew.jsx`.
+>
+> When the desktop layout is integrated into the homepage, it replaces `About.jsx` on desktop viewports only.
+> The mobile layout continues to use the original `About.jsx` component and zone system.
 
-**Mobile zones (844px):**
+---
+
+#### 5.3.1 MOBILE LAYOUT (unchanged)
+
+**Component:** `About.jsx`
+**Structure:** Zone system inside `#sec-about` scroll-snap section
 
 | Zone | Class | Height | Contents |
 |---|---|---|---|
 | Nav clearance | `#sec-about .zone-top` | 52px | Empty |
 | Header | `#sec-about .zone-header` | 72px | "Jack Visuals" headline |
+| Main | `#sec-about .zone-main` | 240px | Photo left, bio right (grid: 1fr 1.4fr) |
 | Divider | `#sec-about .zone-divider` | 1px | Horizontal rule |
-| Main | `#sec-about .zone-main` | 240px | Photo left · Bio right |
-| Info blocks | `#sec-about .zone-bottom` | 479px | What We Offer · Production Kit · Trusted By |
-
-**Desktop zones (100vh):**
-
-| Zone | Class | Height | Contents |
-|---|---|---|---|
-| Nav clearance | `#sec-about .zone-top` | 72px | Empty |
-| Header | `#sec-about .zone-header` | 100px | "Jack Visuals" headline |
-| Divider | `#sec-about .zone-divider` | 1px | Horizontal rule |
-| Main | `#sec-about .zone-main` | flex: 1 | Photo left · Bio right · Info blocks below |
+| Info blocks | `#sec-about .zone-bottom` | 479px | What We Offer, Production Kit, Trusted By |
 
 ```
 Header:
-  "Jack Visuals" — Bebas Neue, left-aligned
-  Size: 44px (mobile) · 72px (desktop)
+  "Jack Visuals" — Bebas Neue 40px, left-aligned
 
-Two-column grid (zone-main):
-  Left:   Nathan's photo — object-fit: cover, full zone height
-  Right:  Bio text — DM Sans, rgba white 0.7
+Photo:
+  Nathan's photo — border-radius: 10px, object-fit: cover
+  Camera animation plays on scroll into section (181 frames, GSAP scan wipe)
+  Fallback: static photo after 10s if frames don't load
 
-Info blocks (zone-bottom — three blocks stacked vertically):
-  Layout: flex-direction: column, justify-content: space-evenly
-  Height: 479px (mobile) · included in flex: 1 area (desktop)
+Bio:
+  DM Sans 12px, weight 300, line-height 1.7
+  Color: rgba(255,255,255,0.5)
+
+Info blocks:
+  Stacked vertically, space-evenly
+  Same content as desktop (What We Offer, Production Kit, Trusted By)
+  Text format (dot-separated list), not icon cards
+```
+
+---
+
+#### 5.3.2 DESKTOP LAYOUT (new)
+
+**Component:** `AboutNew.jsx` (sandbox: `/newaboutpage`)
+**CSS:** `AboutNew.css` — all rules scoped to `#new-about-page`
+**Structure:** Sticky two-column grid. NOT inside scroll-snap. Page scrolls naturally.
+
+```
+Layout:
+  display: grid
+  grid-template-columns: 1fr 1fr
+  min-height: 100vh
+
+  Left column (.an-col-photo):
+    position: sticky
+    top: calc(var(--nav-height-desktop) + 32px)
+    height: calc(100vh - var(--nav-height-desktop) - 32px)
+    Background: #111
+    Contains: camera animation canvas (AboutPhotoNew.jsx)
+    Nathan's photo drawn with 16px padding on all sides, cover-top anchor
+
+  Right column (.an-col-right):
+    padding: calc(nav-height + 48px) 56px 120px 56px
+    Scrolls naturally while left column stays fixed
+```
+
+**Right column content (top to bottom):**
+
+```
+Eyebrow:
+  "The Creative Director"
+  Font: DM Sans 11px, weight 500
+  Letter-spacing: 2.5px, uppercase
+  Color: #2997ff (accent blue)
+  Margin-bottom: 8px
+
+Title:
+  "Nathan"
+  Font: Bebas Neue 56px
+  Color: #fff
+  Margin-bottom: 32px
+
+Bio:
+  DM Sans 15px, weight 300, line-height 1.8
+  Color: rgba(255,255,255,0.55)
+  Margin-bottom: 32px
+
+Info blocks (3, separated by 0.5px border-top):
+  Each block: padding 24px 0
+
+  Label:
+    DM Sans 10px, weight 600, letter-spacing 2px, uppercase
+    Color: rgba(255,255,255,0.3)
+    Margin-bottom: 14px
 
   Block 1 — "What We Offer"
     Data source: Sanity — *[_type == "service"] | order(order asc)
-    Label: "WHAT WE OFFER" — uppercase, rgba white 0.28
-    Values: service titles listed, DM Sans, rgba white 0.7
-    Empty state: placeholder text if Sanity returns no services
+    Layout: 3-column icon card grid, gap 10px
+    Cards: 0.5px border, border-radius 8px, bg rgba(255,255,255,0.02)
+    Icon: 24px SVG, stroke white, stroke-width 1
+    Label: 10px uppercase, rgba(255,255,255,0.45)
+    Items: Event Videography, Brand Campaigns, Commercial Production,
+           Drone & Aerial, Agency Collaboration
 
   Block 2 — "Production Kit"
     Static content (not from CMS)
-    Label: "PRODUCTION KIT" — uppercase, rgba white 0.28
-    Values: equipment list, DM Sans, rgba white 0.7
+    Same icon card grid as above
+    Items: Cinema Rigs, Drone Fleet, Stabilization Systems, On-Set Monitoring
 
   Block 3 — "Trusted By"
     Data source: Sanity — *[_type == "trustedBy"] | order(order asc)
-    Label: "TRUSTED BY" — uppercase, rgba white 0.28
-    Values: client/brand names, DM Sans, rgba white 0.5
-    Empty state: placeholder text if Sanity returns no entries
+    GROQ: trustedByWithLogosQuery (includes logo image asset URL)
+    Layout: 3-column logo grid, gap 12px
+    Cells: 64px height, 0.5px border, border-radius 6px
+    Logos: filter brightness(0) invert(1), opacity 0.5
+    Fallback: text name if no logo uploaded
+    Max 6 brands
+```
+
+**Camera animation (desktop):**
+
+```
+Component:  AboutPhotoNew.jsx (client-only via dynamic ssr: false)
+Loader:     AboutPhotoNewLoader.jsx
+
+Sequence:
+  1. On mount: Nathan's photo drawn immediately on bottom canvas (hidden by black top canvas)
+  2. 181 frames preloaded (/public/videos/frames/frame_0001.jpg through frame_0181.jpg)
+  3. Intersection Observer (root: null, threshold: 0.3) triggers animation
+  4. Frame sequence plays on top canvas (3 seconds, drawImageContain with black fill)
+  5. Scan wipe: GSAP power2.inOut, 1.2s, blue #2997ff glow line sweeps left-to-right
+  6. Top canvas fades out (0.3s), revealing Nathan's photo on bottom canvas
+
+Drawing rules:
+  - Camera frames: drawImageContain (letterboxed, centered, black fill before each frame)
+  - Nathan's photo: cover-top with 16px padding on all sides
+  - Every canvas resize (.width/.height assignment) must be followed by immediate black fill
+  - One-time only — hasPlayed flag prevents replay
+
+Fallback:
+  If frames not loaded after 10s and section is visible,
+  top canvas fades out via gsap (0.5s) revealing static photo.
+  hasPlayed set to true, animation permanently blocked.
+
+CSS requirement:
+  body:has(#new-about-page) { overflow-x: clip; }
+  (scoped override — fixes sticky breaking from body overflow-x: hidden in globals.css)
+```
+
+**Sanity schema (Trusted By):**
+
+```
+Document type: trustedBy
+Fields:
+  - name (string) — Client / Brand Name
+  - logo (image, hotspot: false) — PNG with transparent background, displayed in white
+  - order (number)
+Preview: title from name, media from logo
 ```
 
 ---

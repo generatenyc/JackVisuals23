@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import dynamic from "next/dynamic";
 import "./About.css";
 
 /* Placeholder content matching HTML mockup files — replaced by Sanity data when available */
@@ -66,21 +66,9 @@ export default function About({
             </p>
           </div>
         </div>
-        <div className="about-photo">
-          <Image
-            src="/images/jack-nathan.jpg"
-            alt="Nathan of Jack Visuals — cinematic video producer based in Trinidad and Tobago"
-            width={220}
-            height={480}
-            style={{
-              objectFit: "cover",
-              objectPosition: "top center",
-              width: "100%",
-              height: "100%",
-            }}
-            priority={false}
-          />
-        </div>
+
+        {/* Photo zone — client-only, never server-rendered */}
+        <AboutPhoto />
       </div>
     </section>
   );
