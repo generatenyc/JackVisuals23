@@ -1,0 +1,197 @@
+/* ============================================
+   SECTION: ABOUT — #sec-about
+   DESIGN.md Section 5.3
+   Two-column layout: text left (1fr), portrait photo right (220px).
+   Photo runs full section height, no border radius.
+   ============================================ */
+
+#sec-about {
+  background: var(--color-bg);
+}
+
+/* Nav clearance */
+#sec-about .zone-top {
+  height: var(--nav-height-mobile);
+  flex-shrink: 0;
+}
+
+/* Header */
+#sec-about .zone-header {
+  height: 72px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+
+#sec-about .about-title {
+  font-family: "Bebas Neue", cursive;
+  font-size: 40px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  color: #fff;
+}
+
+/* Two-column content area — fills remaining section height */
+#sec-about .about-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-right: 24px;
+  min-height: 0;
+}
+
+/* Left column — bio + info blocks stacked */
+#sec-about .about-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px;
+  min-width: 0;
+}
+
+#sec-about .about-body {
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 24px;
+}
+
+/* Info blocks — separated by subtle top border */
+#sec-about .about-info-block {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+#sec-about .about-info-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 6px;
+}
+
+#sec-about .about-info-sentence {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+}
+
+/* Trusted By — slightly dimmer */
+#sec-about .about-trusted-by {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Photo container */
+#sec-about .about-photo {
+  width: 220px;
+  max-height: 420px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin: 0 24px 0 0;
+}
+
+/* ── Mobile layout — #sec-about ── */
+/* Mockup: photo left + bio right (240px grid), divider, info blocks (479px) */
+@media (max-width: 820px) {
+  #sec-about .about-content {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    grid-template-rows: 240px 1px 1fr 1fr 1fr;
+    column-gap: 16px;
+    padding: 0 24px;
+    align-items: stretch;
+    min-height: 0;
+  }
+
+  /* Unwrap about-left so children become grid items */
+  #sec-about .about-left {
+    display: contents;
+  }
+
+  /* Photo — left column, row 1 */
+  #sec-about .about-photo {
+    grid-column: 1;
+    grid-row: 1;
+    width: auto;
+    max-height: none;
+    aspect-ratio: auto;
+    flex-shrink: unset;
+    margin: 0;
+    border-radius: 10px;
+  }
+
+  /* Bio text — right column, row 1 */
+  #sec-about .about-body {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 4px 0;
+  }
+
+  /* Divider between photo/bio and info blocks */
+  #sec-about .about-content::before {
+    content: "";
+    grid-column: 1 / -1;
+    grid-row: 2;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  /* Info blocks — full width, centered in each row */
+  #sec-about .about-info-block {
+    grid-column: 1 / -1;
+    border-top: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+/* ── Desktop overrides — #sec-about ── */
+@media (min-width: 768px) {
+  #sec-about .zone-top {
+    height: var(--nav-height-desktop);
+  }
+
+  #sec-about .zone-header {
+    height: 100px;
+    padding: 0 80px;
+  }
+
+  #sec-about .about-title {
+    font-size: 56px;
+  }
+
+  #sec-about .about-content {
+    padding-right: 80px;
+  }
+
+  #sec-about .about-left {
+    padding: 0 80px;
+  }
+
+  #sec-about .about-body {
+    font-size: 16px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  #sec-about .about-info-label {
+    font-size: 10px;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  #sec-about .about-info-sentence {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+}

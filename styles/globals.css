@@ -1,0 +1,1022 @@
+@import "tailwindcss";
+
+/* ============================================
+   BRAND TOKENS — Jack Visuals
+   From DESIGN.md Section 1
+   ============================================ */
+
+:root {
+  /* Colors */
+  --color-bg: #000000;
+  --color-text-primary: #f5f5f7;
+  --color-text-dim: rgba(255, 255, 255, 0.5);
+  --color-text-faint: rgba(255, 255, 255, 0.28);
+  --color-accent-blue: #2997ff;
+  --color-divider: rgba(255, 255, 255, 0.07);
+  --color-nav-bg: rgba(0, 0, 0, 0.85);
+  --color-nav-border: rgba(255, 255, 255, 0.06);
+
+  /* Section heights */
+  /* --section-height-mobile: 844px; */ /* Removed: now using 100dvh for cross-platform consistency */
+
+  /* Nav heights */
+  --nav-height-mobile: 52px;
+  --nav-height-desktop: 72px;
+}
+
+/* ============================================
+   FONTS — Bebas Neue (headlines) + DM Sans (body)
+   ============================================ */
+
+@font-face {
+  font-family: "Bebas Neue";
+  src: url("https://fonts.gstatic.com/s/bebasneue/v14/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src: url("https://fonts.gstatic.com/s/dmsans/v15/rP2Yp2ywxg089UriI5-g4vlH9VoD8CmcqZG40F9JadbnoEwA.woff2") format("woff2");
+  font-weight: 300 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================
+   GLOBAL RESETS
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: "DM Sans", sans-serif;
+  max-width: 100vw;
+  overflow-x: clip;
+}
+
+body {
+  background: var(--color-bg);
+  min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* TODO: Scroll snap not snapping cleanly on all viewport sizes. Revisit before launch. */
+/* Scroll snap container — dedicated div wrapping all sections */
+#snap-container {
+  height: 100dvh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 52px;
+}
+
+@media (min-width: 821px) {
+  #snap-container {
+    scroll-padding-top: 72px;
+  }
+}
+
+/* ============================================
+   SCROLL SNAP — Sections
+   ============================================ */
+
+section {
+  scroll-snap-align: start;
+  height: 100dvh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================
+   NAVIGATION — Fixed overlay
+   DESIGN.md Section 4
+   ============================================ */
+
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--nav-height-mobile);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: var(--color-nav-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--color-nav-border);
+  opacity: 1;
+  transition: opacity 0.4s ease;
+  pointer-events: auto;
+}
+
+.nav-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Logo — icon + text */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-logo-icon {
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-logo-icon svg {
+  width: 14px;
+}
+
+.nav-logo-text {
+  font-family: "Bebas Neue", cursive;
+  font-size: 17px;
+  letter-spacing: 3px;
+  color: #fff;
+}
+
+.nav-logo-text span {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+/* Inquire button */
+.nav-inquire {
+  padding: 8px 16px;
+  border: 1px solid rgba(41, 151, 255, 0.4);
+  color: var(--color-accent-blue);
+  background: transparent;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 0;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.nav-inquire:hover {
+  background: rgba(41, 151, 255, 0.1);
+}
+
+/* Desktop overrides */
+@media (min-width: 768px) {
+  .nav-bar {
+    height: var(--nav-height-desktop);
+    padding: 0 40px;
+  }
+
+  .nav-logo {
+    gap: 10px;
+  }
+
+  .nav-logo-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 7px;
+  }
+
+  .nav-logo-icon svg {
+    width: 16px;
+  }
+
+  .nav-logo-text {
+    font-size: 20px;
+  }
+
+  .nav-logo-text span {
+    font-size: 16px;
+    opacity: 0.65;
+  }
+
+  .nav-inquire {
+    padding: 8px 18px;
+    font-size: 12px;
+  }
+}
+
+/* ============================================
+   SECTION: HOME (Hero) — #sec-home
+   DESIGN.md Section 5.1
+   ============================================ */
+
+#sec-home {
+  position: relative;
+  background: #000;
+  justify-content: flex-end;
+  padding: var(--nav-height-mobile) 24px 60px;
+}
+
+/* Background layer — gradient overlay for depth */
+#sec-home .hero-video-sim {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 0;
+}
+
+#sec-home .hero-video-sim::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.15) 100%),
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(15, 40, 10, 0.5) 0%, transparent 70%);
+  animation: heroVideoDrift 8s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes heroVideoDrift {
+  0% { filter: brightness(0.8); }
+  100% { filter: brightness(1.1); }
+}
+
+/* Drone placeholder — repositions every 3s via JS */
+#sec-home .hero-drone-placeholder {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 50%;
+  transition: top 2.4s cubic-bezier(0.16, 1, 0.3, 1),
+              left 2.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: droneBob 2s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes droneBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Eyebrow */
+#sec-home .hero-eyebrow {
+  position: relative;
+  z-index: 2;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-accent-blue);
+  margin-bottom: 12px;
+}
+
+/* Headline */
+#sec-home .hero-headline {
+  position: relative;
+  z-index: 2;
+  font-family: "Bebas Neue", cursive;
+  font-size: 88px;
+  line-height: 0.88;
+  letter-spacing: 0.5px;
+  color: #fff;
+  transform: translateY(40px);
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.8s ease;
+}
+
+#sec-home .hero-headline-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Desktop overrides — #sec-home */
+@media (min-width: 768px) {
+  #sec-home {
+    min-height: 700px;
+    padding: var(--nav-height-desktop) 80px 100px;
+  }
+
+  #sec-home .hero-video-sim::after {
+    background:
+      linear-gradient(to top, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.15) 100%),
+      radial-gradient(ellipse 50% 40% at 30% 40%, rgba(255, 255, 255, 0.015) 0%, transparent 70%);
+  }
+
+  #sec-home .hero-drone-placeholder {
+    width: 140px;
+    height: 140px;
+  }
+
+  #sec-home .hero-eyebrow {
+    font-size: 13px;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+  }
+
+  #sec-home .hero-headline {
+    font-size: clamp(80px, 10vw, 140px);
+    letter-spacing: 1px;
+    max-width: 800px;
+  }
+}
+
+/* ============================================
+   SECTION: FEATURED WORK — #sec-work
+   DESIGN.md Section 5.2
+   ============================================ */
+
+#sec-work {
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-divider);
+}
+
+/* Zone: nav clearance */
+#sec-work .zone-top {
+  height: var(--nav-height-mobile);
+  flex-shrink: 0;
+}
+
+/* Zone: header */
+#sec-work .zone-header {
+  height: 72px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+/* Section title */
+#sec-work .work-title {
+  font-family: "Bebas Neue", cursive;
+  font-size: 44px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  color: #fff;
+}
+
+/* "All Projects" link */
+#sec-work .work-view-all {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-accent-blue);
+  text-decoration: none;
+  padding-bottom: 4px;
+}
+
+/* Cards zone — contains carousel + dots (mobile) or grid (desktop) */
+#sec-work .work-cards-zone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Cards container — mobile: horizontal carousel */
+#sec-work .work-cards {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 0 24px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  align-items: stretch;
+}
+
+#sec-work .work-cards::-webkit-scrollbar {
+  display: none;
+}
+
+/* Card */
+#sec-work .work-card {
+  flex: 0 0 260px;
+  scroll-snap-align: start;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Card background — gradient placeholder */
+#sec-work .work-card-bg {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#sec-work .work-card:hover .work-card-bg {
+  transform: scale(1.04);
+}
+
+#sec-work .work-bg-1 {
+  background: linear-gradient(160deg, #1a2a14, #050808);
+}
+
+#sec-work .work-bg-2 {
+  background: linear-gradient(160deg, #0f1a28, #030810);
+}
+
+#sec-work .work-bg-3 {
+  background: linear-gradient(160deg, #1a1020, #050208);
+}
+
+/* Mobile: gradient overlay — always visible */
+#sec-work .work-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, transparent 60%);
+  z-index: 1;
+}
+
+/* Mobile: card info — always visible at bottom */
+#sec-work .work-card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 16px;
+  z-index: 2;
+}
+
+/* Category label */
+#sec-work .work-card-cat {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 4px;
+}
+
+/* Card title */
+#sec-work .work-card-title {
+  font-family: "Bebas Neue", cursive;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  color: #fff;
+}
+
+/* Desktop-only elements — hidden on mobile */
+#sec-work .work-card-tag,
+#sec-work .work-card-hover,
+#sec-work .work-card-play {
+  display: none;
+}
+
+/* Dots — mobile carousel indicator */
+#sec-work .work-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 0 24px;
+  flex-shrink: 0;
+  height: 44px;
+}
+
+#sec-work .work-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all 0.3s;
+}
+
+#sec-work .work-dot-active {
+  width: 16px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Desktop overrides — #sec-work ── */
+@media (min-width: 768px) {
+  #sec-work .zone-top {
+    height: var(--nav-height-desktop);
+  }
+
+  #sec-work .zone-header {
+    height: 100px;
+    padding: 0 80px;
+  }
+
+  #sec-work .work-title {
+    font-size: clamp(48px, 5vw, 72px);
+  }
+
+  #sec-work .work-view-all {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(41, 151, 255, 0.3);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  #sec-work .work-view-all:hover {
+    border-color: var(--color-accent-blue);
+  }
+
+  #sec-work .work-view-all::after {
+    content: "\2192";
+    font-size: 18px;
+  }
+
+  /* Cards container — desktop: 3-column grid */
+  #sec-work .work-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    overflow: hidden;
+    padding: 0;
+    scroll-snap-type: none;
+  }
+
+  /* Card — desktop overrides */
+  #sec-work .work-card {
+    border-radius: 0;
+    background: #0a0a0a;
+  }
+
+  /* Hide mobile overlay and info on desktop */
+  #sec-work .work-card-overlay,
+  #sec-work .work-card-info {
+    display: none;
+  }
+
+  /* Tag — always visible top-left on desktop */
+  #sec-work .work-card-tag {
+    display: block;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: opacity 0.3s;
+  }
+
+  /* Hover layer — desktop */
+  #sec-work .work-card-hover {
+    display: flex;
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 32px 28px;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.5) 40%,
+      transparent 70%
+    );
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+  }
+
+  #sec-work .work-card:hover .work-card-hover {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Hover category */
+  #sec-work .work-card-hover-cat {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--color-accent-blue);
+    margin-bottom: 10px;
+  }
+
+  /* Hover title */
+  #sec-work .work-card-hover-title {
+    font-family: "Bebas Neue", cursive;
+    font-size: 32px;
+    letter-spacing: 0.5px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  /* Hover spec line */
+  #sec-work .work-card-spec {
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Play button — desktop hover */
+  #sec-work .work-card-play {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.85);
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s, border-color 0.2s;
+    pointer-events: none;
+    z-index: 9;
+  }
+
+  #sec-work .work-card:hover .work-card-play {
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+  }
+
+  #sec-work .work-card-play:hover {
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+
+  #sec-work .work-card-play svg {
+    fill: white;
+    width: 20px;
+    margin-left: 3px;
+  }
+
+  /* Hide dots on desktop */
+  #sec-work .work-dots {
+    display: none;
+  }
+}
+
+/* #sec-about CSS moved to components/sections/About.module.css */
+
+/* ============================================
+   WORK PAGE — /work
+   DESIGN.md Section 5.5
+   Page does not use scroll-snap — standard scrollable page
+   ============================================ */
+
+#work-page {
+  background: var(--color-bg);
+  min-height: 100vh;
+  padding-top: var(--nav-height-mobile);
+}
+
+/* Header */
+#work-page .wp-header {
+  padding: 32px 24px 16px;
+}
+
+#work-page .wp-title {
+  font-family: "Bebas Neue", cursive;
+  font-size: 44px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  color: #fff;
+}
+
+/* Filter tabs — horizontal scroll on mobile */
+#work-page .wp-filters {
+  display: flex;
+  gap: 24px;
+  padding: 0 24px 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+#work-page .wp-filters::-webkit-scrollbar {
+  display: none;
+}
+
+#work-page .wp-filter-tab {
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 8px 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+#work-page .wp-filter-active {
+  color: var(--color-accent-blue);
+  border-bottom-color: var(--color-accent-blue);
+}
+
+/* Card grid — mobile: single column */
+#work-page .wp-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: 2px;
+  row-gap: 16px;
+  padding: 0 24px 40px;
+}
+
+/* Card */
+#work-page .wp-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 10px;
+  aspect-ratio: 16 / 10;
+}
+
+/* Card background — gradient placeholder */
+#work-page .wp-card-bg {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#work-page .wp-card:hover .wp-card-bg {
+  transform: scale(1.04);
+}
+
+#work-page .wp-bg-1 {
+  background: linear-gradient(160deg, #1a2a14, #050808);
+}
+
+#work-page .wp-bg-2 {
+  background: linear-gradient(160deg, #0f1a28, #030810);
+}
+
+#work-page .wp-bg-3 {
+  background: linear-gradient(160deg, #1a1020, #050208);
+}
+
+/* Tag — always visible top-left */
+#work-page .wp-card-tag {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+/* Gradient overlay — always visible on mobile */
+#work-page .wp-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, transparent 60%);
+  z-index: 1;
+}
+
+/* Card info — always visible on mobile */
+#work-page .wp-card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 16px;
+  z-index: 2;
+}
+
+/* Category */
+#work-page .wp-card-cat {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 4px;
+}
+
+/* Title */
+#work-page .wp-card-title {
+  font-family: "Bebas Neue", cursive;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  color: #fff;
+}
+
+/* Play button — always visible on mobile */
+#work-page .wp-card-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: border-color 0.2s;
+}
+
+#work-page .wp-card-play svg {
+  fill: white;
+  width: 18px;
+  margin-left: 2px;
+}
+
+/* Empty state */
+#work-page .wp-empty {
+  padding: 80px 24px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* Vimeo lightbox */
+#work-page .wp-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+#work-page .wp-lightbox-content {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  aspect-ratio: 16 / 9;
+}
+
+#work-page .wp-lightbox-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 4px;
+}
+
+#work-page .wp-lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 20px;
+  font-family: "DM Sans", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+#work-page .wp-lightbox-close:hover {
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* ── Desktop overrides — #work-page ── */
+@media (min-width: 768px) {
+  #work-page {
+    padding-top: var(--nav-height-desktop);
+  }
+
+  #work-page .wp-header {
+    padding: 48px 80px 20px;
+  }
+
+  #work-page .wp-title {
+    font-size: clamp(48px, 5vw, 72px);
+  }
+
+  #work-page .wp-filters {
+    padding: 0 80px 32px;
+    overflow-x: visible;
+  }
+
+  #work-page .wp-filter-tab {
+    font-size: 14px;
+  }
+
+  /* Grid — 3 columns on desktop */
+  #work-page .wp-grid {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0 80px 60px;
+  }
+
+  /* Card — desktop overrides */
+  #work-page .wp-card {
+    border-radius: 0;
+    aspect-ratio: auto;
+    min-height: 300px;
+  }
+
+  /* Overlay + info become hover-only on desktop */
+  #work-page .wp-card-overlay {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  #work-page .wp-card:hover .wp-card-overlay {
+    opacity: 1;
+  }
+
+  #work-page .wp-card-info {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  #work-page .wp-card:hover .wp-card-info {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Play button — hidden until hover on desktop */
+  #work-page .wp-card-play {
+    width: 68px;
+    height: 68px;
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0;
+    transition: transform 0.3s, border-color 0.2s, opacity 0.3s;
+    pointer-events: none;
+  }
+
+  #work-page .wp-card:hover .wp-card-play {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+  }
+
+  #work-page .wp-card-play:hover {
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+
+  #work-page .wp-card-play svg {
+    width: 20px;
+    margin-left: 3px;
+  }
+
+  #work-page .wp-empty {
+    padding: 120px 80px;
+    font-size: 16px;
+  }
+}
+
+/* ============================================
+   HEADLINE FONT UTILITY
+   ============================================ */
+
+.font-headline {
+  font-family: "Bebas Neue", cursive;
+}

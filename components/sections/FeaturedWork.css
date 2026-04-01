@@ -1,0 +1,175 @@
+/* ── Desktop overrides — #sec-work ── */
+/* Extracted from globals.css for Turbopack compatibility */
+@media (min-width: 821px) {
+  #sec-work .zone-top {
+    height: var(--nav-height-desktop);
+  }
+
+  #sec-work .zone-header {
+    height: 100px;
+    padding: 0 80px;
+  }
+
+  #sec-work .work-title {
+    font-size: clamp(48px, 5vw, 72px);
+  }
+
+  #sec-work .work-view-all {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(41, 151, 255, 0.3);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  #sec-work .work-view-all:hover {
+    border-color: var(--color-accent-blue);
+  }
+
+  #sec-work .work-view-all::after {
+    content: "\2192";
+    font-size: 18px;
+  }
+
+  /* Cards container — desktop: 3-column grid */
+  #sec-work .work-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    overflow: hidden;
+    padding: 0;
+    scroll-snap-type: none;
+  }
+
+  /* Card — desktop overrides */
+  #sec-work .work-card {
+    border-radius: 0;
+    background: #0a0a0a;
+  }
+
+  /* Hide mobile overlay and info on desktop */
+  #sec-work .work-card-overlay,
+  #sec-work .work-card-info {
+    display: none;
+  }
+
+  /* Tag — always visible top-left on desktop */
+  #sec-work .work-card-tag {
+    display: block;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: opacity 0.3s;
+  }
+
+  /* Hover layer — desktop */
+  #sec-work .work-card-hover {
+    display: flex;
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 32px 28px;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.5) 40%,
+      transparent 70%
+    );
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+  }
+
+  #sec-work .work-card:hover .work-card-hover {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Hover category */
+  #sec-work .work-card-hover-cat {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--color-accent-blue);
+    margin-bottom: 10px;
+  }
+
+  /* Hover title */
+  #sec-work .work-card-hover-title {
+    font-family: "Bebas Neue", cursive;
+    font-size: 32px;
+    letter-spacing: 0.5px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  /* Hover spec line */
+  #sec-work .work-card-spec {
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Play button — desktop hover */
+  #sec-work .work-card-play {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.85);
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s, border-color 0.2s;
+    pointer-events: none;
+    z-index: 9;
+  }
+
+  #sec-work .work-card:hover .work-card-play {
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+  }
+
+  #sec-work .work-card-play:hover {
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+
+  #sec-work .work-card-play svg {
+    fill: white;
+    width: 20px;
+    margin-left: 3px;
+  }
+
+  /* Hide dots on desktop */
+  #sec-work .work-dots {
+    display: none;
+  }
+}

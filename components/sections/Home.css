@@ -1,0 +1,6 @@
+/* ── Mobile override — #sec-home ── */
+@media (max-width: 820px) {
+  #sec-home .hero-headline {
+    font-size: 64px;
+  }
+}
