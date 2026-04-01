@@ -111,7 +111,8 @@ export default async function AboutNew() {
 
           {/* Right column: title + bio + info blocks */}
           <div className="an-col-right">
-            <h2 className="an-title">Jack Visuals</h2>
+            <p className="an-eyebrow">The Creative Director</p>
+            <h2 className="an-title">Nathan</h2>
             <p className="an-bio">
               Jack Visuals is a cinematic video production studio based in Trinidad &amp; Tobago,
               delivering premium content for luxury brands, live events, and creative agencies.

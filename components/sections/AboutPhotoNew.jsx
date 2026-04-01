@@ -13,52 +13,102 @@ export default function AboutPhotoNew() {
   const canvasBottomRef = useRef(null);
   const canvasTopRef = useRef(null);
 
-  // Helper: object-fit: cover for camera frames
-  const drawImageCover = (ctx, img, canvasW, canvasH) => {
+  // Helper: object-fit: contain, centered with black bars
+  const drawImageContain = (ctx, img, canvasW, canvasH) => {
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = canvasW / canvasH;
-    let sx, sy, sw, sh;
+    let drawW, drawH, drawX, drawY;
 
     if (imgAspect > canvasAspect) {
+      drawW = canvasW;
+      drawH = canvasW / imgAspect;
+      drawX = 0;
+      drawY = (canvasH - drawH) / 2;
+    } else {
+      drawH = canvasH;
+      drawW = canvasH * imgAspect;
+      drawX = (canvasW - drawW) / 2;
+      drawY = 0;
+    }
+
+    ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, drawX, drawY, drawW, drawH);
+  };
+
+  // Helper: cover-top with padding — 16px black inset on all sides, anchors to top of image
+  const drawPhotoTop = (ctx, img, canvasW, canvasH) => {
+    const padding = 16;
+    const drawX = padding;
+    const drawY = padding;
+    const drawW = canvasW - padding * 2;
+    const drawH = canvasH - padding * 2;
+
+    const imgAspect = img.naturalWidth / img.naturalHeight;
+    const areaAspect = drawW / drawH;
+    let sx, sy, sw, sh;
+
+    if (imgAspect > areaAspect) {
       sh = img.naturalHeight;
-      sw = sh * canvasAspect;
+      sw = sh * areaAspect;
       sx = (img.naturalWidth - sw) / 2;
       sy = 0;
     } else {
       sw = img.naturalWidth;
-      sh = sw / canvasAspect;
+      sh = sw / areaAspect;
       sx = 0;
-      sy = (img.naturalHeight - sh) / 2;
+      sy = 0;
     }
 
-    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvasW, canvasH);
+    ctx.drawImage(img, sx, sy, sw, sh, drawX, drawY, drawW, drawH);
   };
+
+  // On mount: draw Nathan's photo on bottom canvas and black on top canvas immediately
+  useEffect(() => {
+    const wrapper = photoWrapperRef.current;
+    const canvasBottom = canvasBottomRef.current;
+    const canvasTop = canvasTopRef.current;
+    if (!wrapper || !canvasBottom || !canvasTop) return;
+
+    const W = wrapper.offsetWidth || 400;
+    const H = wrapper.offsetHeight || 600;
+
+    canvasBottom.width = W;
+    canvasBottom.height = H;
+    canvasTop.width = W;
+    canvasTop.height = H;
+
+    // Black fill on top canvas — covers bottom canvas until animation runs
+    const ctxTop = canvasTop.getContext("2d");
+    ctxTop.fillStyle = "#000";
+    ctxTop.fillRect(0, 0, W, H);
+
+    // Draw Nathan's photo on bottom canvas immediately
+    const photo = new window.Image();
+    photo.src = "/images/jack-nathan.jpg";
+    photo.onload = () => {
+      const ctx = canvasBottom.getContext("2d");
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, W, H);
+      drawPhotoTop(ctx, photo, W, H);
+      console.log("AboutPhotoNew: Nathan photo pre-drawn on bottom canvas");
+    };
+  }, []);
 
   // Preload all 181 frames on mount
   useEffect(() => {
     const totalFrames = 181;
     const frames = [];
     let loadedCount = 0;
-    let timeoutId;
 
     console.log("AboutPhotoNew: Starting frame preload...");
-
-    // Fallback: if frames don't load in 4 seconds, skip animation
-    timeoutId = setTimeout(() => {
-      if (!framesLoaded) {
-        console.log("AboutPhotoNew: Frame loading timeout - skipping animation");
-      }
-    }, 4000);
 
     const checkAllLoaded = () => {
       loadedCount++;
       if (loadedCount === totalFrames) {
-        clearTimeout(timeoutId);
         framesRef.current = frames;
         setFramesLoaded(true);
         console.log(`AboutPhotoNew: All ${totalFrames} frames loaded`);
 
-        // Size both canvases and draw first frame immediately
+        // Pre-draw first frame on top canvas, replacing the black fill
         const wrapper = photoWrapperRef.current;
         const canvasTop = canvasTopRef.current;
         const canvasBottom = canvasBottomRef.current;
@@ -77,7 +127,9 @@ export default function AboutPhotoNew() {
           ctxBottom.fillRect(0, 0, W, H);
 
           const ctxTop = canvasTop.getContext("2d");
-          drawImageCover(ctxTop, frames[0], W, H);
+          ctxTop.fillStyle = "#000";
+          ctxTop.fillRect(0, 0, W, H);
+          drawImageContain(ctxTop, frames[0], W, H);
 
           console.log(`AboutPhotoNew: Canvases pre-sized to ${W}x${H}, first frame drawn`);
         }
@@ -95,37 +147,65 @@ export default function AboutPhotoNew() {
       };
       frames.push(img);
     }
-
-    return () => clearTimeout(timeoutId);
   }, []);
 
-  // IntersectionObserver — trigger animation when section is 50% visible
+  // IntersectionObserver — trigger animation when section visible AND frames loaded.
+  // Fallback: if section visible for 10s and frames still haven't loaded, fade out top canvas.
   useEffect(() => {
-    if (!framesLoaded || hasPlayed) return;
+    if (hasPlayed) return;
 
     const section = document.querySelector("#new-about-section");
-
     if (!section) return;
+
+    let visibleSince = null;
+    let fallbackTimerId = null;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasPlayed && framesLoaded) {
-            console.log("AboutPhotoNew: Section visible, starting animation");
-            setHasPlayed(true);
-            runAnimation();
+          if (entry.isIntersecting) {
+            if (framesLoaded && !hasPlayed) {
+              // Frames ready — run animation immediately
+              console.log("AboutPhotoNew: Section visible, starting animation");
+              setHasPlayed(true);
+              observer.disconnect();
+              if (fallbackTimerId) clearTimeout(fallbackTimerId);
+              runAnimation();
+            } else if (!framesLoaded && !visibleSince) {
+              // Section visible but frames not ready — start 10s fallback timer
+              visibleSince = Date.now();
+              console.log("AboutPhotoNew: Section visible, frames not yet loaded — starting 10s fallback timer");
+              fallbackTimerId = setTimeout(() => {
+                if (!hasPlayed) {
+                  console.log("AboutPhotoNew: 10s elapsed, frames not loaded — fading out top canvas");
+                  setHasPlayed(true);
+                  observer.disconnect();
+                  const canvasTop = canvasTopRef.current;
+                  if (canvasTop) {
+                    gsap.to(canvasTop, { opacity: 0, duration: 0.5, onComplete: () => { canvasTop.style.display = "none"; } });
+                  }
+                }
+              }, 10000);
+            }
+          } else {
+            // Section left view — clear the fallback timer
+            if (fallbackTimerId) {
+              clearTimeout(fallbackTimerId);
+              fallbackTimerId = null;
+              visibleSince = null;
+            }
           }
         });
       },
-      {
-        root: null,
-        threshold: 0.3,
-      }
+      { root: null, threshold: 0.3 }
     );
 
     observer.observe(section);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (fallbackTimerId) clearTimeout(fallbackTimerId);
+    };
   }, [framesLoaded, hasPlayed]);
 
   // Main animation sequence
@@ -149,8 +229,13 @@ export default function AboutPhotoNew() {
     const ctxTop = canvasTop.getContext("2d");
     const ctxBottom = canvasBottom.getContext("2d");
 
+    // Fill both canvases black immediately after resize to prevent transparent flash
+    ctxBottom.fillStyle = "#000";
+    ctxBottom.fillRect(0, 0, W, H);
+    ctxTop.fillStyle = "#000";
+    ctxTop.fillRect(0, 0, W, H);
+
     // Step 1: Draw Nathan's photo on bottom canvas before frame animation
-    // Uses object-fit contain math with 24px bottom padding accounted for
     const photo = new window.Image();
     photo.src = "/images/jack-nathan.jpg";
     await new Promise((resolve) => {
@@ -159,36 +244,7 @@ export default function AboutPhotoNew() {
 
     ctxBottom.fillStyle = "#000";
     ctxBottom.fillRect(0, 0, W, H);
-
-    const paddingBottom = 24;
-    const availH = H - paddingBottom;
-    const photoAspect = photo.naturalWidth / photo.naturalHeight;
-    const canvasAspect = W / availH;
-    let drawW, drawH, drawX, drawY;
-
-    if (photoAspect > canvasAspect) {
-      drawW = W;
-      drawH = W / photoAspect;
-      drawX = 0;
-      drawY = (availH - drawH) / 2;
-    } else {
-      drawH = availH;
-      drawW = availH * photoAspect;
-      drawX = (W - drawW) / 2;
-      drawY = 0;
-    }
-
-    ctxBottom.drawImage(
-      photo,
-      0,
-      0,
-      photo.naturalWidth,
-      photo.naturalHeight,
-      drawX,
-      drawY,
-      drawW,
-      drawH
-    );
+    drawPhotoTop(ctxBottom, photo, W, H);
     console.log("AboutPhotoNew: Nathan photo ready on bottom canvas");
 
     // Step 2: Play all 181 frames over 3 seconds
@@ -207,8 +263,9 @@ export default function AboutPhotoNew() {
 
         const frameImg = framesRef.current[currentFrame];
         if (frameImg && frameImg.complete) {
-          ctxTop.clearRect(0, 0, W, H);
-          drawImageCover(ctxTop, frameImg, W, H);
+          ctxTop.fillStyle = "#000";
+          ctxTop.fillRect(0, 0, W, H);
+          drawImageContain(ctxTop, frameImg, W, H);
         }
 
         currentFrame++;
@@ -230,14 +287,15 @@ export default function AboutPhotoNew() {
         onUpdate: () => {
           const x = progress.x;
 
-          ctxTop.clearRect(0, 0, W, H);
+          ctxTop.fillStyle = "#000";
+          ctxTop.fillRect(0, 0, W, H);
 
           // Camera visible RIGHT of scan line
           ctxTop.save();
           ctxTop.beginPath();
           ctxTop.rect(x, 0, W - x, H);
           ctxTop.clip();
-          drawImageCover(ctxTop, lastFrame, W, H);
+          drawImageContain(ctxTop, lastFrame, W, H);
           ctxTop.restore();
 
           // Scan line glow
@@ -279,23 +337,17 @@ export default function AboutPhotoNew() {
       });
     });
 
-    // Step 5: Hide top canvas — bottom canvas already shows Nathan's photo at correct dimensions
+    // Step 5: Hide top canvas — bottom canvas already shows Nathan's photo
     canvasTop.style.display = "none";
     console.log("AboutPhotoNew: Animation complete - photo revealed via bottom canvas");
   };
 
   return (
     <div className="an-photo-wrapper" ref={photoWrapperRef}>
-      {/* Bottom canvas: Nathan's photo drawn during animation (z-index: 1) */}
-      <canvas
-        ref={canvasBottomRef}
-        className="an-canvas-bottom"
-      />
-      {/* Top canvas: camera frames + scan wipe (z-index: 2) */}
-      <canvas
-        ref={canvasTopRef}
-        className="an-canvas-top"
-      />
+      {/* Bottom canvas: Nathan's photo pre-drawn on mount (z-index: 1) */}
+      <canvas ref={canvasBottomRef} className="an-canvas-bottom" />
+      {/* Top canvas: black fill initially, then frames + scan wipe (z-index: 2) */}
+      <canvas ref={canvasTopRef} className="an-canvas-top" />
     </div>
   );
 }

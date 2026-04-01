@@ -35,6 +35,15 @@ body:has(#new-about-page) {
   padding: 0;
 }
 
+#new-about-page .an-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #2997ff;
+  margin-bottom: 8px;
+}
+
 /* Title lives inside the right column — rule kept for font/color, positioning handled by .an-col-right */
 #new-about-page .an-title {
   font-family: "Bebas Neue", sans-serif;
@@ -68,15 +77,14 @@ body:has(#new-about-page) {
 #new-about-page .an-col-photo {
   background: var(--an-bg-photo);
   position: sticky;
-  top: var(--an-nav-height-desktop);
-  height: calc(100vh - var(--an-nav-height-desktop));
+  top: calc(var(--an-nav-height-desktop) + 32px);
+  height: calc(100vh - var(--an-nav-height-desktop) - 32px);
   overflow: hidden;
-  padding-top: 32px;
 }
 
 #new-about-page .an-photo-wrapper {
   position: absolute;
-  top: 32px;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
@@ -90,7 +98,6 @@ body:has(#new-about-page) {
   height: 100%;
   z-index: 1;
   display: block;
-  background: var(--an-bg);
 }
 
 #new-about-page .an-canvas-top {
@@ -101,13 +108,12 @@ body:has(#new-about-page) {
   height: 100%;
   z-index: 2;
   display: block;
-  background: var(--an-bg);
 }
 
 /* ─── Right column: content ─────────────────────────────────────────────── */
 
 #new-about-page .an-col-right {
-  padding: calc(var(--an-nav-height-desktop) + 48px) 56px 120px 44px;
+  padding: calc(var(--an-nav-height-desktop) + 48px) 56px 120px 56px;
   display: flex;
   flex-direction: column;
 }
@@ -211,8 +217,13 @@ body:has(#new-about-page) {
     padding-top: var(--an-nav-height-mobile);
   }
 
+  #new-about-page .an-eyebrow {
+    margin-top: 16px;
+  }
+
   #new-about-page .an-title {
-    font-size: 36px;
+    font-size: 32px;
+    margin-bottom: 16px;
     padding: 28px 0 20px 24px;
   }
 
@@ -225,7 +236,7 @@ body:has(#new-about-page) {
   }
 
   #new-about-page .an-col-photo {
-    height: 240px;
+    height: 180px;
     width: 100%;
     border-radius: 10px;
     overflow: hidden;
