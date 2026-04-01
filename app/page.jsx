@@ -8,23 +8,31 @@ import {
   featuredProjectsQuery,
   servicesQuery,
   trustedByQuery,
+  productionKitQuery,
 } from "@/lib/sanity";
 
 export default async function HomePage() {
   let featuredProjects = [];
   let services = [];
   let trustedBy = [];
+  let productionKit = null;
 
   try {
-    featuredProjects = await client.fetch(featuredProjectsQuery);
+    featuredProjects = await client.fetch(featuredProjectsQuery, {}, {
+      next: { revalidate: 3600 },
+    });
   } catch {
     /* Sanity fetch failed — FeaturedWork will show placeholder cards */
   }
 
   try {
-    [services, trustedBy] = await Promise.all([
+    [services, trustedBy, productionKit] = await Promise.all([
       client.fetch(servicesQuery),
       client.fetch(trustedByQuery),
+      client.fetch(productionKitQuery),
+    [services, trustedBy] = await Promise.all([
+      client.fetch(servicesQuery, {}, { next: { revalidate: 3600 } }),
+      client.fetch(trustedByQuery, {}, { next: { revalidate: 3600 } }),
     ]);
   } catch {
     /* Sanity fetch failed — About will show placeholder text */
@@ -37,7 +45,11 @@ export default async function HomePage() {
         <div id="snap-container">
           <Home />
           <FeaturedWork projects={featuredProjects} />
-          <About services={services} trustedBy={trustedBy} />
+          <About
+            services={services}
+            trustedBy={trustedBy}
+            productionKit={productionKit}
+          />
           <Inquire />
         </div>
       </main>

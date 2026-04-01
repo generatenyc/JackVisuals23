@@ -53,18 +53,18 @@ export default function FeaturedWork({ projects = [] }) {
               {/* Mobile: gradient overlay + info — always visible */}
               <div className="work-card-overlay" />
               <div className="work-card-info">
-                <div className="work-card-cat">{card.category}</div>
+                <div className="work-card-cat">{card.resolvedCategory || card.category}</div>
                 <div className="work-card-title">{card.title}</div>
               </div>
 
               {/* Desktop: tag — always visible top-left */}
               <div className="work-card-tag">
-                {card.category?.toUpperCase()}
+                {(card.resolvedCategory || card.category)?.toUpperCase()}
               </div>
 
               {/* Desktop: hover layer with details */}
               <div className="work-card-hover">
-                <div className="work-card-hover-cat">{card.category}</div>
+                <div className="work-card-hover-cat">{card.resolvedCategory || card.category}</div>
                 <div className="work-card-hover-title">{card.title}</div>
                 {card.description && (
                   <div className="work-card-spec">{card.description}</div>

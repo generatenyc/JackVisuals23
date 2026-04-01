@@ -60,12 +60,36 @@ export default function Nav() {
       id="mainNav"
     >
       <div className="nav-logo">
-        <img
-          src="/images/jack-visuals-whitelogo.jpeg"
-          alt="Jack Visuals"
-          className="nav-logo-img"
-        />
-        <span className="nav-logo-text">JACK VISUALS</span>
+        <div className="nav-logo-icon">
+          <svg
+            viewBox="0 0 14 14"
+            fill="none"
+            aria-label="Jack Visuals logo"
+            role="img"
+          >
+            <rect
+              x="1"
+              y="3"
+              width="10"
+              height="7"
+              rx="1"
+              stroke="white"
+              strokeWidth="1"
+            />
+            <polygon points="11,5.5 13,4.5 13,8.5 11,7.5" fill="white" />
+            <circle
+              cx="4.5"
+              cy="6.5"
+              r="1.5"
+              stroke="white"
+              strokeWidth="0.8"
+              fill="none"
+            />
+          </svg>
+        </div>
+        <div className="nav-logo-text">
+          JACK <span>VISUALS</span>
+        </div>
       </div>
 
       <a

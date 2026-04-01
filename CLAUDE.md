@@ -317,9 +317,11 @@ npx localtunnel --port 3000
 
 ### Phase 7 — Sanity Studio Deploy
 - [ ] Sanity Studio deployed to `jackvisuals23.com/studio` (or standalone URL)
-- [ ] Nathan invited via `nathan@rjaonline.com` with editor role
+- [ ] Embedded studio route added at `/studio` — will be accessible at `jackvisuals23.com/studio` after domain is connected at Phase 10
 - [ ] CMS tested — Nathan can add/edit/publish a project, service, and trusted by entry
 - [ ] Featured validation warning working (>3 featured projects triggers warning)
+- [ ] Note: Nathan will be invited by email with the Editor role at the end of the full project as part of the launch setup
+- [ ] Note: Placeholder projects will be seeded after Nathan's Vimeo account is set up. Use real Vimeo URLs, not test URLs
 
 ### Phase 8 — Camera Scroll Animation
 - [ ] `camera-pan-viewfinder.mp4` frames extracted via FFmpeg
@@ -371,6 +373,7 @@ npx localtunnel --port 3000
 - [ ] Tested on real iPhone and Android
 - [ ] Domain connected and SSL active
 - [ ] Performance: Lighthouse score > 80
+- [ ] Nathan invited to Sanity Studio via `nathan@rjaonline.com` with Editor role
 - [ ] DESIGN.md is up to date with all approved changes
 
 ---
