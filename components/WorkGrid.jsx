@@ -37,7 +37,7 @@ export default function WorkGrid({ projects = [] }) {
     activeFilter === "All"
       ? cards
       : cards.filter(
-          (c) => c.category?.toLowerCase() === activeFilter.toLowerCase()
+          (c) => (c.resolvedCategory || c.category)?.toLowerCase() === activeFilter.toLowerCase()
         );
 
   const handlePlay = useCallback((vimeoUrl) => {
@@ -84,12 +84,12 @@ export default function WorkGrid({ projects = [] }) {
               <div className={`wp-card-bg ${BG_CLASSES[i % 3]}`} />
 
               {/* Tag — always visible */}
-              <div className="wp-card-tag">{card.category?.toUpperCase()}</div>
+              <div className="wp-card-tag">{(card.resolvedCategory || card.category)?.toUpperCase()}</div>
 
               {/* Gradient overlay + info */}
               <div className="wp-card-overlay" />
               <div className="wp-card-info">
-                <div className="wp-card-cat">{card.category}</div>
+                <div className="wp-card-cat">{card.resolvedCategory || card.category}</div>
                 <div className="wp-card-title">{card.title}</div>
               </div>
 
