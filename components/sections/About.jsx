@@ -14,11 +14,20 @@ const AboutPhoto = dynamic(() => import("./AboutPhoto"), {
 const PLACEHOLDER_SERVICES =
   "Event Videography · Brand Campaigns · Commercial Production · Drone & Aerial · Agency Collaboration";
 
-const PLACEHOLDER_TRUSTED_BY =
-  "Gin Mare · Diplomatico · Grey Goose · Patrón · JP Chenet · Cantine Maschio";
-
 const PLACEHOLDER_PRODUCTION_KIT =
   "Cinema rigs, drone fleet, stabilization systems and on-set monitoring — built for every scale.";
+
+const LOGO_MAP = {
+  "Gin Mare":        "/images/logos/gin-mare.png",
+  "Diplomatico":     "/images/logos/diplomatico.png",
+  "Grey Goose":      "/images/logos/grey-goose.png",
+  "Patrón":          "/images/logos/patron.png",
+  "JP Chenet":       "/images/logos/jp-chenet.png",
+  "Cantine Maschio": "/images/logos/cantine-maschio.png",
+  "Carnival Tribe":  "/images/logos/tribe.png",
+};
+
+const PLACEHOLDER_LOGOS = Object.keys(LOGO_MAP).map((name) => ({ name }));
 
 export default function About({
   services = [],
@@ -30,10 +39,11 @@ export default function About({
       ? services.map((s) => s.title).join(" · ")
       : PLACEHOLDER_SERVICES;
 
-  const trustedByText =
-    trustedBy.length > 0
-      ? trustedBy.map((t) => t.name).join(" · ")
-      : PLACEHOLDER_TRUSTED_BY;
+  const logoList = trustedBy.length > 0 ? trustedBy : PLACEHOLDER_LOGOS;
+  const logoSizeClass =
+    logoList.length <= 4 ? "logo-grid--lg"
+    : logoList.length <= 8 ? "logo-grid--md"
+    : "logo-grid--sm";
 
   const productionKitText =
     productionKit?.description || PLACEHOLDER_PRODUCTION_KIT;
@@ -68,9 +78,31 @@ export default function About({
           </div>
           <div className="about-info-block">
             <div className="about-info-label">Trusted By</div>
-            <p className="about-info-sentence about-trusted-by">
-              {trustedByText}
-            </p>
+            <div className={`about-logo-grid ${logoSizeClass}`}>
+              {logoList.map((brand, i) =>
+                LOGO_MAP[brand.name] ? (
+                  <div
+                    key={brand.name}
+                    className="about-logo-cell"
+                    style={{ "--i": i }}
+                  >
+                    <img
+                      src={LOGO_MAP[brand.name]}
+                      alt={brand.name}
+                      loading="lazy"
+                    />
+                  </div>
+                ) : (
+                  <div
+                    key={brand.name}
+                    className="about-logo-cell"
+                    style={{ "--i": i }}
+                  >
+                    <span className="about-logo-text-fallback">{brand.name}</span>
+                  </div>
+                )
+              )}
+            </div>
           </div>
         </div>
 

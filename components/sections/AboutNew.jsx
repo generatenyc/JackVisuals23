@@ -63,6 +63,18 @@ const IconMonitor = () => (
   </svg>
 );
 
+const LOGO_MAP = {
+  "Gin Mare":        "/images/logos/gin-mare.png",
+  "Diplomatico":     "/images/logos/diplomatico.png",
+  "Grey Goose":      "/images/logos/grey-goose.png",
+  "Patrón":          "/images/logos/patron.png",
+  "JP Chenet":       "/images/logos/jp-chenet.png",
+  "Cantine Maschio": "/images/logos/cantine-maschio.png",
+  "Carnival Tribe":  "/images/logos/tribe.png",
+};
+
+const PLACEHOLDER_LOGOS = Object.keys(LOGO_MAP).map((name) => ({ name }));
+
 const OFFER_ITEMS = [
   { label: "Event Videography", icon: <IconVideoCamera /> },
   { label: "Brand Campaigns", icon: <IconMegaphone /> },
@@ -148,31 +160,20 @@ export default async function AboutNew() {
             {/* Trusted By */}
             <div className="an-info-block">
               <p className="an-info-label">Trusted By</p>
-              {trustedBy.length > 0 ? (
-                <div className="an-logo-grid">
-                  {trustedBy.map((brand) => (
-                    <div key={brand.name} className="an-logo-cell">
-                      {brand.logo?.asset?.url ? (
-                        <img
-                          src={brand.logo.asset.url}
-                          alt={brand.name}
-                          loading="lazy"
-                        />
+              <div className="an-logo-grid">
+                {(trustedBy.length > 0 ? trustedBy : PLACEHOLDER_LOGOS).map((brand, i) => {
+                  const src = brand.logo?.asset?.url ?? LOGO_MAP[brand.name];
+                  return (
+                    <div key={brand.name} className="an-logo-cell" style={{ "--i": i }}>
+                      {src ? (
+                        <img src={src} alt={brand.name} loading="lazy" />
                       ) : (
                         <span className="an-logo-text-fallback">{brand.name}</span>
                       )}
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="an-logo-grid">
-                  {["Gin Mare", "Diplomatico", "Grey Goose", "Patrón", "JP Chenet", "Cantine Maschio"].map((name) => (
-                    <div key={name} className="an-logo-cell">
-                      <span className="an-logo-text-fallback">{name}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+                  );
+                })}
+              </div>
             </div>
           </div>
         </section>

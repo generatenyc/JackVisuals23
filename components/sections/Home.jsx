@@ -16,8 +16,13 @@ export default function Home() {
   // Reposition drone placeholder every 3 seconds within top 40%
   useEffect(() => {
     function reposition() {
-      const x = 10 + Math.random() * 60; // 10%–70% from left
-      const y = 5 + Math.random() * 25; // 5%–30% from top
+      const isMobile = window.innerWidth < 768;
+      const x = isMobile
+        ? 5 + Math.random() * 55  // 5%–60% on mobile (130px drone on 390px screen)
+        : 5 + Math.random() * 78; // 5%–83% on desktop
+      const y = isMobile
+        ? 5 + Math.random() * 72  // 5%–77% on mobile
+        : 5 + Math.random() * 78;
       setDronePos({ left: `${x}%`, top: `${y}%` });
     }
 
@@ -31,11 +36,17 @@ export default function Home() {
       {/* Background layer — gradient overlay for depth */}
       <div className="hero-video-sim">
         {/* DRONE VIDEO PLACEHOLDER — swap in drone-hero.mp4 when ready */}
-        <div
+        <video
           className="hero-drone-placeholder"
           style={{ left: dronePos.left, top: dronePos.top }}
+          autoPlay
+          muted
+          loop
+          playsInline
           aria-hidden="true"
-        />
+        >
+          <source src="/videos/drone-hover.mp4" type="video/mp4" />
+        </video>
       </div>
 
       {/* Content — positioned at bottom left */}

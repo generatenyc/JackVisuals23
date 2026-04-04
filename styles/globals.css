@@ -140,7 +140,6 @@ section {
 .nav-logo-img {
   height: 28px;
   width: auto;
-  filter: invert(1);
   object-fit: contain;
 }
 
@@ -290,6 +289,7 @@ section {
   background: #000;
   justify-content: flex-end;
   padding: var(--nav-height-mobile) 24px 60px;
+  overflow: visible;
 }
 
 /* Background layer — gradient overlay for depth */
@@ -319,13 +319,13 @@ section {
 /* Drone placeholder — repositions every 3s via JS */
 #sec-home .hero-drone-placeholder {
   position: absolute;
-  width: 80px;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 50%;
+  width: 130px;
+  height: auto;
+  object-fit: contain;
   transition: top 2.4s cubic-bezier(0.16, 1, 0.3, 1),
               left 2.4s cubic-bezier(0.16, 1, 0.3, 1);
   animation: droneBob 2s ease-in-out infinite;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.6));
   z-index: 1;
 }
 
@@ -380,8 +380,7 @@ section {
   }
 
   #sec-home .hero-drone-placeholder {
-    width: 140px;
-    height: 140px;
+    width: 220px;
   }
 
   #sec-home .hero-eyebrow {
