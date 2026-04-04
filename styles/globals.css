@@ -134,6 +134,7 @@ section {
   display: flex;
   align-items: center;
   gap: 6px;
+  text-decoration: none;
 }
 
 .nav-logo-img {
@@ -190,6 +191,92 @@ section {
   .nav-inquire {
     padding: 8px 18px;
     font-size: 12px;
+  }
+}
+
+/* ============================================
+   NAV: Desktop links + Mobile hamburger/menu
+   Added: Phase 2 update — full nav links
+   ============================================ */
+
+/* Desktop links group — hidden on mobile */
+.nav-desktop-links {
+  display: none;
+}
+
+/* Hamburger button — visible on mobile only */
+.nav-hamburger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  line-height: 0;
+}
+
+/* Mobile dropdown — sits just below the nav bar */
+.nav-mobile-menu {
+  position: fixed;
+  top: var(--nav-height-mobile);
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background: rgba(0, 0, 0, 0.97);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 20px;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.nav-mobile-menu--open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Full-width link inside mobile menu — same style as .nav-inquire */
+.nav-mobile-menu__link {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(41, 151, 255, 0.4);
+  color: var(--color-accent-blue);
+  background: transparent;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.nav-mobile-menu__link:hover {
+  background: rgba(41, 151, 255, 0.1);
+}
+
+/* Desktop overrides (821px+) */
+@media (min-width: 821px) {
+  .nav-desktop-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-hamburger {
+    display: none;
+  }
+
+  /* Mobile menu never shows on desktop */
+  .nav-mobile-menu {
+    display: none;
   }
 }
 

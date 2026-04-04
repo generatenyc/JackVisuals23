@@ -10,12 +10,19 @@ const SECTION_IDS = [
   "sec-inquire",
 ];
 
+const NAV_LINKS = [
+  { label: "Work",    id: "sec-work" },
+  { label: "About",   id: "sec-about" },
+  { label: "Inquire", id: "sec-inquire" },
+];
+
 const THRESHOLD = 120; // px from section top where nav is visible
 
 export default function Nav() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [visible, setVisible] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleScroll = useCallback(() => {
     const scrollY = window.scrollY;
@@ -43,62 +50,102 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  const handleInquireClick = (e) => {
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  const handleNavClick = (e, sectionId) => {
+    setMenuOpen(false);
     if (isHome) {
       e.preventDefault();
-      const target = document.getElementById("sec-inquire");
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
-      }
+      const target = document.getElementById(sectionId);
+      if (target) target.scrollIntoView({ behavior: "smooth" });
     }
-    // On non-home pages, let the browser navigate to /#sec-inquire
+    // On non-home pages, navigate to /#sectionId
   };
 
   return (
-    <nav
-      className={`nav-bar ${visible ? "" : "nav-hidden"}`}
-      id="mainNav"
-    >
-      <div className="nav-logo">
-        <div className="nav-logo-icon">
-          <svg
-            viewBox="0 0 14 14"
-            fill="none"
-            aria-label="Jack Visuals logo"
-            role="img"
-          >
-            <rect
-              x="1"
-              y="3"
-              width="10"
-              height="7"
-              rx="1"
-              stroke="white"
-              strokeWidth="1"
-            />
-            <polygon points="11,5.5 13,4.5 13,8.5 11,7.5" fill="white" />
-            <circle
-              cx="4.5"
-              cy="6.5"
-              r="1.5"
-              stroke="white"
-              strokeWidth="0.8"
-              fill="none"
-            />
-          </svg>
-        </div>
-        <div className="nav-logo-text">
-          JACK <span>VISUALS</span>
-        </div>
-      </div>
-
-      <a
-        href={isHome ? "#sec-inquire" : "/#sec-inquire"}
-        className="nav-inquire"
-        onClick={handleInquireClick}
+    <>
+      <nav
+        className={`nav-bar ${visible ? "" : "nav-hidden"}`}
+        id="mainNav"
       >
-        Inquire
-      </a>
-    </nav>
+        {/* Logo */}
+        <a
+          href={isHome ? "#sec-home" : "/"}
+          className="nav-logo"
+          onClick={(e) => isHome && (e.preventDefault(), document.getElementById("sec-home")?.scrollIntoView({ behavior: "smooth" }))}
+        >
+          <div className="nav-logo-icon">
+            <svg
+              viewBox="0 0 14 14"
+              fill="none"
+              aria-label="Jack Visuals logo"
+              role="img"
+            >
+              <rect x="1" y="3" width="10" height="7" rx="1" stroke="white" strokeWidth="1" />
+              <polygon points="11,5.5 13,4.5 13,8.5 11,7.5" fill="white" />
+              <circle cx="4.5" cy="6.5" r="1.5" stroke="white" strokeWidth="0.8" fill="none" />
+            </svg>
+          </div>
+          <div className="nav-logo-text">
+            JACK <span>VISUALS</span>
+          </div>
+        </a>
+
+        {/* Desktop links */}
+        <div className="nav-desktop-links">
+          {NAV_LINKS.map(({ label, id }) => (
+            <a
+              key={id}
+              href={isHome ? `#${id}` : `/#${id}`}
+              className="nav-inquire"
+              onClick={(e) => handleNavClick(e, id)}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+
+        {/* Mobile hamburger */}
+        <button
+          className="nav-hamburger"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((prev) => !prev)}
+        >
+          {menuOpen ? (
+            /* Close (X) icon */
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <line x1="5" y1="5" x2="19" y2="19" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <line x1="19" y1="5" x2="5" y2="19" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          ) : (
+            /* Hamburger (3 lines) icon */
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <line x1="3" y1="7"  x2="21" y2="7"  stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <line x1="3" y1="12" x2="21" y2="12" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <line x1="3" y1="17" x2="21" y2="17" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          )}
+        </button>
+      </nav>
+
+      {/* Mobile dropdown menu */}
+      <div className={`nav-mobile-menu${menuOpen ? " nav-mobile-menu--open" : ""}`} aria-hidden={!menuOpen}>
+        {NAV_LINKS.map(({ label, id }) => (
+          <a
+            key={id}
+            href={isHome ? `#${id}` : `/#${id}`}
+            className="nav-mobile-menu__link"
+            onClick={(e) => handleNavClick(e, id)}
+            tabIndex={menuOpen ? 0 : -1}
+          >
+            {label}
+          </a>
+        ))}
+      </div>
+    </>
   );
 }
