@@ -138,7 +138,7 @@ body:has(#new-about-page) {
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--an-text-label);
+  color: var(--an-text-primary);
   margin-bottom: 14px;
 }
 

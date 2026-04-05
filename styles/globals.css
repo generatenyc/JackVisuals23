@@ -138,9 +138,11 @@ section {
 }
 
 .nav-logo-img {
-  height: 28px;
+  height: 38px;
   width: auto;
   object-fit: contain;
+  filter: invert(1);
+  mix-blend-mode: screen;
 }
 
 .nav-logo-text {
@@ -180,7 +182,7 @@ section {
   }
 
   .nav-logo-img {
-    height: 34px;
+    height: 52px;
   }
 
   .nav-logo-text {
